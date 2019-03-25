@@ -1,10 +1,16 @@
 package Server_Side;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.ServerSocket;
+import java.net.Socket;
+
 public class DataServer implements Server
 {
 	static DataServer ref;
 
-	public static DataServer getReference()	//singelton pattern
+	public static DataServer getReference()    //singelton pattern
 	{
 		if (ref == null)
 			ref = new DataServer();
@@ -12,13 +18,51 @@ public class DataServer implements Server
 	}
 
 	//TODO: static method 'isReferenceExists' to check if server already running
+	public static boolean isReferenceExists()
+	{
+		if (ref == null)
+			return false;
+		return true;
+	}
 
-	private DataServer() { }
+	private DataServer()
+	{
+	}
 
 	@Override
 	public void open(int port, ClientHandler clientHandler)
 	{
+		/*Thread thread = new Thread(
+				new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						runServer(port, clientHandler);
+					}
+				});
+		thread.start();*/
+		new Thread(()->runServer(port, clientHandler)).start();
+	}
 
+	private void runServer(int port, ClientHandler clientHandler)
+	{
+		try
+		{
+			//open server
+			ServerSocket serverSocket = new ServerSocket(port);
+			Socket clientSocket = serverSocket.accept();
+
+			//conversation
+			clientHandler.handleClient(clientSocket.getInputStream(), clientSocket.getOutputStream());
+
+			//close server
+			clientSocket.close();
+			serverSocket.close();
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	@Override
