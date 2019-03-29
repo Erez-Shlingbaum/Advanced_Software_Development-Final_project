@@ -17,7 +17,6 @@ public class DataServer implements Server
 		return ref;
 	}
 
-	//TODO: static method 'isReferenceExists' to check if server already running
 	public static boolean isReferenceExists()
 	{
 		if (ref == null)
@@ -25,14 +24,15 @@ public class DataServer implements Server
 		return true;
 	}
 
-	private DataServer()
-	{
-	}
+	private DataServer() { }
 
 	@Override
 	public void open(int port, ClientHandler clientHandler)
 	{
-		/*Thread thread = new Thread(
+		new Thread(()->runServer(port, clientHandler)).start();
+		/*
+		another way to write:
+		Thread thread = new Thread(
 				new Runnable()
 				{
 					@Override
@@ -41,8 +41,8 @@ public class DataServer implements Server
 						runServer(port, clientHandler);
 					}
 				});
-		thread.start();*/
-		new Thread(()->runServer(port, clientHandler)).start();
+		thread.start();
+		*/
 	}
 
 	private void runServer(int port, ClientHandler clientHandler)
@@ -68,6 +68,6 @@ public class DataServer implements Server
 	@Override
 	public void close()
 	{
-
+		//TODO
 	}
 }

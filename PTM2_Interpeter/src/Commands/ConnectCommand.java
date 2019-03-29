@@ -1,0 +1,25 @@
+package Commands;
+
+import Expressions.Calculator;
+
+public class ConnectCommand implements Command
+{
+
+	@Override
+	public void execute(String[] args) throws Exception
+	{
+		System.out.println("Connect executed!");	//TODO: delete this
+
+		//check exceptions
+		if(args.length != 2)
+			throw new Exception("Syntax error: Connect expects two arguments");
+
+		String ipAddress = args[0];
+		int port = (int)Calculator.calculate(args[1]); //calculate complex expressions //IDEA: port must to be an integer, check if the answer incorrect
+
+		System.out.println("ipAddress = "+ ipAddress);
+		System.out.println("port = "+ port);
+
+		//TODO: write client class
+	}
+}

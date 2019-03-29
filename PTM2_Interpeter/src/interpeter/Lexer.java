@@ -7,6 +7,7 @@ import java.util.Scanner;
 
 public class Lexer
 {
+	//TODO: add comments
 	public static String[] lexer(String line)
 	{
 		List<String> stringList = new LinkedList<>();
