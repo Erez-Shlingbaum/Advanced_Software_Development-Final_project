@@ -8,7 +8,7 @@ import java.net.Socket;
 
 public class DataServer implements Server
 {
-	static DataServer ref;
+	static DataServer ref = null;
 
 	public static DataServer getReference()    //singelton pattern
 	{
@@ -71,3 +71,5 @@ public class DataServer implements Server
 		//TODO
 	}
 }
+
+

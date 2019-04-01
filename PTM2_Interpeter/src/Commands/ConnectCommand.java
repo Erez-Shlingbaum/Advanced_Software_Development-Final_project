@@ -1,5 +1,6 @@
 package Commands;
 
+import Client_Side.ConnectClient;
 import Expressions.Calculator;
 
 public class ConnectCommand implements Command
@@ -20,6 +21,8 @@ public class ConnectCommand implements Command
 		System.out.println("ipAddress = "+ ipAddress);
 		System.out.println("port = "+ port);
 
-		//TODO: write client class
+		if(ConnectClient.isReferenceExists())
+			throw new Exception("Error: trying to 'connect' twice");
+		ConnectClient.getReference().connect(ipAddress, port);//might throw exception if ip not valid
 	}
 }
