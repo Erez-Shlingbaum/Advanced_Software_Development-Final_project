@@ -13,9 +13,7 @@ public class ConnectClient implements Client
 
     static ConnectClient client = null;
 
-    private ConnectClient()
-    {
-    }
+    private ConnectClient() { }
 
     public static ConnectClient getReference()
     {
@@ -36,14 +34,39 @@ public class ConnectClient implements Client
     {
         if (socket != null)
             throw new Exception("Syntax error: trying to connect twice");
+        if(!validIP(ipAddress))
+        	throw new Exception("Syntax error: ip address is not valid");
         try
         {
-            socket = new Socket(ipAddress, port);   //TODO: check if valid ip, else throw Exeption("syntax error..")
+            socket = new Socket(ipAddress, port);
         } catch (IOException e)
         {
             e.printStackTrace();
         }
     }
+
+	private static boolean validIP (String ip) {
+		try
+		{
+			if ( ip == null || ip.isEmpty() )
+				return false;
+
+			String[] parts = ip.split( "\\." );
+			if ( parts.length != 4 )
+				return false;
+
+			for ( String s : parts )
+			{
+				int i = Integer.parseInt( s );
+				if ( (i < 0) || (i > 255) )
+					return false;
+			}
+			if ( ip.endsWith(".") )
+				return false;
+
+			return true;
+		} catch (NumberFormatException e) { return false; }
+	}
 
     @Override
     public void sendMessage(String command) throws Exception

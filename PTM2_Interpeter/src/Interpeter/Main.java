@@ -1,10 +1,9 @@
-package interpeter;
+package Interpeter;
 
 import Commands.Command;
 import Commands.ConnectCommand;
 import Commands.DefineVarCommand;
 import Commands.OpenServerCommand;
-import Expressions.Calculator;
 import Server_Side.DataServer;
 
 import java.util.HashMap;

@@ -5,6 +5,7 @@ import Commands.DefineVarCommand;
 import java.util.LinkedList;
 import java.util.Stack;
 
+//TODO: remember that variable names can be 'h0', we need to separate var name from number
 public class Calculator
 {
     //Shunting Yard algorithm
@@ -121,5 +122,14 @@ public class Calculator
         }
 
         return returnedExpression;
+    }
+
+    // "5 + 3 / 800 - var" -> "5+3/800-var"
+    public static String connectWords(String[] expression)
+    {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (String str : expression)
+            stringBuilder.append(str);
+        return stringBuilder.toString();
     }
 }
