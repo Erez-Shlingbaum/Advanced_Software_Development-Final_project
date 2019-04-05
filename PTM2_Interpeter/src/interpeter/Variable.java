@@ -1,12 +1,30 @@
-package interpeter;
+package Interpeter;
+
+import Client_Side.ConnectClient;
 
 public class Variable   //TODO: add getter setters
 {
     String path;
     double value;
 
-    public Variable(String path)
-    {
-        this.path = path;
-    }
+    public String getPath() { return path; }
+
+    public void setPath(String path)  throws Exception { this.path = removeCommas(path); }
+
+    public double getValue() { return value; }
+
+    public void setValue(double value, boolean notifyServer) throws Exception
+	{
+		this.value = value;
+		if(notifyServer)
+			ConnectClient.getReference().sendMessage("set " + this.path + " " + this.value);
+	}
+
+    //check if there are "" in start or end of str and removes them
+    private static String removeCommas(String str) throws Exception
+	{
+		if(str.charAt(0) == '"' && str.charAt(str.length()-1) == '"')
+			return str.substring(1, str.length()-1);
+		throw new Exception("Syntax error: expecting \"path\"");
+	}
 }
