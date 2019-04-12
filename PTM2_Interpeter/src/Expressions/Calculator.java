@@ -57,23 +57,7 @@ public class Calculator
                     stack.pop();
                     break;
                 default: // Always a number
-                    boolean isNumber = false;
-                    try
-                    {
-                        Integer.parseInt(token);
-                        isNumber = true;
-                    } catch (NumberFormatException e)
-                    {
-                    }
-                    if (isNumber)
                         queue.addFirst(token);
-                    else //this is a variable and we need to add its value ////this is a word that need to be change from the symbol table
-                    {
-                        if(!DefineVarCommand.getSymbolTable().containsKey(token))
-                            throw new Exception("Syntax error: can not calculate expression, variable does not exist");
-                        DefineVarCommand.getSymbolTable().get(token);   //TODO: continue later
-                        queue.addFirst(token);
-                    }
                     break;
             }
         }
@@ -122,14 +106,5 @@ public class Calculator
         }
 
         return returnedExpression;
-    }
-
-    // "5 + 3 / 800 - var" -> "5+3/800-var"
-    public static String connectWords(String[] expression)
-    {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (String str : expression)
-            stringBuilder.append(str);
-        return stringBuilder.toString();
     }
 }

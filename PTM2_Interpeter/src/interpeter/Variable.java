@@ -4,7 +4,7 @@ import Client_Side.ConnectClient;
 
 public class Variable   //TODO: add getter setters
 {
-    String path;
+    String path = null;
     double value;
 
     public String getPath() { return path; }

@@ -1,9 +1,6 @@
 package Interpeter;
 
-import Commands.Command;
-import Commands.ConnectCommand;
-import Commands.DefineVarCommand;
-import Commands.OpenServerCommand;
+import Commands.*;
 import Server_Side.DataServer;
 
 import java.util.HashMap;
@@ -19,9 +16,11 @@ public class Main
         keywords.put("openDataServer", new OpenServerCommand());
         keywords.put("connect", new ConnectCommand());
         keywords.put("var", new DefineVarCommand());
+        keywords.put("print", new PrintCommand());
+		keywords.put("sleep", new SleepCommand());
+		keywords.put("while", new WhileCommand());
 
-
-        Scanner scanner = new Scanner(System.in);
+		Scanner scanner = new Scanner(System.in);
         System.out.print("> ");    //might be a bug here
 
         do
