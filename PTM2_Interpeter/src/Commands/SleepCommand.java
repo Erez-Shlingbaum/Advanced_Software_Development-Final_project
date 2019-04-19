@@ -15,6 +15,7 @@ public class SleepCommand implements Command
 		String expression = PreCalculator.connectWords(args);
 		expression = PreCalculator.replaceVarNames(expression);
 		int result = (int)Calculator.calculate(expression);
+
 		Thread.sleep(result);
 	}
 }

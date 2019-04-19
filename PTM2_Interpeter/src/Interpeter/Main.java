@@ -3,38 +3,66 @@ package Interpeter;
 import Commands.*;
 import Server_Side.DataServer;
 
-import java.util.HashMap;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main
 {
     //TODO: open script from file, given in args
     public static void main(String[] args)
     {
+        //variable declaration
         HashMap<String, Command> keywords = new HashMap<>();
+        String line;
+        String[] tokens;
+        List<String> tokenList = new LinkedList<>();
+        boolean isMultiCommand = false;
 
+        // define our language syntax
         keywords.put("openDataServer", new OpenServerCommand());
         keywords.put("connect", new ConnectCommand());
         keywords.put("var", new DefineVarCommand());
         keywords.put("print", new PrintCommand());
-		keywords.put("sleep", new SleepCommand());
-		keywords.put("while", new WhileCommand());
+        keywords.put("sleep", new SleepCommand());
+        keywords.put("while", new WhileCommand());
 
-		Scanner scanner = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);
         System.out.print("> ");    //might be a bug here
 
         do
         {
             try
             {
-                //Lexing the next line and sending it to parser
-                Parser.parser(Lexer.lexer(scanner.nextLine()), keywords);
+                line = scanner.nextLine();
+                tokens = Lexer.lexer(line);
+
+                //if there is a complex command (loop, if), put all the commands until "}" in an array
+                if (tokens[tokens.length - 1].equals("{"))
+                {
+                    isMultiCommand = true;
+                    tokens = Arrays.copyOfRange(tokens, 0, tokens.length - 1);
+                    do
+                    {
+                        for (String token : tokens)//add every token into a list
+                            tokenList.add(token);
+                        tokenList.add("\n");//to differentiate different commands - later in parser
+
+                        line = scanner.nextLine();
+                        tokens = Lexer.lexer(line);
+                    } while (!tokens[0].equals("}")); //continue reading lines until }
+
+                    //convert list back to String[]
+                    tokens = tokenList.toArray(new String[0]);//toArray will automatically allocate space, but we still need to send an array
+                }
+
+                // sending tokens to parser
+                Parser.parser(tokens, keywords, isMultiCommand);
+                isMultiCommand = false;
             } catch (Exception e)
             {
                 System.out.println(e.getMessage());
                 System.out.println();
                 System.out.println("Stack trace for debug purposes: :):):):):):):):)");
-                e.printStackTrace();    //TODO: check if we should close the program
+                e.printStackTrace();
             }
             System.out.print("> ");    //might be a bug here
 
