@@ -7,6 +7,7 @@ import java.io.*;
 public class DataClientHandler implements ClientHandler
 {
 	int linesPerSecond;
+	public static volatile boolean isStop = false;
 
 	public DataClientHandler(int linesPerSecond)
 	{
@@ -22,10 +23,10 @@ public class DataClientHandler implements ClientHandler
 
 		try
 		{
-			while ((str = clientInput.readLine()) != null )//this reads 10 lines per second, unless the server sends in a different rate // TODO ADD WHILE NOT CLOSE
+			while ((str = clientInput.readLine()) != null && !this.isStop)//this reads 10 lines per second, unless the server sends in a different rate // TODO ADD WHILE NOT CLOSE
 			{
+				String[] simsXYZ = str.split(",");
 
-				//remember to send false
 				//DefineVarCommand.getSymbolTable().get("name").setValue(value, false);
 				System.out.println("simulator sent to dataServer: " + str);
 			}

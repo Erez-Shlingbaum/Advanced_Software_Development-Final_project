@@ -3,7 +3,7 @@ package Commands;
 import Interpeter.Variable;
 import Operators.AssignmentOperator;
 
-import java.util.HashMap;
+import java.util.*;
 
 public class DefineVarCommand implements Command
 {
@@ -18,8 +18,23 @@ public class DefineVarCommand implements Command
 	@Override
 	public void execute(String[] args) throws Exception
 	{
-		//variable declaration
-		String varName = args[0];
+		String varName = null;
+		if(String.join("",args).contains("="))
+		{
+			Scanner scanner = new Scanner(String.join("", args));
+			scanner.useDelimiter("=");
+			varName = scanner.next().trim();
+			scanner.useDelimiter("");
+			scanner.next("=");
+			List<String> expression = new ArrayList<String>(Arrays.asList(scanner.nextLine().trim()));
+
+			expression.add(0, "=");
+			expression.add(0, varName);
+			args = expression.toArray(new String[0]);// varName, =, expression
+
+		}
+		else
+			varName = args[0];
 
 		//check more exceptions
 		if (symbolTable.containsKey(varName))

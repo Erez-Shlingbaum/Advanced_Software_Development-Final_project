@@ -68,7 +68,7 @@ public class DataServer implements Server
 	@Override
 	public void close()
 	{
-		//TODO
+		DataClientHandler.isStop = true; // stop the thread from running
 	}
 }
 

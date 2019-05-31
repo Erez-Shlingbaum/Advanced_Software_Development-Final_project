@@ -6,10 +6,7 @@ import Commands.DefineVarCommand;
 import Commands.MultiCommand;
 import Operators.AssignmentOperator;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class Parser
 {
@@ -56,12 +53,23 @@ public class Parser
         {
             command = keywords.get(cmd);
             args = Arrays.copyOfRange(tokens, 1, tokens.length);
-        } else if (DefineVarCommand.getSymbolTable().containsKey(cmd))//if token is variable
+        } else// if (DefineVarCommand.getSymbolTable().containsKey(cmd))//if token is variable
         {
+            Scanner scanner = new Scanner(String.join("", tokens));
+            scanner.useDelimiter("=");
+            String varName = scanner.next().trim();
+            scanner.useDelimiter("");
+            scanner.next("=");
+           List<String> expression = new ArrayList<String>(Arrays.asList(scanner.nextLine().trim()));//.toArray(new String[0]); // this is some crazy code
+
+            if(!DefineVarCommand.getSymbolTable().containsKey(varName))
+                throw new Exception("Syntax error: variable not found");
+
             command = (arguments) -> new AssignmentOperator().execute(arguments);//varName = bind "path" or expression
-            args = tokens;
-        } else
-            throw new Exception("Syntax error: command not found");
+            expression.add(0, "=");
+            expression.add(0, varName);
+            args = expression.toArray(new String[0]);// varName, =, expression
+        }
 
         return new CommandWithArgs(command, args);
     }

@@ -10,7 +10,7 @@ public class Main
     public static void main(String[] args)
     {
         //variable declaration
-        HashMap<String, Command> keywords = new HashMap<>();
+      /*  HashMap<String, Command> keywords = new HashMap<>();
         String line;
         String[] tokens;
         List<String> tokenList = new LinkedList<>();
@@ -68,13 +68,7 @@ public class Main
 
         //when finished
         //TODO: check if server even exists with 'isReferenceExists'
-        DataServer.getReference().close();
+        DataServer.getReference().close();*/
 
     }
 }
-/**
- * Some thoughts:
- * only after a while()
- * or			  if()
- * there can be curly braces {} {} , so our code has to check that option(current line or next line)
- */
