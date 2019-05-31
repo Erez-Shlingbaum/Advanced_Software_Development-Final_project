@@ -7,7 +7,6 @@ import java.util.*;
 
 public class Main
 {
-    //TODO: open script from file, given in args
     public static void main(String[] args)
     {
         //variable declaration
@@ -34,12 +33,11 @@ public class Main
             {
                 line = scanner.nextLine();
                 tokens = Lexer.lexer(line);
-
                 //if there is a complex command (loop, if), put all the commands until "}" in an array
-                if (tokens[tokens.length - 1].equals("{"))
+                if (String.join(" ", tokens).contains("{"))
                 {
                     isMultiCommand = true;
-                    tokens = Arrays.copyOfRange(tokens, 0, tokens.length - 1);
+                    //tokens = Arrays.copyOfRange(tokens, 0, tokens.length);
                     do
                     {
                         for (String token : tokens)//add every token into a list
@@ -61,7 +59,6 @@ public class Main
             {
                 System.out.println(e.getMessage());
                 System.out.println();
-                System.out.println("Stack trace for debug purposes: :):):):):):):):)");
                 e.printStackTrace();
             }
             System.out.print("> ");    //might be a bug here

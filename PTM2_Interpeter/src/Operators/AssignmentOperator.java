@@ -12,7 +12,6 @@ public class AssignmentOperator implements Operator
 	@Override
 	public void execute(String[] args) throws Exception //args will contain all of the line, including variable name
 	{
-		System.out.println("Assingment operator executed!");//TODO: delete this
 		if (args.length < 3 || !args[1].equals("="))
 			throw new Exception("syntax error: expecting 'varName = bind \"path\"' or 'varName = expression'");
 

@@ -5,7 +5,6 @@ import Commands.DefineVarCommand;
 import java.util.LinkedList;
 import java.util.Stack;
 
-//TODO: remember that variable names can be 'h0', we need to separate var name from number
 public class Calculator
 {
     //Shunting Yard algorithm

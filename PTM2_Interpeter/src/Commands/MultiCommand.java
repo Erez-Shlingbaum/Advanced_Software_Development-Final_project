@@ -4,10 +4,10 @@ import java.util.List;
 
 public abstract class MultiCommand implements Command
 {
-    protected List<CommandWithArgs> toExecute;
+    protected List<CommandWithArgs> commandsToExecute;
 
     public void setToExecute(List<CommandWithArgs> toExecute)
     {
-        this.toExecute = toExecute;
+        this.commandsToExecute = toExecute;
     }
 }

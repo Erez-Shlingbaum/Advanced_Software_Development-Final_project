@@ -9,8 +9,6 @@ public class ConnectCommand implements Command
 	@Override
 	public void execute(String[] args) throws Exception
 	{
-		System.out.println("Connect executed!");	//TODO: delete this
-
 		//check exceptions
 		if(args.length != 2)
 			throw new Exception("Syntax error: Connect expects two arguments");

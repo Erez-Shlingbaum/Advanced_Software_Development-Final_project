@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class Lexer
 {
-	//TODO: add comments
+	// seperate line into tokens
 	public static String[] lexer(String line)
 	{
 		List<String> stringList = new LinkedList<>();

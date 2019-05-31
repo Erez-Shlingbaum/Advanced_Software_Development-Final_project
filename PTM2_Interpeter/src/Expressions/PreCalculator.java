@@ -17,9 +17,8 @@ public class PreCalculator
 		return stringBuilder.toString();
 	}
 
-	/**
-	 * replace variable names with their value
-	 */
+
+	//replace variable names with their value
 	public static String replaceVarNames(String expression) throws Exception
 	{
 		//variable declaration
@@ -34,7 +33,9 @@ public class PreCalculator
 			while (startIndex < expression.length() && !isEndlishLetter(expression.charAt(startIndex)))
 				startIndex++;
 			if (startIndex >= expression.length())//if there are no variables in expression, then don't do anything
-				return expression;
+				if (variableNames.size() == 0)
+					return expression;
+				else break;
 
 			endIndex = startIndex;
 

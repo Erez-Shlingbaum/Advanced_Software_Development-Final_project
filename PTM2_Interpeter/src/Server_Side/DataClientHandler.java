@@ -22,7 +22,7 @@ public class DataClientHandler implements ClientHandler
 
 		try
 		{
-			while ((str = clientInput.readLine()) != null)//this reads 10 lines per second, unless the server sends in a different rate
+			while ((str = clientInput.readLine()) != null )//this reads 10 lines per second, unless the server sends in a different rate // TODO ADD WHILE NOT CLOSE
 			{
 
 				//remember to send false

@@ -2,7 +2,7 @@ package Interpeter;
 
 import Client_Side.ConnectClient;
 
-public class Variable   //TODO: add getter setters
+public class Variable
 {
     String path = null;
     double value;
