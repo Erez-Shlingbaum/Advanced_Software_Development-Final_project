@@ -18,6 +18,11 @@ public class ConnectClient implements Client
             client = new ConnectClient();
         return client;
     }
+//TODO function to remove reference - call it on parser cleanup()
+	public static void cleanUpReference()
+	{
+		client = null;
+	}
 
     public static boolean isReferenceExists()
     {

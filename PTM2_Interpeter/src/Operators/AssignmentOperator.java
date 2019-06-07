@@ -16,12 +16,12 @@ public class AssignmentOperator implements Operator
 		//	throw new Exception("syntax error: expecting 'varName = bind \"path\"' or 'varName = expression'");
 
 		String varName = args[0];
-		String path = args[3];
 		if (String.join(" ", args).contains("bind"))//varName = bind "path"
 		{
-			for (Variable variable : DefineVarCommand.getSymbolTable().values())
+			String path = args[3];
+			for (Variable variable : DefineVarCommand.getSymbolTable().values()) // did someone already binded to path?
 			{
-				if (variable.getPath().equals(path))
+				if (path.equals(variable.getPath())) // if yes, the use his variable
 				{
 					DefineVarCommand.getSymbolTable().put(varName, variable);
 					return;

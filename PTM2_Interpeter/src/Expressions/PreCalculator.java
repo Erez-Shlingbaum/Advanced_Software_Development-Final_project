@@ -11,10 +11,7 @@ public class PreCalculator
 	// "5 + 3 / 800 - var" -> "5+3/800-var"
 	public static String connectWords(String[] expression)
 	{
-		StringBuilder stringBuilder = new StringBuilder();
-		for (String str : expression)
-			stringBuilder.append(str);
-		return stringBuilder.toString();
+		return String.join("",expression).replace(" ", "").trim();
 	}
 
 

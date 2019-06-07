@@ -26,5 +26,7 @@ public class OpenServerCommand implements Command
 		//creating the 'data server' and running it in a different thread
 		DataServer dataServer = DataServer.getReference();
 		dataServer.open(port, new DataClientHandler(linesPerSecond));
+
+		Thread.sleep(2000); // for synchronization with test system
 	}
 }

@@ -1,5 +1,6 @@
 package test;
 
+import Client_Side.ConnectClient;
 import Commands.*;
 import Interpeter.Lexer;
 import Interpeter.Parser;
@@ -63,8 +64,6 @@ public class MyInterpreter {
 				isMultiCommand = false;
 			} catch (Exception e)
 			{
-				System.out.println(e.getMessage());
-				System.out.println();
 				e.printStackTrace();
 			}
 			//System.out.print("> ");    //might be a bug here
@@ -75,6 +74,7 @@ public class MyInterpreter {
 	}
 	private static void cleanup()
 	{
+		ConnectClient.cleanUpReference();
 		if(DataServer.isReferenceExists())
 			DataServer.getReference().close();
 		DefineVarCommand.getSymbolTable().clear();

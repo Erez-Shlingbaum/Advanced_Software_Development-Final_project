@@ -21,12 +21,20 @@ public class DefineVarCommand implements Command
 		String varName = null;
 		if(String.join("",args).contains("="))
 		{
-			Scanner scanner = new Scanner(String.join("", args));
+			Scanner scanner = new Scanner(String.join(" ", args));
 			scanner.useDelimiter("=");
 			varName = scanner.next().trim();
 			scanner.useDelimiter("");
 			scanner.next("=");
-			List<String> expression = new ArrayList<String>(Arrays.asList(scanner.nextLine().trim()));
+
+			List<String> expression;
+			if(String.join(" ", args).contains("bind"))
+			{
+				scanner.useDelimiter(" ");
+				expression = new ArrayList<String>(Arrays.asList(scanner.next().trim(), scanner.next().trim())); // "bind", "path"
+			}
+			else
+				expression = new ArrayList<String>(Arrays.asList(scanner.nextLine().trim()));
 
 			expression.add(0, "=");
 			expression.add(0, varName);

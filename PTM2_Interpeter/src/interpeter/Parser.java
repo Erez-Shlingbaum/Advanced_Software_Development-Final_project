@@ -55,12 +55,20 @@ public class Parser
             args = Arrays.copyOfRange(tokens, 1, tokens.length);
         } else// if (DefineVarCommand.getSymbolTable().containsKey(cmd))//if token is variable
         {
-            Scanner scanner = new Scanner(String.join("", tokens));
+            Scanner scanner = new Scanner(String.join(" ", tokens));
             scanner.useDelimiter("=");
             String varName = scanner.next().trim();
             scanner.useDelimiter("");
             scanner.next("=");
-           List<String> expression = new ArrayList<String>(Arrays.asList(scanner.nextLine().trim()));//.toArray(new String[0]); // this is some crazy code
+
+            List<String> expression;
+            if(String.join(" ", tokens).contains("bind"))
+            {
+                scanner.useDelimiter(" ");
+                expression = new ArrayList<String>(Arrays.asList(scanner.next().trim(), scanner.next().trim())); // "bind", "path"
+            }
+            else
+                expression = new ArrayList<String>(Arrays.asList(scanner.nextLine().trim()));//.toArray(new String[0]); // this is some crazy code
 
             if(!DefineVarCommand.getSymbolTable().containsKey(varName))
                 throw new Exception("Syntax error: variable not found");
