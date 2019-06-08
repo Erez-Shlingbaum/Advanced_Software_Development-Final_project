@@ -7,87 +7,91 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Observable;
 
-public class InterpreterModel extends Observable implements  IModel
+public class InterpreterModel extends Observable implements IModel
 {
-	// interpreter instance
-	MyInterpreter interpreter;
+    // interpreter instance
+    MyInterpreter interpreter;
 
-	// return values
-	String solutionForPathProblem;
-	int returnValue;
+    // return values
+    String solutionForPathProblem;
+    int returnValue;
 
-	// TODO: add optimization in interpreter -> don't create a new keyWords map each call to interpret...!! (make it static)
+    // TODO: add optimization in interpreter -> don't create a new keyWords map each call to interpret...!! (make it static)
 
 
-	public InterpreterModel()
-	{
-		this.interpreter = new MyInterpreter();
-	}
+    public InterpreterModel()
+    {
+        this.interpreter = new MyInterpreter();
+    }
 
-	@Override
-	public void interpretScript(String[] lines)
-	{
-		// in a different thread..
-		returnValue = this.interpreter.interpret(lines); // Bonus: each line interpreted is highlighted in view
-		super.setChanged();
-		super.notifyObservers();
-	}
+    @Override
+    public void interpretScript(String... scriptLines)
+    {
+        // in a different thread..
+        returnValue = this.interpreter.interpret(scriptLines); // Bonus: each line interpreted is highlighted in view
+        super.setChanged();
+        super.notifyObservers();
+    }
 
-	@Override
-	public void executeCommand(String cmdName, String... args)
-	{
-		returnValue = this.interpreter.interpret(new String[]{cmdName + " " + String.join(" ", args)}); // create one liner script to interpret
-		super.setChanged();
-		super.notifyObservers();
-	}
+    @Override
+    public void executeCommand(String cmdName, String... args)
+    {
+        returnValue = this.interpreter.interpret(new String[]{cmdName + " " + String.join(" ", args)}); // create one liner script to interpret
+        super.setChanged();
+        super.notifyObservers();
+    }
 
-	public int getReturnValue()
-	{
-		return this.returnValue;
-	}
-	@Override
-	public void calculatePath(String ip, int port, double[][] heightsInMeters, int[] startCoordinate, int[] endCoordinate)
-	{
-		try
-		{
-			Socket server = new Socket(ip,port);
-			PrintWriter writer = new PrintWriter(server.getOutputStream()); //remember to flush output!
+    public int getReturnValue()
+    {
+        return this.returnValue;
+    }
 
-			String problem = convertMatrixToString(heightsInMeters);
+    @Override
+    public void calculatePath(String ip, int port, double[][] heightsInMeters, int[] startCoordinate, int[] endCoordinate)
+    {
+        try
+        {
+            Socket server = new Socket(ip, port);
+            PrintWriter writer = new PrintWriter(server.getOutputStream()); //remember to flush output!
 
-			// send problem to serve
-			writer.print(problem); // problem string already includes necessary \n
-			writer.println(startCoordinate[0] + "," + startCoordinate[1]);
-			writer.println(endCoordinate[0] + "," + endCoordinate[1]);
+            String problem = convertMatrixToString(heightsInMeters);
 
-			// TODO: receive (preferably in a different thread...) solution in form of {left,right.....}
-			//this.solutionForPathProblem = ;// TODO: put solution in variable to hold it, so getCalcPath can return it
+            // send problem to serve
+            writer.print(problem); // problem string already includes necessary \n
+            writer.println(startCoordinate[0] + "," + startCoordinate[1]);
+            writer.println(endCoordinate[0] + "," + endCoordinate[1]);
 
-			// notify viewModel that we finished computing path
-			super.setChanged();
-			super.notifyObservers();
-		} catch (IOException e) { e.printStackTrace(); }
-	}
+            // TODO: receive (preferably in a different thread...) solution in form of {left,right.....}
+            //this.solutionForPathProblem = ;// TODO: put solution in variable to hold it, so getCalcPath can return it
+
+            // notify viewModel that we finished computing path
+            super.setChanged();
+            super.notifyObservers();
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
 
     private String convertMatrixToString(double[][] heightsInMeters) // TODO: test this method
-	{
-		StringBuilder stringBuilder = new StringBuilder();
+    {
+        StringBuilder stringBuilder = new StringBuilder();
 
-		for (int i = 0; i < heightsInMeters.length; i++) // Loop through all rows
-		{
-			for (int j = 0; j < heightsInMeters[i].length; j++) // Loop through all elements of current row
-				stringBuilder.append(heightsInMeters[i][j]).append(',');
-			stringBuilder.setLength(stringBuilder.length() - 1); // "remove" last comma
-			stringBuilder.append('\n');
-		}
-		return stringBuilder.toString();
-	}
+        for (int i = 0; i < heightsInMeters.length; i++) // Loop through all rows
+        {
+            for (int j = 0; j < heightsInMeters[i].length; j++) // Loop through all elements of current row
+                stringBuilder.append(heightsInMeters[i][j]).append(',');
+            stringBuilder.setLength(stringBuilder.length() - 1); // "remove" last comma
+            stringBuilder.append('\n');
+        }
+        return stringBuilder.toString();
+    }
 
-	@Override
-	public String getCalculatedPath()
-	{
-		return this.solutionForPathProblem;
-	}
+    @Override
+    public String getCalculatedPath()
+    {
+        return this.solutionForPathProblem;
+    }
 
 
     public static void main(String[] args)
@@ -96,8 +100,32 @@ public class InterpreterModel extends Observable implements  IModel
         InterpreterModel interpreterModel = new InterpreterModel();
 
         interpreterModel.executeCommand("return", "1+", "2+", "3");
-		System.out.println(interpreterModel.returnValue);
+        System.out.println(interpreterModel.returnValue); // expecting '6'
 
+        // texting a simple script in 2 ways
+        // first way
+        String[] test5 = {
+                "var x = 0",
+                "var y = " + 10,
+                "while x < 5 {",
+                "	y = y + 2",
+                "	x = x + 1",
+                "}",
+                "return y"
+        };
+        interpreterModel.interpretScript(test5);
+        System.out.println(interpreterModel.returnValue); // expecting '20'
+
+        // second way
+        interpreterModel.interpretScript(
+                "var x = 0",
+                "var y = " + 10,
+                "while x < 5 {",
+                "	y = y + 2",
+                "	x = x + 1",
+                "}",
+                "return y");
+        System.out.println(interpreterModel.returnValue); // expecting '20'
 
     }
 }
