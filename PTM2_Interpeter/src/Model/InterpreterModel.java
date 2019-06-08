@@ -7,25 +7,44 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Observable;
 
-public class interpreterModel extends Observable implements  IModel
+public class InterpreterModel extends Observable implements  IModel
 {
+	// interpreter instance
+	MyInterpreter interpreter;
+
+	// return values
 	String solutionForPathProblem;
+	int returnValue;
 
 	// TODO: add optimization in interpreter -> don't create a new keyWords map each call to interpret...!! (make it static)
+
+
+	public InterpreterModel()
+	{
+		this.interpreter = new MyInterpreter();
+	}
 
 	@Override
 	public void interpretScript(String[] lines)
 	{
 		// in a different thread..
-		MyInterpreter.interpret(lines); // Bonus: each line interpreted is highlighted in view
+		returnValue = this.interpreter.interpret(lines); // Bonus: each line interpreted is highlighted in view
+		super.setChanged();
+		super.notifyObservers();
 	}
 
 	@Override
-	public void executeCommand(String cmdName, String[] args)
+	public void executeCommand(String cmdName, String... args)
 	{
-		MyInterpreter.interpret(new String[]{cmdName + String.join(" ", args)}); // create one liner script to interpret
+		returnValue = this.interpreter.interpret(new String[]{cmdName + " " + String.join(" ", args)}); // create one liner script to interpret
+		super.setChanged();
+		super.notifyObservers();
 	}
 
+	public int getReturnValue()
+	{
+		return this.returnValue;
+	}
 	@Override
 	public void calculatePath(String ip, int port, double[][] heightsInMeters, int[] startCoordinate, int[] endCoordinate)
 	{
@@ -49,7 +68,8 @@ public class interpreterModel extends Observable implements  IModel
 			super.notifyObservers();
 		} catch (IOException e) { e.printStackTrace(); }
 	}
-	private String convertMatrixToString(double[][] heightsInMeters) // TODO: test this method
+
+    private String convertMatrixToString(double[][] heightsInMeters) // TODO: test this method
 	{
 		StringBuilder stringBuilder = new StringBuilder();
 
@@ -68,4 +88,16 @@ public class interpreterModel extends Observable implements  IModel
 	{
 		return this.solutionForPathProblem;
 	}
+
+
+    public static void main(String[] args)
+    {
+        // Test functionality of code above me
+        InterpreterModel interpreterModel = new InterpreterModel();
+
+        interpreterModel.executeCommand("return", "1+", "2+", "3");
+		System.out.println(interpreterModel.returnValue);
+
+
+    }
 }

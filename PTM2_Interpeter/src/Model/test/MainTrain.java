@@ -3,7 +3,7 @@ package Model.test;
 import java.util.Random;
 
 public class MainTrain {
-
+/*
 	public static void main(String[] args) {
 		Random r=new Random();
 		int port=r.nextInt(1001)+5000;
@@ -71,5 +71,5 @@ public class MainTrain {
 		sim.close();
 		System.out.println("done");
 	}
-
+*/
 }
