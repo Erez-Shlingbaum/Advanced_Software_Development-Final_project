@@ -2,6 +2,7 @@ package Model;
 
 public interface IModel
 {
+	public void interpretScript(String filePath);
 	void interpretScript(String... scriptLines);
 	int getReturnValue();
 	// can be used to add variables and execute commands, etc...

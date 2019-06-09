@@ -4,109 +4,119 @@ import Model.Expressions.Calculator;
 import Model.Expressions.PreCalculator;
 import Model.test.MyInterpreter;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Scanner;
 
 public class InterpreterModel extends Observable implements IModel
 {
-    // interpreter instance
-    MyInterpreter interpreter;
+	// interpreter instance
+	MyInterpreter interpreter;
 
-    // return values
-    String solutionForPathProblem;
-    int returnValue; // this is set to 0 if a script/command did not return something
+	// return values
+	String solutionForPathProblem;
+	int returnValue; // this is set to 0 if a script/command did not return something
 
-    public InterpreterModel()
-    {
-        this.interpreter = new MyInterpreter();
-    }
+	public InterpreterModel()
+	{
+		this.interpreter = new MyInterpreter();
+	}
 
-    @Override
-    public void interpretScript(String... scriptLines)
-    {
-        // in a different thread..
-        returnValue = this.interpreter.interpret(scriptLines); // Bonus: each line interpreted is highlighted in view
-        super.setChanged();
-        super.notifyObservers();
-    }
+	// read lines from file and send them to interpretScript(String[])
+	@Override
+	public void interpretScript(String filePath)
+	{
+		List<String> lines = new LinkedList<>();
+		try
+		{
+			// Create a list of simulator bind paths from file (the order of the paths is important)
+			Scanner linesScanner = new Scanner(new File(filePath));
+			while(linesScanner.hasNextLine())
+				lines.add(linesScanner.nextLine());
+		} catch (FileNotFoundException e) {e.printStackTrace();}
+		this.interpretScript(lines.toArray(new String[0]));
+	}
 
-    @Override
-    public void executeCommand(String cmdName, String... args)
-    {
-        returnValue = this.interpreter.interpret(new String[]{cmdName + " " + String.join(" ", args)}); // create one liner script to interpret
-        super.setChanged();
-        super.notifyObservers();
-    }
+	@Override
+	public void interpretScript(String... scriptLines)
+	{
+		// in a different thread..
+		returnValue = this.interpreter.interpret(scriptLines); // Bonus: each line interpreted is highlighted in view
+		super.setChanged();
+		super.notifyObservers("scriptInterpreted");
+	}
 
-    public int getReturnValue()
-    {
-        return this.returnValue;
-    }
+	@Override
+	public void executeCommand(String cmdName, String... args)
+	{
+		returnValue = this.interpreter.interpret(new String[]{cmdName + " " + String.join(" ", args)}); // create one liner script to interpret
+		super.setChanged();
+		super.notifyObservers("commandExecuted");
+	}
 
-    @Override
-    public void calculatePath(String ip, int port, double[][] heightsInMeters, int[] startCoordinate, int[] endCoordinate)
-    {
-        try
-        {
-            Socket server = new Socket(ip, port);
-            PrintWriter writer = new PrintWriter(server.getOutputStream()); //remember to flush output!
-            Scanner inputFromServer = new Scanner(server.getInputStream());
+	@Override
+	public int getReturnValue() { return this.returnValue; }
 
-            String problem = convertMatrixToString(heightsInMeters);
+	@Override
+	public void calculatePath(String ip, int port, double[][] heightsInMeters, int[] startCoordinate, int[] endCoordinate)
+	{
+		try
+		{
+			Socket server = new Socket(ip, port);
+			PrintWriter writer = new PrintWriter(server.getOutputStream()); //remember to flush output!
+			Scanner inputFromServer = new Scanner(server.getInputStream());
 
-            // send problem to server
+			String problem = convertMatrixToString(heightsInMeters);
 
-            writer.print(problem); // problem string already includes necessary \n
-            writer.println("end");
-            writer.println(startCoordinate[0] + "," + startCoordinate[1]);
-            writer.println(endCoordinate[0] + "," + endCoordinate[1]);
-            writer.flush();
-            // recive solution as a string "Right,Left,......"
+			// send problem to server
 
-            this.solutionForPathProblem = inputFromServer.nextLine();
+			writer.print(problem); // problem string already includes necessary \n
+			writer.println("end");
+			writer.println(startCoordinate[0] + "," + startCoordinate[1]);
+			writer.println(endCoordinate[0] + "," + endCoordinate[1]);
+			writer.flush();
+			// recive solution as a string "Right,Left,......"
 
-            // notify viewModel that we finished computing path
-            super.setChanged();
-            super.notifyObservers();
+			this.solutionForPathProblem = inputFromServer.nextLine();
 
+			// notify viewModel that we finished computing path
+			super.setChanged();
+			super.notifyObservers("calculatedPath");
 
-            writer.close();
-            inputFromServer.close();
-            server.close();
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-    }
+			writer.close();
+			inputFromServer.close();
+			server.close();
+		} catch (IOException e) { e.printStackTrace(); }
+	}
 
-    private String convertMatrixToString(double[][] heightsInMeters)
-    {
-        StringBuilder stringBuilder = new StringBuilder();
+	private String convertMatrixToString(double[][] heightsInMeters)
+	{
+		StringBuilder stringBuilder = new StringBuilder();
 
-        for (int i = 0; i < heightsInMeters.length; i++) // Loop through all rows
-        {
-            for (int j = 0; j < heightsInMeters[i].length; j++) // Loop through all elements of current row
-                stringBuilder.append(heightsInMeters[i][j]).append(',');
-            stringBuilder.setLength(stringBuilder.length() - 1); // "remove" last comma
-            stringBuilder.append('\n');
-        }
-        return stringBuilder.toString();
-    }
+		for (int i = 0; i < heightsInMeters.length; i++) // Loop through all rows
+		{
+			for (int j = 0; j < heightsInMeters[i].length; j++) // Loop through all elements of current row
+				stringBuilder.append(heightsInMeters[i][j]).append(',');
+			stringBuilder.setLength(stringBuilder.length() - 1); // "remove" last comma
+			stringBuilder.append('\n');
+		}
+		return stringBuilder.toString();
+	}
 
-    @Override
-    public String getCalculatedPath()
-    {
-        return this.solutionForPathProblem;
-    }
+	@Override
+	public String getCalculatedPath() { return this.solutionForPathProblem; }
 
 
-    public static void main(String[] args)
-    {
-        // Test functionality of code above me
-        InterpreterModel interpreterModel = new InterpreterModel();
+	public static void main(String[] args)
+	{
+		// Test functionality of code above me
+		InterpreterModel interpreterModel = new InterpreterModel();
 
         /*
 
@@ -142,8 +152,8 @@ public class InterpreterModel extends Observable implements IModel
        */
 
 
-        // Testing "calculatePath" on our server(PTM1) on port 5555
-        // before testing this, run runServer.bat!
+		// Testing "calculatePath" on our server(PTM1) on port 5555
+		// before testing this, run runServer.bat!
         /*
         interpreterModel.calculatePath(
                 "127.0.0.1",
@@ -161,14 +171,19 @@ public class InterpreterModel extends Observable implements IModel
         System.out.println(interpreterModel.solutionForPathProblem);
         */
 
-        // test calculator with negative numbers
-        interpreterModel.interpretScript(
-                "var x = -5",
-                "while x < 5 {",
-                "	print x",
-                "	x = x + 1",
-                "}",
-                "return -x");
-        System.out.println(interpreterModel.returnValue); // expecting "-5 , ..... , 4" , retValue = '-5'
-    }
+		// test calculator with negative numbers
+		/*
+		interpreterModel.interpretScript(
+				"var x = -5",
+				"while x < 5 {",
+				"	print x",
+				"	x = x + 1",
+				"}",
+				"return -x");
+		System.out.println(interpreterModel.returnValue); // expecting "-5 , ..... , 4" , retValue = '-5'
+		*/
+
+		// test openDataServer with flight gear (please open flight gear for this test!)
+		interpreterModel.interpretScript("./PTM2_Interpeter/Resources/autopilot_script.txt");
+	}
 }

@@ -10,11 +10,11 @@ public class ViewModel extends Observable implements Observer
 {
 	private IModel interpreterModel;
 
-	//javaFX preoperties
+	//javaFX properties
 	public StringProperty scriptToInterpret;
 	public StringProperty commandName, commandArguments;
 
-	// for path searching
+	// properties for path searching
 	public ObjectProperty<double[][]> heightsInMetersMatrix; // this will hold the problem state as a matrix of heights
 	public ObjectProperty<int[]> startCoordinate, endCoordinate;
 	public StringProperty pathCalculatorServerIP;
@@ -40,13 +40,14 @@ public class ViewModel extends Observable implements Observer
 		pathToEndCoordinate = new SimpleStringProperty();
 	}
 
-	// interpreting a script from the view
+	// allows interpreting a script from the view
 	public void interpretScript()
 	{
+		// getting the script and splitting it into lines
 		interpreterModel.interpretScript(scriptToInterpret.get().split("\\n"));
 	}
 
-	// for reuse of code
+	// allows executing a command in the model with parameters
 	public void executeCommand()
 	{
 		interpreterModel.executeCommand(commandName.get(), commandArguments.get().split(" ")); // assume arguments are sent with space between them as 1 string
@@ -66,13 +67,21 @@ public class ViewModel extends Observable implements Observer
 	@Override
 	public void update(Observable o, Object arg)
 	{
-		if(o == interpreterModel)
+		if (o == interpreterModel)
 		{
-			String message = (String)arg;
+			String message = (String) arg;
+
+			// when model has finished doing something, we are notified and can choose to do do something about it (like updating a property in the view)
 			switch (message)
 			{
 				case "calculatedPath":
 					this.pathToEndCoordinate.set(interpreterModel.getCalculatedPath());
+					break;
+				case "scriptInterpreted":
+					// do something
+					break;
+				case "commandExecuted":
+					// do something
 					break;
 			}
 		}

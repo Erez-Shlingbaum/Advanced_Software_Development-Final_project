@@ -10,7 +10,7 @@ var rudder = bind /controls/flight/rudder
 var aileron = bind /controls/flight/aileron
 var elevator = bind /controls/flight/elevator
 var alt = bind /instrumentation/altimeter/indicated-altitude-ft
-sleep 120000
+sleep 160000
 print "startingScript"
 breaks = 0
 throttle = 1
