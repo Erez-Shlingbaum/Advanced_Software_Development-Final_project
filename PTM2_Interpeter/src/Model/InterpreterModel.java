@@ -1,6 +1,9 @@
 package Model;
 
+import Model.Expressions.Calculator;
+import Model.Expressions.PreCalculator;
 import Model.test.MyInterpreter;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -128,7 +131,7 @@ public class InterpreterModel extends Observable implements IModel
         // second way
         interpreterModel.interpretScript(
                 "var x = 0",
-                "var y = " + 10,
+                "var y = 10",
                 "while x < 5 {",
                 "	y = y + 2",
                 "	x = x + 1",
@@ -141,6 +144,7 @@ public class InterpreterModel extends Observable implements IModel
 
         // Testing "calculatePath" on our server(PTM1) on port 5555
         // before testing this, run runServer.bat!
+        /*
         interpreterModel.calculatePath(
                 "127.0.0.1",
                 5555,
@@ -155,5 +159,16 @@ public class InterpreterModel extends Observable implements IModel
                 new int[] {3,3});   // end point
 
         System.out.println(interpreterModel.solutionForPathProblem);
+        */
+
+        // test calculator with negative numbers
+        interpreterModel.interpretScript(
+                "var x = -5",
+                "while x < 5 {",
+                "	print x",
+                "	x = x + 1",
+                "}",
+                "return -x");
+        System.out.println(interpreterModel.returnValue); // expecting "-5 , ..... , 4" , retValue = '-5'
     }
 }
