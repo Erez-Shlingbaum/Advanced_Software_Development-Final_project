@@ -82,6 +82,7 @@ public class MyInterpreter
         keywords.put("while", new WhileCommand());
         keywords.put("return", new ReturnCommand());
         keywords.put("disconnect", new DisconnectCommand());
+        keywords.put("pause", new PauseCommand());
     }
 
     private static void cleanupInterpreter()

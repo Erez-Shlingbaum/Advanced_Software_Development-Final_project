@@ -55,7 +55,7 @@ public class PreCalculator
         for (String varName : variableNames)
         {
             double varValue = DefineVarCommand.getSymbolTable().get(varName).getValue();
-            expression = expression.replace(varName, Integer.toString((int) varValue));
+            expression = expression.replace(varName, Double.toString(varValue));
         }
         variableNames.clear();
         return expression;
@@ -92,11 +92,11 @@ public class PreCalculator
             if (DefineVarCommand.getSymbolTable().get(varName) == null)
                 return String.join("", "0", expression);
 
-            // if this variable is negative then we replace "-var" with "(0var))"
+            // if this variable is negative then we replace "-var" with "(0-(0var))"
             // because when var is replaced with its value then a minus sign will be added
             // if this variable is positive then we replave "-var" with "(0-var)"
             if (DefineVarCommand.getSymbolTable().get(varName).getValue() < 0)
-                expression = expression.replace("-" + varName, "(0" + varName + ")");
+                expression = expression.replace("-" + varName, "(0-(0" + varName + "))"); // NOTICE THIS IS NOW CHANGED AND CORRECT
             else
                 expression = expression.replace("-" + varName, "(0-" + varName + ")");
         } else // if we dont have a '-' prefix

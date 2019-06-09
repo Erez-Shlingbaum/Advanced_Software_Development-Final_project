@@ -15,6 +15,8 @@ public class Parser
     {
         if (tokens.length == 0)
             return;
+        if(tokens[0].charAt(0) == '/' && tokens[0].charAt(1) == '/') // we can now create comments
+            return;
 
         if (isMultiCommand)
         {

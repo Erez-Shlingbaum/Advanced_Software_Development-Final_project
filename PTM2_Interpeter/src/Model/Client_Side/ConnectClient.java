@@ -87,6 +87,7 @@ public class ConnectClient implements Client
 		{
 			PrintWriter writerToServer = new PrintWriter(socket.getOutputStream());
 			writerToServer.println(command);
+			writerToServer.flush();
 			System.out.println("Command sent: " + command);
 		} catch (IOException e)
 		{

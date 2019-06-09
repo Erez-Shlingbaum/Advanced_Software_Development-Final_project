@@ -118,6 +118,13 @@ public class InterpreterModel extends Observable implements IModel
 		// Test functionality of code above me
 		InterpreterModel interpreterModel = new InterpreterModel();
 
+		// test calculator
+		interpreterModel.interpretScript(
+				"var x = 6.0",
+				"var y = 10.5",
+				"return y*x");
+		System.out.println(interpreterModel.returnValue); // expecting '20'
+
         /*
 
         // Testing "executeCommand"
@@ -171,8 +178,9 @@ public class InterpreterModel extends Observable implements IModel
         System.out.println(interpreterModel.solutionForPathProblem);
         */
 
+        /*
 		// test calculator with negative numbers
-		/*
+		// test 1
 		interpreterModel.interpretScript(
 				"var x = -5",
 				"while x < 5 {",
@@ -182,8 +190,16 @@ public class InterpreterModel extends Observable implements IModel
 				"return -x");
 		System.out.println(interpreterModel.returnValue); // expecting "-5 , ..... , 4" , retValue = '-5'
 		*/
+		// test 2
+
+		interpreterModel.interpretScript(
+				"var roll = -6",
+				"var aileron = - roll / 70",
+				"print aileron",
+				"return aileron");
+		System.out.println(interpreterModel.returnValue); // expecting '0.085'
 
 		// test openDataServer with flight gear (please open flight gear for this test!)
-		interpreterModel.interpretScript("./PTM2_Interpeter/Resources/autopilot_script.txt");
+		//interpreterModel.interpretScript("./PTM2_Interpeter/Resources/autopilot_script.txt");
 	}
 }
