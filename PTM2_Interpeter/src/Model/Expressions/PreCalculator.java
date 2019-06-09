@@ -2,8 +2,11 @@ package Model.Expressions;
 
 import Model.Commands.DefineVarCommand;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 public class PreCalculator
 {
@@ -52,10 +55,14 @@ public class PreCalculator
             startIndex = endIndex;
         }
 
+        // code from stack overflow to format a string WITHOUT SCIENTIFIC NOTATION
+		DecimalFormat df = new DecimalFormat("0", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
+		df.setMaximumFractionDigits(340); // 340 = DecimalFormat.DOUBLE_FRACTION_DIGITS
+
         for (String varName : variableNames)
         {
             double varValue = DefineVarCommand.getSymbolTable().get(varName).getValue();
-            expression = expression.replace(varName, Double.toString(varValue));
+            expression = expression.replace(varName,  df.format(varValue));
         }
         variableNames.clear();
         return expression;
