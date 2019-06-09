@@ -1,11 +1,11 @@
 package Model;
 
 import Model.test.MyInterpreter;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Observable;
+import java.util.Scanner;
 
 public class InterpreterModel extends Observable implements IModel
 {
@@ -14,10 +14,7 @@ public class InterpreterModel extends Observable implements IModel
 
     // return values
     String solutionForPathProblem;
-    int returnValue;
-
-    // TODO: add optimization in interpreter -> don't create a new keyWords map each call to interpret...!! (make it static)
-
+    int returnValue; // this is set to 0 if a script/command did not return something
 
     public InterpreterModel()
     {
@@ -53,20 +50,29 @@ public class InterpreterModel extends Observable implements IModel
         {
             Socket server = new Socket(ip, port);
             PrintWriter writer = new PrintWriter(server.getOutputStream()); //remember to flush output!
+            Scanner inputFromServer = new Scanner(server.getInputStream());
 
             String problem = convertMatrixToString(heightsInMeters);
 
             // send problem to serve
+
             writer.print(problem); // problem string already includes necessary \n
+            writer.println("end");
             writer.println(startCoordinate[0] + "," + startCoordinate[1]);
             writer.println(endCoordinate[0] + "," + endCoordinate[1]);
+            writer.flush();
+            // recive solution as a string "Right,Left,......"
 
-            // TODO: receive (preferably in a different thread...) solution in form of {left,right.....}
-            //this.solutionForPathProblem = ;// TODO: put solution in variable to hold it, so getCalcPath can return it
+            this.solutionForPathProblem = inputFromServer.nextLine();
 
             // notify viewModel that we finished computing path
             super.setChanged();
             super.notifyObservers();
+
+
+            writer.close();
+            inputFromServer.close();
+            server.close();
         } catch (IOException e)
         {
             e.printStackTrace();
@@ -99,7 +105,7 @@ public class InterpreterModel extends Observable implements IModel
         // Test functionality of code above me
         InterpreterModel interpreterModel = new InterpreterModel();
 
-        interpreterModel.executeCommand("return", "1+", "2+", "3");
+        /*interpreterModel.executeCommand("return", "1+", "2+", "3");
         System.out.println(interpreterModel.returnValue); // expecting '6'
 
         // texting a simple script in 2 ways
@@ -126,6 +132,17 @@ public class InterpreterModel extends Observable implements IModel
                 "}",
                 "return y");
         System.out.println(interpreterModel.returnValue); // expecting '20'
+       */
 
+
+
+        interpreterModel.calculatePath("127.0.0.1", 5555, // before testing this, run runServer.bat
+                new double[][]{
+                        {0,1,2,3},
+                        {1,2,3,4},
+                        {2,3,4,5},
+                        {66,5,4,3}},
+                new int[]{0,0}, new int[] {3,3});
+        System.out.println(interpreterModel.solutionForPathProblem);
     }
 }
