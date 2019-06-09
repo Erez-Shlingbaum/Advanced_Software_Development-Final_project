@@ -54,7 +54,7 @@ public class InterpreterModel extends Observable implements IModel
 
             String problem = convertMatrixToString(heightsInMeters);
 
-            // send problem to serve
+            // send problem to server
 
             writer.print(problem); // problem string already includes necessary \n
             writer.println("end");
@@ -79,7 +79,7 @@ public class InterpreterModel extends Observable implements IModel
         }
     }
 
-    private String convertMatrixToString(double[][] heightsInMeters) // TODO: test this method
+    private String convertMatrixToString(double[][] heightsInMeters)
     {
         StringBuilder stringBuilder = new StringBuilder();
 
@@ -105,10 +105,13 @@ public class InterpreterModel extends Observable implements IModel
         // Test functionality of code above me
         InterpreterModel interpreterModel = new InterpreterModel();
 
-        /*interpreterModel.executeCommand("return", "1+", "2+", "3");
+        /*
+
+        // Testing "executeCommand"
+        interpreterModel.executeCommand("return", "1+", "2+", "3");
         System.out.println(interpreterModel.returnValue); // expecting '6'
 
-        // texting a simple script in 2 ways
+        //// Testing "InterpretScript"  2 ways
         // first way
         String[] test5 = {
                 "var x = 0",
@@ -132,17 +135,25 @@ public class InterpreterModel extends Observable implements IModel
                 "}",
                 "return y");
         System.out.println(interpreterModel.returnValue); // expecting '20'
+
        */
 
 
-
-        interpreterModel.calculatePath("127.0.0.1", 5555, // before testing this, run runServer.bat
-                new double[][]{
+        // Testing "calculatePath" on our server(PTM1) on port 5555
+        // before testing this, run runServer.bat!
+        interpreterModel.calculatePath(
+                "127.0.0.1",
+                5555,
+                new double[][]
+                        {
                         {0,1,2,3},
                         {1,2,3,4},
                         {2,3,4,5},
-                        {66,5,4,3}},
-                new int[]{0,0}, new int[] {3,3});
+                        {66,5,4,3}
+                        },
+                new int[]{0,0},     // start point
+                new int[] {3,3});   // end point
+
         System.out.println(interpreterModel.solutionForPathProblem);
     }
 }
