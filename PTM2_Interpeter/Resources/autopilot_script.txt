@@ -17,7 +17,7 @@ var h0 = heading
 // sleeping is necessary to allow the plane to stabilize its direction and get a good starting speed before changing the rudder,aileron,elevator..
 sleep 5000
 while alt < 1000 {
-rudder = (h0 - heading)/20
+rudder = (h0 - heading)/180
 aileron = - roll / 70
 elevator = pitch / 50
 print alt
