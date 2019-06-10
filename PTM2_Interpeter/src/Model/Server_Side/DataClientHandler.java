@@ -22,6 +22,7 @@ public class DataClientHandler implements ClientHandler
 	@Override
 	public void handleClient(InputStream in, OutputStream out) //handle conversation
 	{
+		System.out.println("Data server is running...");
 		BufferedReader clientInput = new BufferedReader(new InputStreamReader(in));
 		String str;
 		List<String> simNames = new ArrayList<>(24);
@@ -49,7 +50,7 @@ public class DataClientHandler implements ClientHandler
 						if (simNames.get(i).equals(variables[j].getPath()))
 							try
 							{
-								System.out.println("DataServer: updating var '" + variables[j].getPath() + "' with " + simsXYZ[i]);
+								//System.out.println("DataServer: updating var '" + variables[j].getPath() + "' with " + simsXYZ[i]);
 								variables[j].setValue(Double.parseDouble(simsXYZ[i]), false);
 								break;
 							} catch (Exception e) {e.printStackTrace();}
