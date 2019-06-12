@@ -49,16 +49,8 @@
                 <RadioButton mnemonicParsing="false" text="Manual" BorderPane.alignment="TOP_LEFT" />
             </top>
             <center>
-                <!-- <Circle fill="#2e907b" radius="68.0" stroke="BLACK" strokeType="INSIDE" BorderPane.alignment="CENTER" /> -->
-                <JoystickControl prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" posX="100.0" posY="100.0" />
-
-             <!--   <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                    <children>
-                        <Circle fill="GRAY" layoutX="100.0" layoutY="100.0" radius="100.0" stroke="BLACK" strokeType="INSIDE" />
-                        <Circle layoutX="100.0" layoutY="100.0" radius="50.0" stroke="BLACK" strokeType="INSIDE" />
-                    </children>
-                    </Pane>
-                -->
+                <JoystickControl prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" posX="100.0" posY="100.0"
+                                 outerCircleRadius="80" outerCirclePaint="GRAY" innerCirclePaint="BLACK"  />
             </center>
             <bottom>
                 <Slider id="fff" blockIncrement="0.1" max="1.0" min="-1.0" showTickLabels="true" showTickMarks="true" BorderPane.alignment="CENTER" />

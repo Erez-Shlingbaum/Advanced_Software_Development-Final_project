@@ -1,5 +1,6 @@
 package View;
 
+import javafx.beans.NamedArg;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Point2D;
@@ -16,13 +17,14 @@ public class JoystickControl extends Region
 	Circle innerCircle;
 
 	// we only need this to be able to set the circles layoutXY in the FXML
-	DoubleProperty posX;
-	DoubleProperty posY;
+	DoubleProperty posX, posY;
+	DoubleProperty outerCircleRadius;
 
 	// variables used for mouse dragging events - moving the joystick around
 	double orgSceneX, orgSceneY, orgTranslateX, orgTranslateY;
 
 	// getters and setters for posXY properties so that we can set them in the FXML (IMPORTANT)
+	// Second option to get value from FXML is with @NamedArg("name") (we used it in C'tor)
 	public double getPosX() { return posX.get(); }
 
 	public void setPosX(double posX)
@@ -41,18 +43,16 @@ public class JoystickControl extends Region
 		innerCircle.setLayoutY(posY);
 	}
 
-	public JoystickControl() // TODO: delete after done testing
-	{
-		this(80, Color.GRAY, Color.BLACK);
-	}
-
-	public JoystickControl(int outerCircleRadius, Paint outerCirclePaint, Paint innerCirclePaint)
+	// @NamedArg allows initializing the values from the FXML
+	public JoystickControl(@NamedArg("outerCircleRadius") double outerCircleRadius,
+						   @NamedArg("outerCirclePaint") Paint outerCirclePaint,
+						   @NamedArg("innerCirclePaint") Paint innerCirclePaint)
 	{
 		posX = new SimpleDoubleProperty();
 		posY = new SimpleDoubleProperty();
 
 		outerCircle = new Circle(outerCircleRadius, outerCirclePaint);
-		innerCircle = new Circle(outerCircleRadius / 4, innerCirclePaint);
+		innerCircle = new Circle(outerCircleRadius / 3, innerCirclePaint);
 
 		// stroke affects the borders of the circles
 		outerCircle.setStrokeType(StrokeType.INSIDE);
@@ -95,8 +95,7 @@ public class JoystickControl extends Region
 		{
 			sourceCircle.setTranslateX(newTranslateX);
 			sourceCircle.setTranslateY(newTranslateY);
-		}
-		else // mouse is outside the outerCircle, but we still want the joystick to work - so we will move it in the direction of the mouse
+		} else // mouse is outside the outerCircle, but we still want the joystick to work - so we will move it in the direction of the mouse
 		{
 			// normalize the vector (from the center of outerCircle to center of innerCircle) (why? because we will get a new vector with distance 1 and the SAME direction)
 			Point2D newPosition = normaliseVector(newTranslateX, newTranslateY, outerCircle.getTranslateX(), outerCircle.getTranslateY());
