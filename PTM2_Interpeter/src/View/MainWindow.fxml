@@ -9,9 +9,11 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.shape.Circle?>
 
+<?import View.JoystickControl?>
 <GridPane accessibleText="300" alignment="center" hgap="10" vgap="10" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MainWindowController">
     <opaqueInsets>
         <Insets />
@@ -47,7 +49,16 @@
                 <RadioButton mnemonicParsing="false" text="Manual" BorderPane.alignment="TOP_LEFT" />
             </top>
             <center>
-                <Circle fill="#2e907b" radius="68.0" stroke="BLACK" strokeType="INSIDE" BorderPane.alignment="CENTER" />
+                <!-- <Circle fill="#2e907b" radius="68.0" stroke="BLACK" strokeType="INSIDE" BorderPane.alignment="CENTER" /> -->
+                <JoystickControl prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" posX="100.0" posY="100.0" />
+
+             <!--   <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                    <children>
+                        <Circle fill="GRAY" layoutX="100.0" layoutY="100.0" radius="100.0" stroke="BLACK" strokeType="INSIDE" />
+                        <Circle layoutX="100.0" layoutY="100.0" radius="50.0" stroke="BLACK" strokeType="INSIDE" />
+                    </children>
+                    </Pane>
+                -->
             </center>
             <bottom>
                 <Slider id="fff" blockIncrement="0.1" max="1.0" min="-1.0" showTickLabels="true" showTickMarks="true" BorderPane.alignment="CENTER" />

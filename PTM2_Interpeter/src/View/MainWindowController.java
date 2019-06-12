@@ -15,12 +15,6 @@ public class MainWindowController implements Observer, IView
     }
 
     @Override
-    public void onCalc()
-    {
-
-    }
-
-    @Override
     public void update(Observable o, Object arg)
     {
 
