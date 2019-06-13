@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<?import View.MapDisplayer?>
 <?import View.JoystickControl?>
-<GridPane accessibleText="300" alignment="center" hgap="10.0" vgap="10.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MainWindowController">
+
+<GridPane accessibleText="300" alignment="center" hgap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="608.0" vgap="10.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MainWindowController">
     <opaqueInsets>
         <Insets />
     </opaqueInsets>
@@ -33,13 +43,16 @@
                     </children>
                 </HBox>
             </top>
+         <center>
+            <MapDisplayer fx:id="mapDisplayer" height="250.0" width="250.0" BorderPane.alignment="CENTER" />
+         </center>
         </BorderPane>
         <BorderPane prefHeight="250.0" prefWidth="250.0" GridPane.columnIndex="4">
             <top>
                 <RadioButton mnemonicParsing="false" text="Manual" BorderPane.alignment="TOP_LEFT" />
             </top>
              <center>
-                 <!-- Custom controller -->
+                 <!-- Custom controller-->
                 <JoystickControl prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER"
                                  outerCircleRadius="80" outerCirclePaint="GRAY" innerCirclePaint="BLACK"
                                  leftSliderMin="0.0" leftSliderMax="1.0" downSliderMin="-1.0" downSliderMax="1.0"
