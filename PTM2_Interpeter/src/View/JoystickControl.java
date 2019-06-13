@@ -3,56 +3,161 @@ package View;
 import javafx.beans.NamedArg;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.geometry.Orientation;
 import javafx.geometry.Point2D;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Region;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.StrokeType;
+import javafx.scene.text.Font;
 
-public class JoystickControl extends Region
+// IDEA 2 - make some thread check every X time the state of joystick and send command to Simulator
+
+public class JoystickControl extends BorderPane
 {
-	Circle outerCircle;
-	Circle innerCircle;
+	// graphical elements of joystick
+	Circle outerCircle; // background
+	Circle innerCircle; // joystick
 
-	// we only need this to be able to set the circles layoutXY in the FXML
-	DoubleProperty posX, posY;
-	DoubleProperty outerCircleRadius;
+	DoubleProperty xAxisJoystick; // when moving the joystick left-right
+	DoubleProperty yAxisJoystick; // when moving the joystick up-down
+
+	Slider downSlider;
+	Slider leftSlider;
+
+	Label downLabel, upLabel, leftLabel, rightLabel;
 
 	// variables used for mouse dragging events - moving the joystick around
 	double orgSceneX, orgSceneY, orgTranslateX, orgTranslateY;
 
-	// getters and setters for posXY properties so that we can set them in the FXML (IMPORTANT)
-	// Second option to get value from FXML is with @NamedArg("name") (we used it in C'tor)
-	public double getPosX() { return posX.get(); }
+	// getters and setters allows to set variables in the FXML (IMPORTANT)
+	// there is another way to do that - with @NamedArg("name") in C'tor
 
-	public void setPosX(double posX)
+	// getters for Joystick properties
+	public double getxAxisJoystick() { return xAxisJoystick.get(); }
+
+	public double getyAxisJoystick() { return yAxisJoystick.get(); }
+
+	public double getDownSliderValue() { return downSlider.getValue(); }
+
+	public double getLeftSliderValue() { return leftSlider.getValue(); }
+
+	// getters and setters for FXML usage
+	public String getLeftText() {return leftLabel.getText(); }
+
+	public void setLeftText(String text) {leftLabel.setText(text);}
+
+	public String getUpText() {return upLabel.getText(); }
+
+	public void setUpText(String text) {upLabel.setText(text);}
+
+	public String getRightText() {return rightLabel.getText(); }
+
+	public void setRightText(String text) {rightLabel.setText(text);}
+
+	public String getDownText() {return downLabel.getText(); }
+
+	public void setDownText(String text) {downLabel.setText(text);}
+
+	public double getLablesFontSize() {return leftLabel.getFont().getSize(); }
+
+	public void setLablesFontSize(double fontSize)
 	{
-		this.posX.set(posX);
-		outerCircle.setLayoutX(posX);
-		outerCircle.setLayoutY(posX);
+		Font font = new Font(leftLabel.getFont().getName(), fontSize); // set a new font size, WITHOUT changing fontName (family)
+		leftLabel.setFont(font);
+		upLabel.setFont(font);
+		rightLabel.setFont(font);
+		downLabel.setFont(font);
 	}
 
-	public double getPosY() { return posY.get(); }
+	public String getLablesFontName() {return leftLabel.getFont().getName(); }
 
-	public void setPosY(double posY)
+	public void setLablesFontName(String fontName)
 	{
-		this.posY.set(posY);
-		innerCircle.setLayoutX(posY);
-		innerCircle.setLayoutY(posY);
+		Font font = new Font(fontName, leftLabel.getFont().getSize()); // set a new font name, WITHOUT changing fontSize
+		leftLabel.setFont(font);
+		upLabel.setFont(font);
+		rightLabel.setFont(font);
+		downLabel.setFont(font);
 	}
 
 	// @NamedArg allows initializing the values from the FXML
 	public JoystickControl(@NamedArg("outerCircleRadius") double outerCircleRadius,
 						   @NamedArg("outerCirclePaint") Paint outerCirclePaint,
-						   @NamedArg("innerCirclePaint") Paint innerCirclePaint)
+						   @NamedArg("innerCirclePaint") Paint innerCirclePaint,
+						   @NamedArg("leftSliderMin") double leftSliderMin, @NamedArg("leftSliderMax") double leftSliderMax,
+						   @NamedArg("downSliderMin") double downSliderMin, @NamedArg("downSliderMax") double downSliderMax)
 	{
-		posX = new SimpleDoubleProperty();
-		posY = new SimpleDoubleProperty();
-
+		// initializing elements
 		outerCircle = new Circle(outerCircleRadius, outerCirclePaint);
 		innerCircle = new Circle(outerCircleRadius / 3, innerCirclePaint);
+
+		xAxisJoystick = new SimpleDoubleProperty(0);
+		yAxisJoystick = new SimpleDoubleProperty(0);
+
+		downSlider = new Slider(downSliderMin, downSliderMax, 0);
+		leftSlider = new Slider(leftSliderMin, leftSliderMax, 0);
+
+		downLabel = new Label();
+		leftLabel = new Label();
+		upLabel = new Label();
+		rightLabel = new Label();
+
+		// setting up sliders ticks
+		downSlider.setBlockIncrement(1 / (2 * (downSliderMax - downSliderMin)));
+		downSlider.setMajorTickUnit((downSliderMax - downSliderMin) / 5);
+		downSlider.setMinorTickCount(2); // how many ticks to show between each major tick
+
+		leftSlider.setBlockIncrement(1 / (2 * (leftSliderMax - leftSliderMin)));
+		leftSlider.setMajorTickUnit((leftSliderMax - leftSliderMin) / 5);
+		leftSlider.setMinorTickCount(2); // how many ticks to show between each major tick
+
+
+		// set sliders to show tick marks
+		downSlider.setShowTickLabels(true);
+		downSlider.setShowTickMarks(true);
+		leftSlider.setShowTickLabels(true);
+		leftSlider.setShowTickMarks(true);
+
+
+		// setting up VBox(down label and slider) and HBox(left label and slider)
+		StackPane centerBox = new StackPane(outerCircle, innerCircle); // stack pane just put the Items on top of each other
+		VBox downBox = new VBox(downLabel, downSlider);
+		VBox topBox = new VBox(upLabel); // this is inside a VBox because with out it, the position of the label is not good
+		HBox leftBox = new HBox(leftLabel, leftSlider);
+		VBox rightBox = new VBox(rightLabel); // this is inside a VBox because with out it, the position of the label is not good
+
+		// setting alignment
+		downLabel.setAlignment(Pos.CENTER);
+		leftLabel.setAlignment(Pos.CENTER);
+		upLabel.setAlignment(Pos.CENTER);
+		rightLabel.setAlignment(Pos.CENTER);
+
+		centerBox.setAlignment(Pos.CENTER);
+		downBox.setAlignment(Pos.CENTER);
+		topBox.setAlignment(Pos.CENTER);
+		leftBox.setAlignment(Pos.CENTER);
+		rightBox.setAlignment(Pos.CENTER);
+
+		// setting items in their relative position
+		super.setCenter(centerBox);
+		super.setBottom(downBox);
+		super.setLeft(leftBox);
+		super.setTop(topBox);
+		super.setRight(rightBox);
+
+		// set positioning of items
+		leftLabel.setRotate(-90);
+		rightLabel.setRotate(90);
+		leftSlider.setOrientation(Orientation.VERTICAL);
 
 		// stroke affects the borders of the circles
 		outerCircle.setStrokeType(StrokeType.INSIDE);
@@ -66,12 +171,25 @@ public class JoystickControl extends Region
 		innerCircle.setOnMouseDragged(this::onMouseDrag);
 		innerCircle.setOnMouseReleased(this::onMouseReleased);
 
-		// add circles as children to the pane we inherited
-		super.getChildren().addAll(outerCircle, innerCircle);
+	/*	new Thread(() -> {
+			while (true)
+			{
+				System.out.println("(" + xAxisJoystick.get() + "," + yAxisJoystick.get() + ")");
+				try
+				{
+					Thread.sleep(250);
+				} catch (InterruptedException e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}).start();*/
 	}
 
 	private void onMousePressed(MouseEvent event)
 	{
+		((Circle) (event.getSource())).requestFocus();
+
 		orgSceneX = event.getSceneX();
 		orgSceneY = event.getSceneY();
 		orgTranslateX = ((Circle) (event.getSource())).getTranslateX();
@@ -106,6 +224,11 @@ public class JoystickControl extends Region
 		}
 		event.setDragDetect(false);
 
+		// update the xy-axis properties
+		xAxisJoystick.set((sourceCircle.getTranslateX() - outerCircle.getTranslateX()) / outerCircle.getRadius()); // distance between x values of each circle / radius (gives a number between -1 to 1)
+
+		// TODO: remember that yAxis is upside down - decide if fix y value with (*-1)
+		yAxisJoystick.set((sourceCircle.getTranslateY() - outerCircle.getTranslateY()) / outerCircle.getRadius()); // distance between y values of each circle / radius (gives a number between -1 to 1)
 	}
 
 	// put joystick back to original position
@@ -114,6 +237,9 @@ public class JoystickControl extends Region
 		Circle circle = ((Circle) (event.getSource()));
 		circle.setTranslateX(circle.getCenterX());
 		circle.setTranslateY(circle.getCenterY());
+
+		xAxisJoystick.set(0);
+		yAxisJoystick.set(0);
 	}
 
 	// calculates distance between two points
@@ -131,4 +257,5 @@ public class JoystickControl extends Region
 			return new Point2D(x / len, y / len);
 		return new Point2D(x, y);
 	}
+
 }
