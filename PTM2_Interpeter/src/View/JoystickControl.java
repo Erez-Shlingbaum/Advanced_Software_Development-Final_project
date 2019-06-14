@@ -246,7 +246,7 @@ public class JoystickControl extends BorderPane
 	private static boolean iseInsideCircle(double x1, double y1, double x2, double y2, double circleRadius)
 	{
 		double distance = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
-		return distance < circleRadius;
+		return distance <= circleRadius;
 	}
 
 	// getting a 1 unit distance vector relative to (relativeX,relativeY) in the direction of (x,y)

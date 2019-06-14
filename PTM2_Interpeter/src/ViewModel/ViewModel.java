@@ -6,6 +6,9 @@ import javafx.beans.property.*;
 import java.util.Observable;
 import java.util.Observer;
 
+
+// TODO idea - hold ThreadPool/ThreadManger in this class and make every call to the model Asynchronous
+
 public class ViewModel extends Observable implements Observer
 {
 	private IModel interpreterModel;
@@ -75,13 +78,16 @@ public class ViewModel extends Observable implements Observer
 			switch (message)
 			{
 				case "calculatedPath":
-					this.pathToEndCoordinate.set(interpreterModel.getCalculatedPath());
+					this.pathToEndCoordinate.set(interpreterModel.getSolutionForPathProblem());
 					break;
 				case "scriptInterpreted":
 					// do something
 					break;
 				case "commandExecuted":
 					// do something
+					break;
+				case "csvScanned":
+					// do smoething
 					break;
 			}
 		}
