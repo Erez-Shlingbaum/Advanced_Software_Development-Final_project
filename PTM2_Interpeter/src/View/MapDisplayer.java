@@ -3,15 +3,23 @@ package View;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
+
+import static javafx.scene.paint.Color.rgb;
 
 public class MapDisplayer extends Canvas
 {
     int[][] mapData;
+    int max;
+    int min;
+    int size = 0;
+    double red = 255, green = 0;
 
-    public void setMapData(int[][] mapData)
+    public void setMapData(int[][] mapData, int max, int min)
     {
         this.mapData = mapData;
+        this.max = max;
+        this.min = min;
+        this.size = max - min + 1;
         redraw();
     }
 
@@ -30,103 +38,19 @@ public class MapDisplayer extends Canvas
             {
                 for (int j = 0; j < mapData[i].length; j++)
                 {
-                    /*TODO: make it more generic*/
-                    if (mapData[i][j] == 0)
+                    if (mapData[i][j] < size / 2)
                     {
-                        gc.setFill(Color.RED);
-                        gc.fillRect(j * w, i * h, w, h);
-                        gc.strokeText("0", j * w, (i+1) * h);
+                        green = ((255 / (double) (size / 2)) * mapData[i][j]);
+                        gc.setFill(rgb(255, (int) green, 0));
                     }
-                    else if (mapData[i][j] == 1)
+                    else
                     {
-                        gc.setFill(Color.web("#ff3300"));
-                        gc.fillRect(j * w, i * h, w, h);
-                        gc.strokeText("1", j * w, (i+1) * h);
+                        red = (double) 255 - ((255 / (double) (size / 2)) * (double) (mapData[i][j] - 7));
+                        gc.setFill(rgb((int) red, 255, 0));
+
                     }
-                    else if (mapData[i][j] == 2)
-                    {
-                        gc.setFill(Color.web("#ff8000"));
-                        gc.fillRect(j * w, i * h, w, h);
-                        gc.strokeText("2", j * w, (i+1) * h);
-                    }
-                    else if (mapData[i][j] == 3)
-                    {
-                        gc.setFill(Color.web("#ffbf00"));
-                        gc.fillRect(j * w, i * h, w, h);
-                        gc.strokeText("3", j * w, (i+1) * h);
-                    }
-                    else if (mapData[i][j] == 4)
-                    {
-                        gc.setFill(Color.web("#ffcc00"));
-                        gc.fillRect(j * w, i * h, w, h);
-                        gc.strokeText("4", j * w, (i+1) * h);
-                    }
-                    else if (mapData[i][j] == 5)
-                    {
-                        gc.setFill(Color.web("#e6e600"));
-                        gc.fillRect(j * w, i * h, w, h);
-                        gc.strokeText("5", j * w, (i+1) * h);
-                    }
-                    else if (mapData[i][j] == 6)
-                    {
-                        gc.setFill(Color.web("#bee84c"));
-                        gc.fillRect(j * w, i * h, w, h);
-                        gc.strokeText("6", j * w, (i+1) * h);
-                    }
-                    else if (mapData[i][j] == 7)
-                    {
-                        gc.setFill(Color.web("#caf29d"));
-                        gc.fillRect(j * w, i * h, w, h);
-                        gc.strokeText("7", j * w, (i+1) * h);
-                    }
-                    else if (mapData[i][j] == 8)
-                    {
-                        gc.setFill(Color.web("#99e699"));
-                        gc.fillRect(j * w, i * h, w, h);
-                        gc.strokeText("8", j * w, (i+1) * h);
-                    }
-                    else if (mapData[i][j] == 9)
-                    {
-                        gc.setFill(Color.web("#85e085"));
-                        gc.fillRect(j * w, i * h, w, h);
-                        gc.strokeText("9", j * w, (i+1) * h);
-                    }
-                    else if (mapData[i][j] == 10)
-                    {
-                        gc.setFill(Color.web("#5cd65c"));
-                        gc.fillRect(j * w, i * h, w, h);
-                        gc.strokeText("10", j * w, (i+1) * h);
-                    }
-                    else if (mapData[i][j] == 11)
-                    {
-                        gc.setFill(Color.web("#5cd65c"));
-                        gc.fillRect(j * w, i * h, w, h);
-                        gc.strokeText("11", j * w, (i+1) * h);
-                    }
-                    else if (mapData[i][j] == 12)
-                    {
-                        gc.setFill(Color.web("#33cc33"));
-                        gc.fillRect(j * w, i * h, w, h);
-                        gc.strokeText("12", j * w, (i+1) * h);
-                    }
-                    else if (mapData[i][j] == 13)
-                    {
-                        gc.setFill(Color.web("#33cc33"));
-                        gc.fillRect(j * w, i * h, w, h);
-                        gc.strokeText("13", j * w, (i+1) * h);
-                    }
-                    else if (mapData[i][j] == 14)
-                    {
-                        gc.setFill(Color.web("#00cc00"));
-                        gc.fillRect(j * w, i * h, w, h);
-                        gc.strokeText("14", j * w, (i+1) * h);
-                    }
-                    else if (mapData[i][j] == 15)
-                    {
-                        gc.setFill(Color.web("#00b300"));
-                        gc.fillRect(j * w, i * h, w, h);
-                        gc.strokeText("15", j * w, (i+1) * h);
-                    }
+                    gc.fillRect(j * w, i * h, w, h);
+                    gc.strokeText(String.valueOf(mapData[i][j]), j * w, (i + 1) * h);
                 }
             }
         }
