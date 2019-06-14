@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import View.JoystickControl?>
@@ -11,26 +11,39 @@
     </opaqueInsets>
     <children>
         <BorderPane prefHeight="250.0" prefWidth="250.0" GridPane.columnIndex="3">
-            <top>
-                <RadioButton mnemonicParsing="false" prefHeight="19.0" prefWidth="76.0" text="Autopilot" BorderPane.alignment="TOP_LEFT">
-               <toggleGroup>
-                  <ToggleGroup fx:id="FlightTypes" />
-               </toggleGroup></RadioButton>
-            </top>
             <center>
                 <TextArea promptText="Autopilit script" BorderPane.alignment="CENTER">
                <BorderPane.margin>
                   <Insets left="10.0" right="10.0" />
                </BorderPane.margin></TextArea>
             </center>
+         <top>
+            <HBox alignment="CENTER" BorderPane.alignment="CENTER">
+               <children>
+                      <RadioButton mnemonicParsing="false" prefHeight="19.0" prefWidth="76.0" text="Autopilot">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="FlightTypes" />
+                     </toggleGroup>
+                     <HBox.margin>
+                        <Insets bottom="5.0" right="10.0" />
+                     </HBox.margin>
+                  </RadioButton>
+                  <Button alignment="CENTER" mnemonicParsing="false" text="Button">
+                     <HBox.margin>
+                        <Insets bottom="5.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
+         </top>
         </BorderPane>
         <BorderPane prefHeight="250.0" prefWidth="250.0" GridPane.columnIndex="1">
             <top>
-                <HBox BorderPane.alignment="CENTER">
+                <HBox alignment="CENTER" BorderPane.alignment="CENTER">
                     <children>
-                        <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="85.0" text="Connect" />
-                        <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="82.0" text="Load data" />
-                        <Button layoutX="4.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="116.0" text="Calculate path" />
+                        <Button mnemonicParsing="false" onAction="#onConnectToSimulator" prefHeight="25.0" prefWidth="85.0" text="Connect" />
+                        <Button mnemonicParsing="false" onAction="#onOpenData" prefHeight="25.0" prefWidth="82.0" text="Load data" />
+                        <Button layoutX="4.0" mnemonicParsing="false" onAction="#onCalculatePath" prefHeight="25.0" prefWidth="116.0" text="Calculate path" />
                     </children>
                 </HBox>
             </top>
@@ -39,13 +52,21 @@
          </center>
         </BorderPane>
         <BorderPane prefHeight="250.0" prefWidth="250.0" GridPane.columnIndex="4">
-            <top>
-                <RadioButton mnemonicParsing="false" text="Manual" toggleGroup="$FlightTypes" BorderPane.alignment="TOP_LEFT" />
-            </top>
              <center>
                  <!-- Custom controller-->
                 <JoystickControl downSliderMax="1.0" downSliderMin="-1.0" downText="rudder" innerCirclePaint="BLACK" lablesFontName="Tahoma" lablesFontSize="16.0" leftSliderMax="1.0" leftSliderMin="0.0" leftText="throttle" outerCirclePaint="GRAY" outerCircleRadius="80" rightText="← elevator →" upText="← aileron →" BorderPane.alignment="CENTER" />
             </center>
+         <top>
+            <HBox alignment="CENTER" BorderPane.alignment="CENTER">
+               <children>
+                      <RadioButton mnemonicParsing="false" text="Manual" toggleGroup="$FlightTypes">
+                     <HBox.margin>
+                        <Insets bottom="5.0" />
+                     </HBox.margin>
+                  </RadioButton>
+               </children>
+            </HBox>
+         </top>
         </BorderPane>
     </children>
     <columnConstraints>

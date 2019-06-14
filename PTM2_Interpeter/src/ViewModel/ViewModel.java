@@ -72,7 +72,7 @@ public class ViewModel extends Observable implements Observer
 	{
 		if (o == interpreterModel)
 		{
-			String message = (String) arg;
+			String message = (String) arg; // It is better to use enum classes instead of strings - because it will be easier to refactor and change names
 
 			// when model has finished doing something, we are notified and can choose to do do something about it (like updating a property in the view)
 			switch (message)
@@ -87,7 +87,7 @@ public class ViewModel extends Observable implements Observer
 					// do something
 					break;
 				case "csvScanned":
-					// do smoething
+					// do something
 					break;
 			}
 		}

@@ -1,6 +1,6 @@
 package View;
 
-import ViewModel.ViewModel;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 
@@ -76,5 +76,29 @@ public class MainWindowController implements Observer, Initializable
     public void update(Observable o, Object arg)
     {
 
+    }
+
+    public void onConnectToSimulator(ActionEvent actionEvent)
+    {
+        //TODO
+        // show popup dialog and get (ip,port) from that dialog
+        // send viewModel a command to connect to client
+    }
+
+    public void onOpenData(ActionEvent actionEvent)
+    {
+        //TODO
+        // show dialog and get csv file path
+        // ask viewModel openCSV
+        // use mapDisplayer to display the data
+        // open a Thread tha 4 times per second will get from the viewmodel the current plane coordinates and update the mapDisplayer.planeLocation
+    }
+
+    public void onCalculatePath(ActionEvent actionEvent)
+    {
+        //TODO
+        // show popup dialog and get (ip,port) of the shortestPathServer we did in PTM1
+        // ask viewmodel to connect to shortestPathServer with the mapDisplayer.matrix
+        // update mapDisplayer with the new path and target location
     }
 }
