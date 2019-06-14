@@ -1,14 +1,15 @@
 package Model;
 
-import Model.Expressions.Calculator;
-import Model.Expressions.PreCalculator;
-import Model.test.MyInterpreter;
+import Model.Interpreter.test.MyInterpreter;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Observable;
@@ -22,6 +23,11 @@ public class InterpreterModel extends Observable implements IModel
 	// return values
 	String solutionForPathProblem;
 	int returnValue; // this is set to 0 if a script/command did not return something
+
+	// csv parameters
+	double xCoordiante, yCoordinate; // of (0,0) index in the csv table
+	double cellSizeInSquareKm;  // size of each cell in the csv table in Square killometers
+	double[][] csvValues = null;
 
 	public InterpreterModel()
 	{
@@ -37,7 +43,7 @@ public class InterpreterModel extends Observable implements IModel
 		{
 			// Create a list of simulator bind paths from file (the order of the paths is important)
 			Scanner linesScanner = new Scanner(new File(filePath));
-			while(linesScanner.hasNextLine())
+			while (linesScanner.hasNextLine())
 				lines.add(linesScanner.nextLine());
 		} catch (FileNotFoundException e) {e.printStackTrace();}
 		this.interpretScript(lines.toArray(new String[0]));
@@ -110,8 +116,60 @@ public class InterpreterModel extends Observable implements IModel
 	}
 
 	@Override
-	public String getCalculatedPath() { return this.solutionForPathProblem; }
+	public void openCSV(String filePath)
+	{
+		int sizeRows = 0, sizeColumns = 0;
 
+		// initialize parameters
+		try
+		{
+			sizeRows = (int) Files.lines(Paths.get(filePath), Charset.defaultCharset()).count();
+			Scanner counterColumns = new Scanner(new File(filePath));
+			// go past first 2 values
+			counterColumns.nextLine();
+			counterColumns.nextLine();
+			sizeColumns = counterColumns.nextLine().split(",").length;
+
+			csvValues = new double[sizeRows][sizeColumns];
+
+			counterColumns.close();
+		} catch (IOException e) { e.printStackTrace(); }
+
+		// read csv file fully
+		try
+		{
+			Scanner csvScanner = new Scanner(new File(filePath));
+			csvScanner.useDelimiter(",");
+
+			xCoordiante = csvScanner.nextDouble();
+			yCoordinate = csvScanner.nextDouble();
+			csvScanner.nextLine(); // go past empty ",,,,,,"
+
+			cellSizeInSquareKm = csvScanner.nextDouble();
+			csvScanner.nextLine(); // go past empty ",,,,,,"
+
+			for (int rowIndex = 0; rowIndex < sizeRows; rowIndex++)
+				for (int columnIndex = 0; columnIndex < sizeColumns; columnIndex++)
+					if (csvScanner.hasNextDouble())
+						csvValues[rowIndex][columnIndex] = csvScanner.nextDouble();
+					else
+						csvScanner.nextLine();
+		} catch (FileNotFoundException e) {e.printStackTrace();}
+
+		super.setChanged();
+		super.notifyObservers("csvScanned");
+	}
+
+	@Override
+	public String getSolutionForPathProblem() { return this.solutionForPathProblem; }
+
+	public double getxCoordiante() { return xCoordiante; }
+
+	public double getyCoordinate() { return yCoordinate; }
+
+	public double getCellSizeInSquareKm() { return cellSizeInSquareKm; }
+
+	public double[][] getCsvValues() { return csvValues; }
 
 	public static void main(String[] args)
 	{

@@ -1,45 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.RadioButton?>
-<?import javafx.scene.control.Slider?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
-
-<?import View.MapDisplayer?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import View.JoystickControl?>
-
-<GridPane accessibleText="300" alignment="center" hgap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="608.0" vgap="10.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MainWindowController">
+<?import View.MapDisplayer?>
+<GridPane accessibleText="300" alignment="CENTER" hgap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" vgap="10.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MainWindowController">
     <opaqueInsets>
         <Insets />
     </opaqueInsets>
     <children>
         <BorderPane prefHeight="250.0" prefWidth="250.0" GridPane.columnIndex="3">
-            <top>
-                <RadioButton mnemonicParsing="false" prefHeight="19.0" prefWidth="76.0" text="Autopilot" BorderPane.alignment="TOP_LEFT" />
-            </top>
             <center>
-                <TextArea prefHeight="225.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+                <TextArea fx:id="autoPilotScriptTextArea" promptText="Autopilit script" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets left="10.0" right="10.0" />
+               </BorderPane.margin></TextArea>
             </center>
-            <bottom>
-                <Slider BorderPane.alignment="CENTER" />
-            </bottom>
-            <left>
-                <Slider orientation="VERTICAL" BorderPane.alignment="CENTER" />
-            </left>
+         <top>
+            <HBox alignment="CENTER" BorderPane.alignment="CENTER">
+               <children>
+                      <RadioButton mnemonicParsing="false" prefHeight="19.0" prefWidth="76.0" text="Autopilot">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="FlightTypes" />
+                     </toggleGroup>
+                     <HBox.margin>
+                        <Insets bottom="5.0" right="10.0" />
+                     </HBox.margin>
+                  </RadioButton>
+                  <Button alignment="CENTER" mnemonicParsing="false" onAction="#onLoadScript" text="Load script">
+                     <HBox.margin>
+                        <Insets bottom="5.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
+         </top>
         </BorderPane>
         <BorderPane prefHeight="250.0" prefWidth="250.0" GridPane.columnIndex="1">
             <top>
-                <HBox BorderPane.alignment="CENTER">
+                <HBox alignment="CENTER" BorderPane.alignment="CENTER">
                     <children>
-                        <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="85.0" text="Connect" />
-                        <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="82.0" text="Load data" />
-                        <Button layoutX="4.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="116.0" text="Calculate path" />
+                        <Button mnemonicParsing="false" onAction="#onConnectToSimulator" prefHeight="25.0" prefWidth="85.0" text="Connect" />
+                        <Button mnemonicParsing="false" onAction="#onOpenData" prefHeight="25.0" prefWidth="82.0" text="Load data" />
+                        <Button layoutX="4.0" mnemonicParsing="false" onAction="#onCalculatePath" prefHeight="25.0" prefWidth="116.0" text="Calculate path" />
                     </children>
                 </HBox>
             </top>
@@ -48,17 +52,21 @@
          </center>
         </BorderPane>
         <BorderPane prefHeight="250.0" prefWidth="250.0" GridPane.columnIndex="4">
-            <top>
-                <RadioButton mnemonicParsing="false" text="Manual" BorderPane.alignment="TOP_LEFT" />
-            </top>
              <center>
                  <!-- Custom controller-->
-                <JoystickControl prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER"
-                                 outerCircleRadius="80" outerCirclePaint="GRAY" innerCirclePaint="BLACK"
-                                 leftSliderMin="0.0" leftSliderMax="1.0" downSliderMin="-1.0" downSliderMax="1.0"
-                                 lablesFontName="Tahoma" lablesFontSize="16.0"
-                                 downText="rudder" leftText="throttle" upText="← aileron →" rightText="← elevator →" />
+                <JoystickControl downSliderMax="1.0" downSliderMin="-1.0" downText="rudder" innerCirclePaint="BLACK" lablesFontName="Tahoma" lablesFontSize="16.0" leftSliderMax="1.0" leftSliderMin="0.0" leftText="throttle" outerCirclePaint="GRAY" outerCircleRadius="80" rightText="← elevator →" upText="← aileron →" BorderPane.alignment="CENTER" />
             </center>
+         <top>
+            <HBox alignment="CENTER" BorderPane.alignment="CENTER">
+               <children>
+                      <RadioButton mnemonicParsing="false" text="Manual" toggleGroup="$FlightTypes">
+                     <HBox.margin>
+                        <Insets bottom="5.0" />
+                     </HBox.margin>
+                  </RadioButton>
+               </children>
+            </HBox>
+         </top>
         </BorderPane>
     </children>
     <columnConstraints>
