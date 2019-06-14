@@ -1,5 +1,9 @@
+// Opening a server to receive updates from the simulator
 openDataServer 5400 10
+// Connecting to flight gear to enable the ability to send commands to the plane
 connect 127.0.0.1 5402
+
+// Binding script variables to simulator variables in flight gear
 var breaks = bind /controls/flight/speedbrake
 var throttle = bind /controls/engines/current-engine/throttle
 var heading = bind /instrumentation/heading-indicator/indicated-heading-deg
@@ -10,12 +14,21 @@ var rudder = bind /controls/flight/rudder
 var aileron = bind /controls/flight/aileron
 var elevator = bind /controls/flight/elevator
 var alt = bind /instrumentation/altimeter/indicated-altitude-ft
+
+// Pausing to let the user continue the script when flight gear is up and running
 pause
+
+// Turning on the engine and freeing the breaks
 breaks = 0
 throttle = 1
+
+// h0 holds the direction we want to fly to, on a runway it is the current direction (straight)
 var h0 = heading
-// sleeping is necessary to allow the plane to stabilize its direction and get a good starting speed before changing the rudder,aileron,elevator..
+
+// sleeping to allow the plane to gain non-trivial velocity before we change flight controls
 sleep 5000
+
+// stebalizing the plane and taking off into the air
 while alt < 1000 {
 // originally we divided by 20, but it results in movements that are not smooth.
 rudder = (h0 - heading)/180
