@@ -1,6 +1,7 @@
 package View;
 
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -26,6 +27,12 @@ public class MapDisplayer extends Canvas
 
     //local variables
     double red = 255, green = 0;
+
+    public MapDisplayer()
+    {
+        planeFileName = new SimpleStringProperty();
+    }
+
     private StringProperty planeFileName;
 
     //generate the relevant variabless
@@ -71,7 +78,7 @@ public class MapDisplayer extends Canvas
             Image plane = null;
             try
             {
-                plane = new Image(new FileInputStream("./PTM2_Interpeter/Resources/plane.png"));
+                plane = new Image(new FileInputStream(planeFileName.get()));
             } catch (FileNotFoundException e)
             {e.printStackTrace();}
 
@@ -84,12 +91,12 @@ public class MapDisplayer extends Canvas
                 {
                     if (mapData[i][j] < sizeMap / 2)
                     {
-                        green = ((255 / (double) (sizeMap / 2)) * mapData[i][j]);
+                        green = ((255 / (sizeMap / 2)) * mapData[i][j]);
                         gc.setFill(rgb(255, (int) green, 0));
                     }
                     else
                     {
-                        red = (double) 255 - ((255 / (double) (sizeMap / 2)) * (double) (mapData[i][j] - 7));
+                        red = (double) 255 - ((255 / (sizeMap / 2)) * (mapData[i][j] - 7));
                         gc.setFill(rgb((int) red, 255, 0));
 
                     }
@@ -99,7 +106,6 @@ public class MapDisplayer extends Canvas
             }
 
             //pain the plane
-
             gc.drawImage(plane,planeX * w, planeY * h, w, h);
         }
     }
