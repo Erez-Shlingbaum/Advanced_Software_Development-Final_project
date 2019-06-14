@@ -10,7 +10,7 @@
         <Insets />
     </opaqueInsets>
     <children>
-        <BorderPane prefHeight="250.0" prefWidth="250.0" GridPane.columnIndex="3">
+        <BorderPane GridPane.columnIndex="3">
             <center>
                 <TextArea fx:id="autoPilotScriptTextArea" promptText="Autopilit script" BorderPane.alignment="CENTER">
                <BorderPane.margin>
@@ -48,7 +48,7 @@
                 </HBox>
             </top>
          <center>
-            <MapDisplayer fx:id="mapDisplayer" height="250.0" width="250.0" BorderPane.alignment="CENTER" planeFileName="./PTM2_Interpeter/Resources/plane.png"/>
+            <MapDisplayer fx:id="mapDisplayer" height="250.0" planeFileName="./PTM2_Interpeter/Resources/plane.png" width="250.0" BorderPane.alignment="CENTER" />
          </center>
         </BorderPane>
         <BorderPane prefHeight="250.0" prefWidth="250.0" GridPane.columnIndex="4">

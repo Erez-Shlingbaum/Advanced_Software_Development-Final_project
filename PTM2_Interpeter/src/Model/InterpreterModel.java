@@ -260,6 +260,6 @@ public class InterpreterModel extends Observable implements IModel
 		System.out.println(interpreterModel.returnValue); // expecting '0.085'
 		*/
 		// test openDataServer with flight gear (please open flight gear for this test!)
-		interpreterModel.interpretScript("./PTM2_Interpeter/Resources/autopilot_script.txt");
+		interpreterModel.interpretScript("./PTM2_Interpeter/Resources/autopilot_script.fs");
 	}
 }

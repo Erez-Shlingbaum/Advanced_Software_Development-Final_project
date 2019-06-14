@@ -114,6 +114,8 @@ public class MainWindowController implements Observer, Initializable
 	{
 		// show dialog to open script file
 		FileChooser fileDialog = new FileChooser();
+		fileDialog.setTitle("Choose script");
+		fileDialog.setInitialDirectory(new File("."));
 		fileDialog.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("FlightScript files (*.fs)", "*.fs"));
 
 		File script = fileDialog.showOpenDialog(mapDisplayer.getScene().getWindow()); // 1 way to get primary window is through an item in that window...
