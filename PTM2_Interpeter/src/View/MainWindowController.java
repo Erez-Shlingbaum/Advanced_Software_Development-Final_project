@@ -12,7 +12,7 @@ import java.util.ResourceBundle;
 public class MainWindowController implements Observer, Initializable
 {
     /*TODO: change the example to the CSV file*/
-    int[][] mapData =
+    double[][] mapData =
             {
                     {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
                     {0, 0, 0, 1, 2, 4, 6, 8, 10, 12, 14, 12, 10, 8, 6, 4},
@@ -29,16 +29,16 @@ public class MainWindowController implements Observer, Initializable
                     {7, 6, 5, 4, 3, 2, 2, 1, 1, 1, 2, 3, 4, 5, 6, 7},
                     {7, 6, 5, 4, 3, 2, 2, 1, 1, 1, 2, 3, 4, 5, 6, 7}
             };
-    int max = findMax();
-    int min = findMin();
+    double max = findMax();
+    double min = findMin();
     @FXML
     MapDisplayer mapDisplayer;
 
 
     //initials min
-    int findMax()
+    double findMax()
     {
-        int tMax = mapData[0][0];
+        double tMax = mapData[0][0];
         for (int i = 0; i < this.mapData.length; i++)
         {
             for (int j = 0; j < this.mapData[i].length; j++)
@@ -51,9 +51,9 @@ public class MainWindowController implements Observer, Initializable
     }
 
     //initials max
-    int findMin()
+    double findMin()
     {
-        int tMin = mapData[0][0];
+        double tMin = mapData[0][0];
         for (int i = 0; i < this.mapData.length; i++)
         {
             for (int j = 0; j < this.mapData[i].length; j++)
