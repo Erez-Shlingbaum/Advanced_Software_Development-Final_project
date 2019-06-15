@@ -21,7 +21,7 @@ public class ViewModel extends Observable implements Observer
 	public ObjectProperty<double[][]> heightsInMetersMatrix; // this will hold the problem state as a matrix of heights
 	public ObjectProperty<int[]> startCoordinate, endCoordinate;
 	public StringProperty pathCalculatorServerIP;
-	public IntegerProperty pathCalculatorServerPORT;
+	public StringProperty pathCalculatorServerPORT;
 	public StringProperty pathToEndCoordinate; // for example: "Right,Up,Right,Left,Down" ...
 
 	public ViewModel(IModel model)
@@ -38,7 +38,7 @@ public class ViewModel extends Observable implements Observer
 		endCoordinate = new SimpleObjectProperty<>();
 
 		pathCalculatorServerIP = new SimpleStringProperty();
-		pathCalculatorServerPORT = new SimpleIntegerProperty();
+		pathCalculatorServerPORT = new SimpleStringProperty();
 
 		pathToEndCoordinate = new SimpleStringProperty();
 	}

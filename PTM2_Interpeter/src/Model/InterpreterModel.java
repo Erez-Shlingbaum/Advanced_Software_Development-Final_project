@@ -70,11 +70,11 @@ public class InterpreterModel extends Observable implements IModel
 	public int getReturnValue() { return this.returnValue; }
 
 	@Override
-	public void calculatePath(String ip, int port, double[][] heightsInMeters, int[] startCoordinate, int[] endCoordinate)
+	public void calculatePath(String ip, String port, double[][] heightsInMeters, int[] startCoordinate, int[] endCoordinate)
 	{
 		try
 		{
-			Socket server = new Socket(ip, port);
+			Socket server = new Socket(ip, Integer.parseInt(port));
 			PrintWriter writer = new PrintWriter(server.getOutputStream()); //remember to flush output!
 			Scanner inputFromServer = new Scanner(server.getInputStream());
 

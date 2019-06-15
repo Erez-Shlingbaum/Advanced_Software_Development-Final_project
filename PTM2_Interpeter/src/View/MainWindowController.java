@@ -1,5 +1,8 @@
 package View;
 
+import ViewModel.ViewModel;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -36,11 +39,23 @@ public class MainWindowController implements Observer, Initializable
             };
     double max = findMax();
     double min = findMin();
+    ViewModel viewModel;
+
+    //FXML members
     @FXML
     MapDisplayer mapDisplayer;
-
 	@FXML
-	private TextArea autoPilotScriptTextArea;
+	TextArea autoPilotScriptTextArea;
+	//property for the binding
+    StringProperty pathCalculatorServerIP;
+    StringProperty pathCalculatorServerPORT;
+
+    //constructor
+    public MainWindowController()
+    {
+        pathCalculatorServerIP = new SimpleStringProperty();
+        pathCalculatorServerPORT = new SimpleStringProperty();
+    }
 
     //initials min
     double findMax()
@@ -72,9 +87,28 @@ public class MainWindowController implements Observer, Initializable
         return tMin;
     }
 
+
+    void setViewModel(ViewModel viewModel)
+    {
+        this.viewModel = viewModel;
+        /*
+
+	public StringProperty pathToEndCoordinate;
+        */
+        viewModel.scriptToInterpret.bind(autoPilotScriptTextArea.textProperty());
+        //commandName, commandArguments
+        viewModel.heightsInMetersMatrix.bindBidirectional(mapDisplayer.mapData);//TODO: check if it work
+        // public ObjectProperty<int[]> startCoordinate, endCoordinate;
+        viewModel.pathCalculatorServerIP.bind(pathCalculatorServerIP);
+        viewModel.pathCalculatorServerPORT.bind(pathCalculatorServerPORT);
+        //TODO: change to PlaneDisplayer
+        mapDisplayer.pathToEndCoordinate.bind(viewModel.pathToEndCoordinate);
+
+
+    }
+
     @Override
-    public void initialize(URL location, ResourceBundle
-            resources)/*the controller happens once compared to initialize*/
+    public void initialize(URL location, ResourceBundle resources)/*the controller happens once compared to initialize*/
     {
         mapDisplayer.setMapData(mapData, max, min);
     }
