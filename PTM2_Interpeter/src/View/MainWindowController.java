@@ -44,9 +44,11 @@ public class MainWindowController implements Observer, Initializable
     //FXML members
     @FXML
     MapDisplayer mapDisplayer;
-	@FXML
-	TextArea autoPilotScriptTextArea;
-	//property for the binding
+    @FXML
+    TextArea autoPilotScriptTextArea;
+    @FXML
+    JoystickControl joystickController;
+    //property for the binding
     StringProperty pathCalculatorServerIP;
     StringProperty pathCalculatorServerPORT;
 
@@ -104,7 +106,8 @@ public class MainWindowController implements Observer, Initializable
         //TODO: change to PlaneDisplayer
         mapDisplayer.pathToEndCoordinate.bind(viewModel.pathToEndCoordinate);
 
-
+        viewModel.xAxisJoystick.bind(joystickController.xAxisJoystick);
+        viewModel.yAxisJoystick.bind(joystickController.yAxisJoystick);
     }
 
     @Override
@@ -117,53 +120,56 @@ public class MainWindowController implements Observer, Initializable
     public void update(Observable o, Object arg)
     {
 
-	}
+    }
 
-	public void onConnectToSimulator(ActionEvent actionEvent)
-	{
-		//TODO
-		// show popup dialog and get (ip,port) from that dialog
-		// send viewModel a command to connect to client
-	}
+    public void onConnectToSimulator(ActionEvent actionEvent)
+    {
+        //TODO
+        // show popup dialog and get (ip,port) from that dialog
+        // send viewModel a command to connect to client
+    }
 
-	public void onOpenData(ActionEvent actionEvent)
-	{
-		//TODO
-		// show dialog and get csv file path
-		// ask viewModel openCSV
-		// use mapDisplayer to display the data
-		// open a Thread tha 4 times per second will get from the viewmodel the current plane coordinates and update the mapDisplayer.planeLocation
-	}
+    public void onOpenData(ActionEvent actionEvent)
+    {
+        //TODO
+        // show dialog and get csv file path
+        // ask viewModel openCSV
+        // use mapDisplayer to display the data
+        // open a Thread tha 4 times per second will get from the viewmodel the current plane coordinates and update the mapDisplayer.planeLocation
+    }
 
-	public void onCalculatePath(ActionEvent actionEvent)
-	{
-		//TODO
-		// show popup dialog and get (ip,port) of the shortestPathServer we did in PTM1
-		// ask viewmodel to connect to shortestPathServer with the mapDisplayer.matrix
-		// update mapDisplayer with the new path and target location
-	}
+    public void onCalculatePath(ActionEvent actionEvent)
+    {
+        //TODO
+        // show popup dialog and get (ip,port) of the shortestPathServer we did in PTM1
+        // ask viewmodel to connect to shortestPathServer with the mapDisplayer.matrix
+        // update mapDisplayer with the new path and target location
+    }
 
-	// opens an autopilot script from a file and copy its contents to the autoPilotScript text area
-	public void onLoadScript(ActionEvent actionEvent)
-	{
-		// show dialog to open script file
-		FileChooser fileDialog = new FileChooser();
-		fileDialog.setTitle("Choose script");
-		fileDialog.setInitialDirectory(new File("."));
-		fileDialog.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("FlightScript files (*.fs)", "*.fs"));
+    // opens an autopilot script from a file and copy its contents to the autoPilotScript text area
+    public void onLoadScript(ActionEvent actionEvent)
+    {
+        // show dialog to open script file
+        FileChooser fileDialog = new FileChooser();
+        fileDialog.setTitle("Choose script");
+        fileDialog.setInitialDirectory(new File("."));
+        fileDialog.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("FlightScript files (*.fs)", "*.fs"));
 
-		File script = fileDialog.showOpenDialog(mapDisplayer.getScene().getWindow()); // 1 way to get primary window is through an item in that window...
-		if (script == null)
-			return; // do nothing if no file was chosen
+        File script = fileDialog.showOpenDialog(mapDisplayer.getScene().getWindow()); // 1 way to get primary window is through an item in that window...
+        if (script == null)
+            return; // do nothing if no file was chosen
 
-		try
-		{
-			// copy script contents to the textArea of the script
-			String[] scriptLines = Files.readAllLines(script.toPath()).toArray(new String[0]);
-			this.autoPilotScriptTextArea.setText(String.join("\n", scriptLines));
-		} catch (IOException e) { e.printStackTrace(); }
+        try
+        {
+            // copy script contents to the textArea of the script
+            String[] scriptLines = Files.readAllLines(script.toPath()).toArray(new String[0]);
+            this.autoPilotScriptTextArea.setText(String.join("\n", scriptLines));
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
 
-		// TODO check if autoPilot radio button is selected - if yes then start interpreting the script
-		// if radio button is selected AFTER the loadScript happened, then it should check if the script is already loaded and start running it...
-	}
+        // TODO check if autoPilot radio button is selected - if yes then start interpreting the script
+        // if radio button is selected AFTER the loadScript happened, then it should check if the script is already loaded and start running it...
+    }
 }

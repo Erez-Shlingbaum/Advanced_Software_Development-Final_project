@@ -54,7 +54,7 @@
         <BorderPane prefHeight="250.0" prefWidth="250.0" GridPane.columnIndex="4">
              <center>
                  <!-- Custom controller-->
-                <JoystickControl downSliderMax="1.0" downSliderMin="-1.0" downText="rudder" innerCirclePaint="BLACK" lablesFontName="Tahoma" lablesFontSize="16.0" leftSliderMax="1.0" leftSliderMin="0.0" leftText="throttle" outerCirclePaint="GRAY" outerCircleRadius="80" rightText="← elevator →" upText="← aileron →" BorderPane.alignment="CENTER" />
+                <JoystickControl fx:id="joystickController" downSliderMax="1.0" downSliderMin="-1.0" downText="rudder" innerCirclePaint="BLACK" lablesFontName="Tahoma" lablesFontSize="16.0" leftSliderMax="1.0" leftSliderMin="0.0" leftText="throttle" outerCirclePaint="GRAY" outerCircleRadius="80" rightText="← elevator →" upText="← aileron →" BorderPane.alignment="CENTER" />
             </center>
          <top>
             <HBox alignment="CENTER" BorderPane.alignment="CENTER">

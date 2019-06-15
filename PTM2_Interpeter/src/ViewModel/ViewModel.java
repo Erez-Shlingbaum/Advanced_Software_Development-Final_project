@@ -24,6 +24,10 @@ public class ViewModel extends Observable implements Observer
 	public StringProperty pathCalculatorServerPORT;
 	public StringProperty pathToEndCoordinate; // for example: "Right,Up,Right,Left,Down" ...
 
+	// properties for joystick
+	public DoubleProperty xAxisJoystick;
+	public DoubleProperty yAxisJoystick;
+
 	public ViewModel(IModel model)
 	{
 		this.interpreterModel = model;
@@ -41,6 +45,10 @@ public class ViewModel extends Observable implements Observer
 		pathCalculatorServerPORT = new SimpleStringProperty();
 
 		pathToEndCoordinate = new SimpleStringProperty();
+
+		// joystick
+		xAxisJoystick = new SimpleDoubleProperty();
+		yAxisJoystick = new SimpleDoubleProperty();
 	}
 
 	// allows interpreting a script from the view

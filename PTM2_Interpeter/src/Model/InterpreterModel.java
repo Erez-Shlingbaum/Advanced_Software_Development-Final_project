@@ -220,10 +220,10 @@ public class InterpreterModel extends Observable implements IModel
 
 		// Testing "calculatePath" on our server(PTM1) on port 5555
 		// before testing this, run runServer.bat!
-        /*
+
         interpreterModel.calculatePath(
                 "127.0.0.1",
-                5555,
+                "5555",
                 new double[][]
                         {
                         {0,1,2,3},
@@ -235,7 +235,7 @@ public class InterpreterModel extends Observable implements IModel
                 new int[] {3,3});   // end point
 
         System.out.println(interpreterModel.solutionForPathProblem);
-        */
+
 
         /*
 		// test calculator with negative numbers
@@ -260,6 +260,6 @@ public class InterpreterModel extends Observable implements IModel
 		System.out.println(interpreterModel.returnValue); // expecting '0.085'
 		*/
 		// test openDataServer with flight gear (please open flight gear for this test!)
-		interpreterModel.interpretScript("./PTM2_Interpeter/Resources/autopilot_script.fs");
+		//interpreterModel.interpretScript("./PTM2_Interpeter/Resources/autopilot_script.fs");
 	}
 }
