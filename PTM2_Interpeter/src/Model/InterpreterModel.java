@@ -160,9 +160,17 @@ public class InterpreterModel extends Observable implements IModel
 		super.notifyObservers("csvScanned");
 	}
 
+	boolean isConnected = false; // TODO DELETE THIS
+
 	@Override
 	public void sendJoystickState(double aileron, double elevator, double rudder, double throttle)
 	{
+		// TODO make a way to check if we are connected so that manual mode will just do nothing
+		if(!isConnected)	// TODO DELETE THIS
+		{
+			this.executeCommand("connect", "127.0.0.1", "5402");
+			isConnected = true;
+		}
 		interpreter.setVariableInSimulator("/controls/flight/aileron" , aileron);
 		interpreter.setVariableInSimulator("/controls/flight/elevator" , elevator);
 		interpreter.setVariableInSimulator("/controls/flight/rudder" , rudder);

@@ -115,9 +115,11 @@ public class MainWindowController implements Observer, Initializable
 		//TODO: change to PlaneDisplayer
 		mapDisplayer.pathToEndCoordinate.bind(viewModel.pathToEndCoordinate);
 
+		viewModel.isAutoPilotMode.bind(isAutoPilotMode);
 		viewModel.xAxisJoystick.bind(joystickController.xAxisJoystick);
 		viewModel.yAxisJoystick.bind(joystickController.yAxisJoystick);
-		viewModel.isAutoPilotMode.bind(isAutoPilotMode);
+		viewModel.rudderJoystick.bind(joystickController.downSlider.valueProperty());
+		viewModel.throttleJoystick.bind(joystickController.leftSlider.valueProperty());
 	}
 
 	public void onConnectToSimulator(ActionEvent actionEvent)
