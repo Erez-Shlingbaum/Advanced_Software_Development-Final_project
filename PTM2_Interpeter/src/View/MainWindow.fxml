@@ -12,7 +12,7 @@
     <children>
         <BorderPane GridPane.columnIndex="3">
             <center>
-                <TextArea fx:id="autoPilotScriptTextArea" promptText="Autopilit script" BorderPane.alignment="CENTER">
+                <TextArea fx:id="autoPilotScriptTextArea" onKeyTyped="#onTextChanged" promptText="Autopilit script" BorderPane.alignment="CENTER">
                <BorderPane.margin>
                   <Insets left="10.0" right="10.0" />
                </BorderPane.margin></TextArea>
@@ -20,7 +20,7 @@
          <top>
             <HBox alignment="CENTER" BorderPane.alignment="CENTER">
                <children>
-                      <RadioButton mnemonicParsing="false" prefHeight="19.0" prefWidth="76.0" text="Autopilot">
+                      <RadioButton fx:id="autoPilotRadioButton" disable="true" mnemonicParsing="false" onAction="#onAutoPilotRadio" text="Autopilot">
                      <toggleGroup>
                         <ToggleGroup fx:id="FlightTypes" />
                      </toggleGroup>
@@ -59,7 +59,7 @@
          <top>
             <HBox alignment="CENTER" BorderPane.alignment="CENTER">
                <children>
-                      <RadioButton mnemonicParsing="false" text="Manual" toggleGroup="$FlightTypes">
+                      <RadioButton mnemonicParsing="false" onAction="#onManualRadio" text="Manual" toggleGroup="$FlightTypes">
                      <HBox.margin>
                         <Insets bottom="5.0" />
                      </HBox.margin>

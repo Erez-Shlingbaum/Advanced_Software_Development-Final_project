@@ -6,7 +6,9 @@ import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.FileChooser;
 
 import java.io.File;
@@ -19,6 +21,10 @@ import java.util.ResourceBundle;
 
 public class MainWindowController implements Observer, Initializable
 {
+	@FXML
+	RadioButton autoPilotRadioButton;
+	boolean isAutoPilotMode; // if true the autopilot mode, else - manual mode
+
     /*TODO: change the example to the CSV file*/
     double[][] mapData =
             {
@@ -110,18 +116,6 @@ public class MainWindowController implements Observer, Initializable
         viewModel.yAxisJoystick.bind(joystickController.yAxisJoystick);
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources)/*the controller happens once compared to initialize*/
-    {
-        mapDisplayer.setMapData(mapData, max, min);
-    }
-
-    @Override
-    public void update(Observable o, Object arg)
-    {
-
-    }
-
     public void onConnectToSimulator(ActionEvent actionEvent)
     {
         //TODO
@@ -147,7 +141,8 @@ public class MainWindowController implements Observer, Initializable
     }
 
     // opens an autopilot script from a file and copy its contents to the autoPilotScript text area
-    public void onLoadScript(ActionEvent actionEvent)
+
+	public void onLoadScript(ActionEvent actionEvent)
     {
         // show dialog to open script file
         FileChooser fileDialog = new FileChooser();
@@ -168,8 +163,42 @@ public class MainWindowController implements Observer, Initializable
         {
             e.printStackTrace();
         }
-
-        // TODO check if autoPilot radio button is selected - if yes then start interpreting the script
-        // if radio button is selected AFTER the loadScript happened, then it should check if the script is already loaded and start running it...
+		autoPilotRadioButton.setDisable(false);
     }
+
+	// this event happens when the button is checked and is NOT already checked before!
+	public void onAutoPilotRadio(ActionEvent actionEvent)
+	{
+		isAutoPilotMode = true;
+		System.out.println("Auto pilot");
+	}
+
+	// this event happens when the button is checked and is NOT already checked before!
+	public void onManualRadio(ActionEvent actionEvent)
+	{
+		isAutoPilotMode = false;
+		System.out.println("Manual");
+
+	}
+
+	@Override
+	public void initialize(URL location, ResourceBundle resources)/*the controller happens once compared to initialize*/
+	{
+		mapDisplayer.setMapData(mapData, max, min);
+
+
+	}
+	@Override
+	public void update(Observable o, Object arg)
+	{
+
+	}
+
+	public void onTextChanged(KeyEvent keyEvent)
+	{
+		if(((TextArea)keyEvent.getSource()).getText().length() != 0)
+			this.autoPilotRadioButton.setDisable(false);
+		else
+			this.autoPilotRadioButton.setDisable(true);
+	}
 }
