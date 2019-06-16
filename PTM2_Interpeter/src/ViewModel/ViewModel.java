@@ -11,6 +11,7 @@ import java.util.Observer;
 
 public class ViewModel extends Observable implements Observer
 {
+	public BooleanProperty isAutoPilotMode;
 	private IModel interpreterModel;
 
 	//javaFX properties
@@ -27,6 +28,9 @@ public class ViewModel extends Observable implements Observer
 	// properties for joystick
 	public DoubleProperty xAxisJoystick;
 	public DoubleProperty yAxisJoystick;
+	public DoubleProperty rudderJoystick;
+	public DoubleProperty throttleJoystick;
+
 
 	public ViewModel(IModel model)
 	{
@@ -47,8 +51,11 @@ public class ViewModel extends Observable implements Observer
 		pathToEndCoordinate = new SimpleStringProperty();
 
 		// joystick
+		isAutoPilotMode = new SimpleBooleanProperty();
 		xAxisJoystick = new SimpleDoubleProperty();
 		yAxisJoystick = new SimpleDoubleProperty();
+		rudderJoystick = new SimpleDoubleProperty();
+		throttleJoystick = new SimpleDoubleProperty();
 	}
 
 	// allows interpreting a script from the view
@@ -73,6 +80,18 @@ public class ViewModel extends Observable implements Observer
 				heightsInMetersMatrix.get(),
 				startCoordinate.get(),
 				endCoordinate.get());
+	}
+
+	// starts a thread that updates the simulator about the joysticks current state
+	public void asyncJoystickPuller()
+	{
+		new Thread(() -> {
+			while (!isAutoPilotMode.get())
+			{
+				interpreterModel.sendJoystickState(xAxisJoystick.get(), yAxisJoystick.get(), rudderJoystick.get(), throttleJoystick.get());
+				try {Thread.sleep(250); } catch (InterruptedException e) {e.printStackTrace(); }
+			}
+		}).start();
 	}
 
 	@Override

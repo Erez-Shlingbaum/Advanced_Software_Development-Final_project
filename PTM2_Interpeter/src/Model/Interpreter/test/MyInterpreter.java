@@ -4,7 +4,6 @@ import Model.Interpreter.Client_Side.ConnectClient;
 import Model.Interpreter.Commands.*;
 import Model.Interpreter.Interpeter.Lexer;
 import Model.Interpreter.Interpeter.Parser;
-import Model.Interpreter.Server_Side.DataServer;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -73,6 +72,17 @@ public class MyInterpreter
 		return (int) ReturnCommand.value;
 	}
 
+	public void setVariableInSimulator(String path, double val)
+	{
+		try
+		{
+			ConnectClient.getReference().sendMessage("set " + path + " " + val);
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+
 	private void initializeInterpreter()
 	{
 		keywords = new HashMap<>();
@@ -89,9 +99,11 @@ public class MyInterpreter
 
 	private static void cleanupInterpreter()
 	{
-		ConnectClient.cleanUpReference();
-		if (DataServer.isReferenceExists())
-			DataServer.getReference().close();
-		DefineVarCommand.getSymbolTable().clear();
+		// for GUI purposes we do not want to clear the current interpreter state
+
+		//ConnectClient.cleanUpReference();
+		//if (DataServer.isReferenceExists())
+		//	DataServer.getReference().close();
+		//DefineVarCommand.getSymbolTable().clear();
 	}
 }

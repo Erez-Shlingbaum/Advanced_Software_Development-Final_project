@@ -14,4 +14,6 @@ public interface IModel
 
 	// Utilities
 	void openCSV(String filePath);
+
+	void sendJoystickState(double aileron, double elevator, double rudder, double throttle);
 }

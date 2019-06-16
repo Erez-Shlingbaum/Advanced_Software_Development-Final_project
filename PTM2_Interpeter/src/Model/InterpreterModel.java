@@ -161,6 +161,16 @@ public class InterpreterModel extends Observable implements IModel
 	}
 
 	@Override
+	public void sendJoystickState(double aileron, double elevator, double rudder, double throttle)
+	{
+		interpreter.setVariableInSimulator("/controls/flight/aileron" , aileron);
+		interpreter.setVariableInSimulator("/controls/flight/elevator" , elevator);
+		interpreter.setVariableInSimulator("/controls/flight/rudder" , rudder);
+		interpreter.setVariableInSimulator("/controls/engines/current-engine/throttle" , throttle);
+
+	}
+
+	@Override
 	public String getSolutionForPathProblem() { return this.solutionForPathProblem; }
 
 	public double getxCoordiante() { return xCoordiante; }
