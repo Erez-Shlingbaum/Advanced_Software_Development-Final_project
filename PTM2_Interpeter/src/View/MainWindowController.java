@@ -8,6 +8,7 @@ import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyEvent;
@@ -177,6 +178,13 @@ public class MainWindowController implements Observer, Initializable
 	{
 		isAutoPilotMode.set(true);
 		System.out.println("Auto pilot");
+		try
+		{
+			viewModel.asyncRunAutoPilot(); // starts a thread that interprets the autopilot script
+		} catch (Exception e)
+		{
+			new Alert(Alert.AlertType.ERROR, "script error:\n" + e.getLocalizedMessage()).show();
+		}
 	}
 
 	// this event happens when the button is checked and is NOT already checked before!

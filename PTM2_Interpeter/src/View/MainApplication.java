@@ -37,7 +37,7 @@ public class MainApplication extends Application
 		primaryStage.show();
 		*/
 
-		// mroe MVVM
+		// more MVVM
 		MainWindowController view = fxmlLoader.getController(); // this is the VIEW
 		view.setViewModel(viewModel);
 		viewModel.addObserver(view);

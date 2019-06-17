@@ -160,7 +160,7 @@ public class InterpreterModel extends Observable implements IModel
 		super.notifyObservers("csvScanned");
 	}
 
-	boolean isConnected = false; // TODO DELETE THIS
+	boolean isConnected = true; // TODO DELETE THIS
 
 	@Override
 	public void sendJoystickState(double aileron, double elevator, double rudder, double throttle)

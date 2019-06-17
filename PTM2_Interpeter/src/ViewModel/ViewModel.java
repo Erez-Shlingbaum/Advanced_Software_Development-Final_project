@@ -94,6 +94,20 @@ public class ViewModel extends Observable implements Observer
 		}).start();
 	}
 
+	public void asyncRunAutoPilot()
+	{
+		// run script in a thread, but to have the abbility to stop the execution, we have another thread to check if we need to stop
+		Thread scriptExecution = new Thread(() -> this.interpretScript());
+		scriptExecution.start();
+
+		new Thread(() -> {
+			while (isAutoPilotMode.get())
+				try {Thread.sleep(250); } catch (InterruptedException e) {e.printStackTrace(); }
+			// no longer auto pilot mode.
+			scriptExecution.interrupt();
+		}).start();
+	}
+
 	@Override
 	public void update(Observable o, Object arg)
 	{
