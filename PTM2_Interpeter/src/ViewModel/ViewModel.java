@@ -94,7 +94,8 @@ public class ViewModel extends Observable implements Observer
 		}).start();
 	}
 
-	public void asyncRunAutoPilot()
+	public void asyncRunAutoPilot() // TODO make sure we are connected to simulator / or just use connect command in the script...
+									// TODO in joystickHandler, make sure isConnected = true after we connect so we wont have error messages
 	{
 		// run script in a thread, but to have the abbility to stop the execution, we have another thread to check if we need to stop
 		Thread scriptExecution = new Thread(() -> this.interpretScript());
