@@ -8,6 +8,8 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.scene.effect.BlurType;
+import javafx.scene.effect.Shadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -111,6 +113,17 @@ public class JoystickControl extends BorderPane
 		upLabel = new Label();
 		rightLabel = new Label();
 
+		// setting style
+		Shadow shadow = new Shadow();
+
+		shadow.setBlurType(BlurType.GAUSSIAN);
+		shadow.setColor(Color.BLACK);
+		shadow.setHeight(2);
+		shadow.setWidth(2);
+		shadow.setRadius(2);
+
+		innerCircle.setEffect(shadow);
+
 		// setting up sliders ticks
 		downSlider.setBlockIncrement(1 / (2 * (downSliderMax - downSliderMin)));
 		downSlider.setMajorTickUnit((downSliderMax - downSliderMin) / 5);
@@ -120,13 +133,11 @@ public class JoystickControl extends BorderPane
 		leftSlider.setMajorTickUnit((leftSliderMax - leftSliderMin) / 5);
 		leftSlider.setMinorTickCount(2); // how many ticks to show between each major tick
 
-
 		// set sliders to show tick marks
 		downSlider.setShowTickLabels(true);
 		downSlider.setShowTickMarks(true);
 		leftSlider.setShowTickLabels(true);
 		leftSlider.setShowTickMarks(true);
-
 
 		// setting up VBox(down label and slider) and HBox(left label and slider)
 		StackPane centerBox = new StackPane(outerCircle, innerCircle); // stack pane just put the Items on top of each other
