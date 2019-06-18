@@ -1,10 +1,7 @@
 package View;
 
 import ViewModel.ViewModel;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -29,7 +26,7 @@ public class MainWindowController implements Observer, Initializable
 	BooleanProperty isAutoPilotMode; // if true the autopilot mode, else - manual mode
 
 	/*TODO: change the example to the CSV file*/
-	double[][] mapData =
+	double[][] mapData = // TODO move this to map displayer file
 			{
 					{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
 					{0, 0, 0, 1, 2, 4, 6, 8, 10, 12, 14, 12, 10, 8, 6, 4},
@@ -46,8 +43,10 @@ public class MainWindowController implements Observer, Initializable
 					{7, 6, 5, 4, 3, 2, 2, 1, 1, 1, 2, 3, 4, 5, 6, 7},
 					{7, 6, 5, 4, 3, 2, 2, 1, 1, 1, 2, 3, 4, 5, 6, 7}
 			};
-	double max = findMax();
-	double min = findMin();
+	double max = findMax(); // TODO move this to map displayer file
+	double min = findMin(); // TODO move this to map displayer file
+
+
 	ViewModel viewModel;
 
 	//FXML members
@@ -61,16 +60,31 @@ public class MainWindowController implements Observer, Initializable
 	StringProperty pathCalculatorServerIP;
 	StringProperty pathCalculatorServerPORT;
 
+	// csv
+	StringProperty csvFilePath;
+	public IntegerProperty xStartIndex, yStartIndex; // indexes in MATRIX
+	public IntegerProperty xEndIndex, yEndIndex;     // indexes in MATRIX
+
 	//constructor
 	public MainWindowController()
 	{
+		// autopilot
+		isAutoPilotMode = new SimpleBooleanProperty();
+
+		// csv
+		csvFilePath = new SimpleStringProperty();
+
+		// path solving
 		pathCalculatorServerIP = new SimpleStringProperty();
 		pathCalculatorServerPORT = new SimpleStringProperty();
-		isAutoPilotMode = new SimpleBooleanProperty();
+		xStartIndex = new SimpleIntegerProperty();
+		yStartIndex = new SimpleIntegerProperty();
+		xEndIndex = new SimpleIntegerProperty();
+		yEndIndex = new SimpleIntegerProperty();
 	}
 
 	//initials min
-	double findMax()
+	double findMax() // TODO move this to map displayer file
 	{
 		double tMax = mapData[0][0];
 		for (int i = 0; i < this.mapData.length; i++)
@@ -85,7 +99,7 @@ public class MainWindowController implements Observer, Initializable
 	}
 
 	//initials max
-	double findMin()
+	double findMin() // TODO move this to map displayer file
 	{
 		double tMin = mapData[0][0];
 		for (int i = 0; i < this.mapData.length; i++)
@@ -103,19 +117,31 @@ public class MainWindowController implements Observer, Initializable
 	void setViewModel(ViewModel viewModel)
 	{
 		this.viewModel = viewModel;
-        /*
 
-	public StringProperty pathToEndCoordinate;
-        */
+		// auto pilot
 		viewModel.scriptToInterpret.bind(autoPilotScriptTextArea.textProperty());
-		//commandName, commandArguments
-		viewModel.heightsInMetersMatrix.bindBidirectional(mapDisplayer.mapData);//TODO: check if it work
-		// public ObjectProperty<int[]> startCoordinate, endCoordinate;
+
+		// csv
+		viewModel.csvFilePath.bind(csvFilePath);
+		mapDisplayer.xCoordinateLongitude.bind(viewModel.xCoordinateLongitude);
+		mapDisplayer.yCoordinateLatitude.bind(viewModel.yCoordinateLatitude);
+		mapDisplayer.cellSizeInDegrees.bind(viewModel.cellSizeInDegrees);
+		//mapDisplayer.mapData.bind(viewModel.heightsInMetersMatrix);            //  uncomment this to get map data from csv file
+
+		// path solving
 		viewModel.pathCalculatorServerIP.bind(pathCalculatorServerIP);
 		viewModel.pathCalculatorServerPORT.bind(pathCalculatorServerPORT);
-		//TODO: change to PlaneDisplayer
-		mapDisplayer.pathToEndCoordinate.bind(viewModel.pathToEndCoordinate);
 
+		viewModel.xStartIndex.bind(xStartIndex);
+		viewModel.yStartIndex.bind(yStartIndex);
+		viewModel.xEndIndex.bind(xEndIndex);
+		viewModel.yEndIndex.bind(yEndIndex);
+
+		// map displayer
+		//TODO: change to PlaneDisplayer
+		mapDisplayer.pathToEndCoordinate.bind(viewModel.pathToEndCoordinate); // getting solution from ptm1 server
+
+		// joystick
 		viewModel.isAutoPilotMode.bind(isAutoPilotMode);
 		viewModel.xAxisJoystick.bind(joystickController.xAxisJoystick);
 		viewModel.yAxisJoystick.bind(joystickController.yAxisJoystick);
@@ -134,9 +160,24 @@ public class MainWindowController implements Observer, Initializable
 	{
 		//TODO
 		// show dialog and get csv file path
-		// ask viewModel openCSV
+		// ask viewModel openCsvFile
 		// use mapDisplayer to display the data
 		// open a Thread tha 4 times per second will get from the viewmodel the current plane coordinates and update the mapDisplayer.planeLocation
+
+		// show dialog to open script file
+		FileChooser fileDialog = new FileChooser();
+		fileDialog.setTitle("Open a csv file");
+		fileDialog.setInitialDirectory(new File("."));
+		fileDialog.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("CSV files (*.csv)", "*.csv"));
+
+		File script = fileDialog.showOpenDialog(mapDisplayer.getScene().getWindow()); // 1 way to get primary window is through an item in that window...
+		if (script == null)
+			return; // do nothing if no file was chosen
+
+		csvFilePath.set(script.getPath());
+		viewModel.openCsvFile();
+
+		//mapDisplayer.redraw(); TODO for map displayer to draw csv
 	}
 
 	public void onCalculatePath(ActionEvent actionEvent)
@@ -183,7 +224,7 @@ public class MainWindowController implements Observer, Initializable
 			viewModel.asyncRunAutoPilot(); // starts a thread that interprets the autopilot script
 		} catch (Exception e)
 		{
-			new Alert(Alert.AlertType.ERROR, "script error:\n" + e.getLocalizedMessage()).show();
+			new Alert(Alert.AlertType.ERROR, "script error:\n" + e.getLocalizedMessage()).show();    // TODO delete this because it does not work
 		}
 	}
 
@@ -193,6 +234,14 @@ public class MainWindowController implements Observer, Initializable
 		isAutoPilotMode.set(false);
 		System.out.println("Manual");
 		viewModel.asyncJoystickPuller(); // starts a thread that updates the simulator about the joysticks current state
+	}
+
+	public void onTextChanged(KeyEvent keyEvent)
+	{
+		if (((TextArea) keyEvent.getSource()).getText().length() != 0)
+			this.autoPilotRadioButton.setDisable(false);
+		else
+			this.autoPilotRadioButton.setDisable(true);
 	}
 
 	@Override
@@ -205,13 +254,5 @@ public class MainWindowController implements Observer, Initializable
 	public void update(Observable o, Object arg)
 	{
 
-	}
-
-	public void onTextChanged(KeyEvent keyEvent)
-	{
-		if (((TextArea) keyEvent.getSource()).getText().length() != 0)
-			this.autoPilotRadioButton.setDisable(false);
-		else
-			this.autoPilotRadioButton.setDisable(true);
 	}
 }

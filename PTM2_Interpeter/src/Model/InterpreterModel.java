@@ -25,8 +25,8 @@ public class InterpreterModel extends Observable implements IModel
 	int returnValue; // this is set to 0 if a script/command did not return something
 
 	// csv parameters
-	double xCoordiante, yCoordinate; // of (0,0) index in the csv table
-	double cellSizeInSquareKm;  // size of each cell in the csv table in Square killometers
+	double xCoordinateLongitude, yCoordinateLatitude; // longitude, latitude of (0,0) index in the csv table
+	double cellSizeInDegrees;  // size of each cell in the csv table in degrees (this is related to longitude and latitude)
 	double[][] csvValues = null;
 
 	public InterpreterModel()
@@ -70,7 +70,7 @@ public class InterpreterModel extends Observable implements IModel
 	public int getReturnValue() { return this.returnValue; }
 
 	@Override
-	public void calculatePath(String ip, String port, double[][] heightsInMeters, int[] startCoordinate, int[] endCoordinate)
+	public void calculatePath(String ip, String port, double[][] heightsInMeters, int[] startCoordinateIndex, int[] endCoordinateIndex)
 	{
 		try
 		{
@@ -84,8 +84,8 @@ public class InterpreterModel extends Observable implements IModel
 
 			writer.print(problem); // problem string already includes necessary \n
 			writer.println("end");
-			writer.println(startCoordinate[0] + "," + startCoordinate[1]);
-			writer.println(endCoordinate[0] + "," + endCoordinate[1]);
+			writer.println(startCoordinateIndex[0] + "," + startCoordinateIndex[1]);
+			writer.println(endCoordinateIndex[0] + "," + endCoordinateIndex[1]);
 			writer.flush();
 			// recive solution as a string "Right,Left,......"
 
@@ -116,7 +116,7 @@ public class InterpreterModel extends Observable implements IModel
 	}
 
 	@Override
-	public void openCSV(String filePath)
+	public void openCsvFile(String filePath)
 	{
 		int sizeRows = 0, sizeColumns = 0;
 
@@ -141,18 +141,18 @@ public class InterpreterModel extends Observable implements IModel
 			Scanner csvScanner = new Scanner(new File(filePath));
 			csvScanner.useDelimiter(",");
 
-			xCoordiante = csvScanner.nextDouble();
-			yCoordinate = csvScanner.nextDouble();
+			xCoordinateLongitude = csvScanner.nextDouble();
+			yCoordinateLatitude = csvScanner.nextDouble();
 			csvScanner.nextLine(); // go past empty ",,,,,,"
 
-			cellSizeInSquareKm = csvScanner.nextDouble();
+			cellSizeInDegrees = csvScanner.nextDouble();
 			csvScanner.nextLine(); // go past empty ",,,,,,"
 
 			for (int rowIndex = 0; rowIndex < sizeRows; rowIndex++)
 				for (int columnIndex = 0; columnIndex < sizeColumns; columnIndex++)
 					if (csvScanner.hasNextDouble())
 						csvValues[rowIndex][columnIndex] = csvScanner.nextDouble();
-					else
+					else if (csvScanner.hasNextLine())
 						csvScanner.nextLine();
 		} catch (FileNotFoundException e) {e.printStackTrace();}
 
@@ -160,33 +160,37 @@ public class InterpreterModel extends Observable implements IModel
 		super.notifyObservers("csvScanned");
 	}
 
-	boolean isConnected = true; // TODO DELETE THIS
-
 	@Override
 	public void sendJoystickState(double aileron, double elevator, double rudder, double throttle)
 	{
-		// TODO make a way to check if we are connected so that manual mode will just do nothing
-		if(!isConnected)	// TODO DELETE THIS
-		{
-			this.executeCommand("connect", "127.0.0.1", "5402");
-			isConnected = true;
-		}
-		interpreter.setVariableInSimulator("/controls/flight/aileron" , aileron);
-		interpreter.setVariableInSimulator("/controls/flight/elevator" , elevator);
-		interpreter.setVariableInSimulator("/controls/flight/rudder" , rudder);
-		interpreter.setVariableInSimulator("/controls/engines/current-engine/throttle" , throttle);
+		//this.executeCommand("connect", "127.0.0.1", "5402");
 
+		interpreter.setVariableInSimulator("/controls/flight/aileron", aileron);
+		interpreter.setVariableInSimulator("/controls/flight/elevator", elevator);
+		interpreter.setVariableInSimulator("/controls/flight/rudder", rudder);
+		interpreter.setVariableInSimulator("/controls/engines/current-engine/throttle", throttle);
+
+	}
+
+	@Override
+	public Boolean isConnectedToSimulator()
+	{
+		return interpreter.isConnectedToSimulator();
 	}
 
 	@Override
 	public String getSolutionForPathProblem() { return this.solutionForPathProblem; }
 
-	public double getxCoordiante() { return xCoordiante; }
+	@Override
+	public double getxCoordinateLongitude() { return xCoordinateLongitude; }
 
-	public double getyCoordinate() { return yCoordinate; }
+	@Override
+	public double getyCoordinateLatitude() { return yCoordinateLatitude; }
 
-	public double getCellSizeInSquareKm() { return cellSizeInSquareKm; }
+	@Override
+	public double getCellSizeInDegrees() { return cellSizeInDegrees; }
 
+	@Override
 	public double[][] getCsvValues() { return csvValues; }
 
 	public static void main(String[] args)
@@ -239,20 +243,20 @@ public class InterpreterModel extends Observable implements IModel
 		// Testing "calculatePath" on our server(PTM1) on port 5555
 		// before testing this, run runServer.bat!
 
-        interpreterModel.calculatePath(
-                "127.0.0.1",
-                "5555",
-                new double[][]
-                        {
-                        {0,1,2,3},
-                        {1,2,3,4},
-                        {2,3,4,5},
-                        {66,5,4,3}
-                        },
-                new int[]{0,0},     // start point
-                new int[] {3,3});   // end point
+		interpreterModel.calculatePath(
+				"127.0.0.1",
+				"5555",
+				new double[][]
+						{
+								{0, 1, 2, 3},
+								{1, 2, 3, 4},
+								{2, 3, 4, 5},
+								{66, 5, 4, 3}
+						},
+				new int[]{0, 0},     // start point
+				new int[]{3, 3});   // end point
 
-        System.out.println(interpreterModel.solutionForPathProblem);
+		System.out.println(interpreterModel.solutionForPathProblem);
 
 
         /*

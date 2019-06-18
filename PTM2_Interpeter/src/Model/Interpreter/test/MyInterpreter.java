@@ -63,6 +63,11 @@ public class MyInterpreter
 				isMultiCommand = false;
 			} catch (Exception e)
 			{
+				if(e instanceof  InterruptedException)	// if some other thread interrupted this thread then this try will catch this exception
+				{
+					//System.out.println("interrupted, exiting...");
+					return (int) ReturnCommand.value;	// just stop execution.
+				}
 				e.printStackTrace();
 			}
 			//System.out.print("> ");    //might be a bug here
@@ -81,6 +86,13 @@ public class MyInterpreter
 		{
 			e.printStackTrace();
 		}
+	}
+
+	public boolean isConnectedToSimulator()
+	{
+		if(ConnectClient.isReferenceExists() && ConnectClient.getReference().isConnected())
+			return true;
+		return false;
 	}
 
 	private void initializeInterpreter()

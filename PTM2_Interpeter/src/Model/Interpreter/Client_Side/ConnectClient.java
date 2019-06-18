@@ -54,6 +54,14 @@ public class ConnectClient implements Client
 			}
 	}
 
+	@Override
+	public boolean isConnected()
+	{
+		if(this.socket != null && this.socket.isConnected())
+			return true;
+		return false;
+	}
+
 	private static boolean validIP(String ip)
 	{
 		try
