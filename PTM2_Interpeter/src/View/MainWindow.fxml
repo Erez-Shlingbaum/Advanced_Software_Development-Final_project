@@ -48,7 +48,7 @@
                 </HBox>
             </top>
          <center>
-            <MapDisplayer fx:id="mapDisplayer" height="250.0" planeFileName="./PTM2_Interpeter/Resources/plane.png" width="250.0" BorderPane.alignment="CENTER" />
+            <MapDisplayer fx:id="mapDisplayer" planeFileName="./PTM2_Interpeter/Resources/plane.png" BorderPane.alignment="CENTER" minWidth="250" minHeight="250"/>
          </center>
         </BorderPane>
         <BorderPane prefHeight="250.0" prefWidth="250.0" GridPane.columnIndex="4">
