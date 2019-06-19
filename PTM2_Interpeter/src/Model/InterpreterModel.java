@@ -242,19 +242,14 @@ public class InterpreterModel extends Observable implements IModel
 
 		// Testing "calculatePath" on our server(PTM1) on port 5555
 		// before testing this, run runServer.bat!
-
+		interpreterModel.openCsvFile("./PTM2_Interpeter/Resources/map-Honolulu.csv");
+		System.out.println("col " + interpreterModel.csvValues.length + " row " + interpreterModel.csvValues[0].length);
 		interpreterModel.calculatePath(
 				"127.0.0.1",
 				"5555",
-				new double[][]
-						{
-								{0, 1, 2, 3},
-								{1, 2, 3, 4},
-								{2, 3, 4, 5},
-								{66, 5, 4, 3}
-						},
-				new int[]{0, 0},     // start point
-				new int[]{3, 3});   // end point
+				interpreterModel.getCsvValues(),
+				new int[]{17, 80},     // start point
+				new int[]{153, 246});   // end point
 
 		System.out.println(interpreterModel.solutionForPathProblem);
 
