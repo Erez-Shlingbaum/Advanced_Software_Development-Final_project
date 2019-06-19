@@ -30,14 +30,17 @@ public class ViewModel extends Observable implements Observer
 	public StringProperty pathCalculatorServerPORT;
 
 	public IntegerProperty xStartIndex, yStartIndex; // indexes in MATRIX
-	public IntegerProperty xEndIndex, yEndIndex; 	 // indexes in MATRIX
-	public StringProperty pathToEndCoordinate; 		 // for example: "Right,Up,Right,Left,Down" ...
+	public IntegerProperty xEndIndex, yEndIndex;     // indexes in MATRIX
+	public StringProperty pathToEndCoordinate;         // for example: "Right,Up,Right,Left,Down" ...
 
 	// properties for joystick
 	public DoubleProperty xAxisJoystick;
 	public DoubleProperty yAxisJoystick;
 	public DoubleProperty rudderJoystick;
 	public DoubleProperty throttleJoystick;
+
+	// var to hold getVars from script
+	public DoubleProperty varRetrieved;
 
 
 	public ViewModel(IModel model)
@@ -70,6 +73,9 @@ public class ViewModel extends Observable implements Observer
 		yAxisJoystick = new SimpleDoubleProperty();
 		rudderJoystick = new SimpleDoubleProperty();
 		throttleJoystick = new SimpleDoubleProperty();
+
+		// utility
+		varRetrieved = new SimpleDoubleProperty();
 	}
 
 	// allows interpreting a script from the view
@@ -119,9 +125,26 @@ public class ViewModel extends Observable implements Observer
 		scriptExecution.start();
 
 		// when no longer autopilot, stop the executing thread
+		// in addition, for aesthetic reasons, update the joystick with the current values from the simulator
 		new Thread(() -> {
 			while (isAutoPilotMode.get())
-				try {Thread.sleep(250); } catch (InterruptedException e) {e.printStackTrace(); }
+				try
+				{
+					// update joystick		(will only work if biDirectional bind exist)
+					interpreterModel.retrieveVariableInScript("rudder");
+					rudderJoystick.set(varRetrieved.get());
+
+					interpreterModel.retrieveVariableInScript("throttle");
+					throttleJoystick.set(varRetrieved.get());
+
+					interpreterModel.retrieveVariableInScript("aileron");
+					xAxisJoystick.set(varRetrieved.get());
+
+					interpreterModel.retrieveVariableInScript("elevator");
+					yAxisJoystick.set(varRetrieved.get());
+					// sleep so this thread will run 4 times per second
+					Thread.sleep(250);
+				} catch (InterruptedException e) {e.printStackTrace(); }
 			// no longer auto pilot mode.
 			scriptExecution.interrupt();
 		}).start();
@@ -156,6 +179,9 @@ public class ViewModel extends Observable implements Observer
 					this.yCoordinateLatitude.set(interpreterModel.getyCoordinateLatitude());
 					this.cellSizeInDegrees.set(interpreterModel.getCellSizeInDegrees());
 					this.heightsInMetersMatrix.set(interpreterModel.getCsvValues());
+					break;
+				case "varRetrieved":
+					this.varRetrieved.set(interpreterModel.getVarRetrivedFromScript());
 					break;
 			}
 		}

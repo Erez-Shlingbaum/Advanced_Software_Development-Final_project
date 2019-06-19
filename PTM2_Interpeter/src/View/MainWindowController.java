@@ -142,11 +142,17 @@ public class MainWindowController implements Observer, Initializable
 		mapDisplayer.pathToEndCoordinate.bind(viewModel.pathToEndCoordinate); // getting solution from ptm1 server
 
 		// joystick
-		viewModel.isAutoPilotMode.bind(isAutoPilotMode);
+		/*viewModel.isAutoPilotMode.bind(isAutoPilotMode);
 		viewModel.xAxisJoystick.bind(joystickController.xAxisJoystick);
 		viewModel.yAxisJoystick.bind(joystickController.yAxisJoystick);
 		viewModel.rudderJoystick.bind(joystickController.downSlider.valueProperty());
-		viewModel.throttleJoystick.bind(joystickController.leftSlider.valueProperty());
+		viewModel.throttleJoystick.bind(joystickController.leftSlider.valueProperty()); */ // TESTING BIdirectional binds
+
+		viewModel.isAutoPilotMode.bindBidirectional(isAutoPilotMode);
+		viewModel.xAxisJoystick.bindBidirectional(joystickController.xAxisJoystick);
+		viewModel.yAxisJoystick.bindBidirectional(joystickController.yAxisJoystick);
+		viewModel.rudderJoystick.bindBidirectional(joystickController.downSlider.valueProperty());
+		viewModel.throttleJoystick.bindBidirectional(joystickController.leftSlider.valueProperty());
 	}
 
 	public void onConnectToSimulator(ActionEvent actionEvent)

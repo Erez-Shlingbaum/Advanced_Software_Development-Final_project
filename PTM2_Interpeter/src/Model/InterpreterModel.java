@@ -28,6 +28,7 @@ public class InterpreterModel extends Observable implements IModel
 	double xCoordinateLongitude, yCoordinateLatitude; // longitude, latitude of (0,0) index in the csv table
 	double cellSizeInDegrees;  // size of each cell in the csv table in degrees (this is related to longitude and latitude)
 	double[][] csvValues = null;
+	private double varRetrivedFromScript;
 
 	public InterpreterModel()
 	{
@@ -64,6 +65,20 @@ public class InterpreterModel extends Observable implements IModel
 		returnValue = this.interpreter.interpret(new String[]{cmdName + " " + String.join(" ", args)}); // create one liner script to interpret
 		super.setChanged();
 		super.notifyObservers("commandExecuted");
+	}
+
+	@Override
+	public void retrieveVariableInScript(String variableName)
+	{
+		varRetrivedFromScript = interpreter.getVariableFromScript(variableName);
+		super.setChanged();
+		super.notifyObservers("varRetrieved");
+	}
+
+	@Override
+	public double getVarRetrivedFromScript()
+	{
+		return varRetrivedFromScript;
 	}
 
 	@Override
@@ -243,7 +258,7 @@ public class InterpreterModel extends Observable implements IModel
 		// Testing "calculatePath" on our server(PTM1) on port 5555
 		// before testing this, run runServer.bat!
 		interpreterModel.openCsvFile("./PTM2_Interpeter/Resources/map-Honolulu.csv");
-		System.out.println("col " + interpreterModel.csvValues.length + " row " + interpreterModel.csvValues[0].length);
+		//System.out.println("col " + interpreterModel.csvValues.length + " row " + interpreterModel.csvValues[0].length);
 		interpreterModel.calculatePath(
 				"127.0.0.1",
 				"5555",

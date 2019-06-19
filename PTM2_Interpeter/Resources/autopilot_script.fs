@@ -26,12 +26,12 @@ throttle = 1
 var h0 = heading
 
 // sleeping to allow the plane to gain non-trivial velocity before we change flight controls
-sleep 5000
+//sleep 5000
 
 // stebalizing the plane and taking off into the air
 while alt < 1000 {
 // originally we divided by 20, but it results in movements that are not smooth.
-rudder = (h0 - heading)/180
+rudder = (h0 - heading)/140
 aileron = - roll / 70
 elevator = pitch / 50
 print alt

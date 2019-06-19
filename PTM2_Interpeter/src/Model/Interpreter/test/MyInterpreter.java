@@ -118,4 +118,11 @@ public class MyInterpreter
 		//	DataServer.getReference().close();
 		//DefineVarCommand.getSymbolTable().clear();
 	}
+
+	public double getVariableFromScript(String variableName)
+	{
+		if(DefineVarCommand.getSymbolTable().containsKey(variableName))
+			return DefineVarCommand.getSymbolTable().get(variableName).getValue();
+		return 0; //some random number
+	}
 }
