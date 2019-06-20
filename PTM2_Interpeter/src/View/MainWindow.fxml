@@ -51,7 +51,7 @@
                 </HBox>
             </top>
          <center>
-            <MapDisplayer fx:id="mapDisplayer" planeFileName="./PTM2_Interpeter/Resources/plane.png" BorderPane.alignment="CENTER">
+            <MapDisplayer fx:id="mapDisplayer" planeFileName="./PTM2_Interpeter/Resources/plane.png" xFileName="./PTM2_Interpeter/Resources/XImage.png" BorderPane.alignment="CENTER">
                <BorderPane.margin>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </BorderPane.margin></MapDisplayer>
