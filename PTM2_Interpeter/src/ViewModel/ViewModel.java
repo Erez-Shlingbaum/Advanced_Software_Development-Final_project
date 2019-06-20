@@ -146,7 +146,7 @@ public class ViewModel extends Observable implements Observer
 			{
 				if (interpreterModel.isConnectedToSimulator())
 					interpreterModel.sendJoystickState(xAxisJoystick.get(), yAxisJoystick.get(), rudderJoystick.get(), throttleJoystick.get());
-				try {Thread.sleep(250); } catch (InterruptedException e) {e.printStackTrace(); }
+				try {Thread.sleep(150); } catch (InterruptedException e) {e.printStackTrace(); }
 			}
 		}).start();
 	}

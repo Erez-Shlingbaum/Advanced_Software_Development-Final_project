@@ -179,7 +179,7 @@ public class InterpreterModel extends Observable implements IModel
 	public void sendJoystickState(double aileron, double elevator, double rudder, double throttle)
 	{
 		//this.executeCommand("connect", "127.0.0.1", "5402");
-
+		System.out.println("DEBUG: " + aileron + "," + elevator + "," + rudder+ "," + throttle);
 		interpreter.setVariableInSimulator("/controls/flight/aileron", aileron);
 		interpreter.setVariableInSimulator("/controls/flight/elevator", elevator);
 		interpreter.setVariableInSimulator("/controls/flight/rudder", rudder);

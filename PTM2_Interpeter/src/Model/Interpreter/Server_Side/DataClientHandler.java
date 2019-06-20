@@ -25,7 +25,7 @@ public class DataClientHandler implements ClientHandler
 		System.out.println("Data server is running...");
 		BufferedReader clientInput = new BufferedReader(new InputStreamReader(in));
 		String str;
-		List<String> simNames = new ArrayList<>(24);
+		List<String> simNames = new ArrayList<>(26);
 
 		try
 		{

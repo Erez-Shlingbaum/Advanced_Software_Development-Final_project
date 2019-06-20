@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
-import java.util.Scanner;
 
 import static javafx.scene.paint.Color.rgb;
 
@@ -30,6 +29,9 @@ public class MapDisplayer extends StackPane {
     // these properties will update 4 times per second with the current plane position
     public DoubleProperty currentPlaneLongitudeX;
     public DoubleProperty currentPlaneLatitudeY;
+
+
+
 
     //double canvases variable
     private Canvas colorfulMapLayer;
