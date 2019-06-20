@@ -25,8 +25,10 @@ throttle = 1
 // h0 holds the direction we want to fly to, on a runway it is the current direction (straight)
 var h0 = heading
 
+// the plane has a deviation to the left, so this is an experiment to fix it
+rudder = 0.1
 // sleeping to allow the plane to gain non-trivial velocity before we change flight controls
-//sleep 5000
+sleep 5000
 
 // stebalizing the plane and taking off into the air
 while alt < 1000 {

@@ -11,8 +11,9 @@ import java.util.Observer;
 
 public class ViewModel extends Observable implements Observer
 {
-	public BooleanProperty isAutoPilotMode;
 	private IModel interpreterModel;
+
+	public BooleanProperty isAutoPilotMode;
 
 	//javaFX properties
 	public StringProperty scriptToInterpret;
@@ -25,6 +26,10 @@ public class ViewModel extends Observable implements Observer
 	public DoubleProperty cellSizeInDegrees;
 	public ObjectProperty<double[][]> heightsInMetersMatrix; // matrix of heights read from thte csv file
 
+	// information about the plane (for map displayer
+	public DoubleProperty currentPlaneLongitudeX;
+	public DoubleProperty currentPlaneLatitudeY;
+
 	// properties for path searching
 	public StringProperty pathCalculatorServerIP;
 	public StringProperty pathCalculatorServerPORT;
@@ -32,6 +37,10 @@ public class ViewModel extends Observable implements Observer
 	public IntegerProperty xStartIndex, yStartIndex; // indexes in MATRIX
 	public IntegerProperty xEndIndex, yEndIndex;     // indexes in MATRIX
 	public StringProperty pathToEndCoordinate;         // for example: "Right,Up,Right,Left,Down" ...
+
+	// connection to simulator
+	public StringProperty simulatorIP;
+	public StringProperty simulatorPort;
 
 	// properties for joystick
 	public DoubleProperty xAxisJoystick;
@@ -55,18 +64,26 @@ public class ViewModel extends Observable implements Observer
 		csvFilePath = new SimpleStringProperty();
 		xCoordinateLongitude = new SimpleDoubleProperty();
 		yCoordinateLatitude = new SimpleDoubleProperty();
-		xStartIndex = new SimpleIntegerProperty();
-		yStartIndex = new SimpleIntegerProperty();
-		xEndIndex = new SimpleIntegerProperty();
-		yEndIndex = new SimpleIntegerProperty();
 		cellSizeInDegrees = new SimpleDoubleProperty();
 		heightsInMetersMatrix = new SimpleObjectProperty<>();
+
+		// for info about the plane
+		currentPlaneLongitudeX = new SimpleDoubleProperty();
+		currentPlaneLatitudeY = new SimpleDoubleProperty();
 
 		//path searching
 		pathCalculatorServerIP = new SimpleStringProperty();
 		pathCalculatorServerPORT = new SimpleStringProperty();
-		pathToEndCoordinate = new SimpleStringProperty();
+		xStartIndex = new SimpleIntegerProperty();
+		yStartIndex = new SimpleIntegerProperty();
+		xEndIndex = new SimpleIntegerProperty();
+		yEndIndex = new SimpleIntegerProperty();
 
+		pathToEndCoordinate = new SimpleStringProperty();    // will hold solution
+
+		// connection to simulator
+		simulatorIP = new SimpleStringProperty();
+		simulatorPort = new SimpleStringProperty();
 		// joystick
 		isAutoPilotMode = new SimpleBooleanProperty();
 		xAxisJoystick = new SimpleDoubleProperty();
@@ -105,6 +122,22 @@ public class ViewModel extends Observable implements Observer
 				);
 	}
 
+	public void asyncMapPlanePositionUpdater()
+	{
+		new Thread(() -> {
+			interpreterModel.retrieveVariableInScript("longitude");
+			currentPlaneLongitudeX.set(interpreterModel.getVarRetrivedFromScript());
+
+			interpreterModel.retrieveVariableInScript("latitude");
+			currentPlaneLatitudeY.set(interpreterModel.getVarRetrivedFromScript());
+
+			try
+			{
+				Thread.sleep(250); // 4 times per second
+			} catch (InterruptedException e) {e.printStackTrace();}
+		}).start();
+	}
+
 	// starts a thread that updates the simulator about the joysticks current state
 	public void asyncJoystickPuller()
 	{
@@ -130,6 +163,7 @@ public class ViewModel extends Observable implements Observer
 			while (isAutoPilotMode.get())
 				try
 				{
+					/*
 					// update joystick		(will only work if biDirectional bind exist)
 					interpreterModel.retrieveVariableInScript("rudder");
 					rudderJoystick.set(varRetrieved.get());
@@ -137,11 +171,11 @@ public class ViewModel extends Observable implements Observer
 					interpreterModel.retrieveVariableInScript("throttle");
 					throttleJoystick.set(varRetrieved.get());
 
-					interpreterModel.retrieveVariableInScript("aileron");
+					interpreterModel.retrieveVariableInScript("aileron");	// TODO fix this. joystick wont update position because we need to call a redraw function (this i s complicated)
 					xAxisJoystick.set(varRetrieved.get());
 
-					interpreterModel.retrieveVariableInScript("elevator");
-					yAxisJoystick.set(varRetrieved.get());
+					interpreterModel.retrieveVariableInScript("elevator");  // TODO fix this. joystick wont update position because we need to call a redraw function (this i s complicated)
+					yAxisJoystick.set(varRetrieved.get()); */
 					// sleep so this thread will run 4 times per second
 					Thread.sleep(250);
 				} catch (InterruptedException e) {e.printStackTrace(); }
@@ -185,5 +219,10 @@ public class ViewModel extends Observable implements Observer
 					break;
 			}
 		}
+	}
+
+	public void connectToSimulator()
+	{
+		interpreterModel.executeCommand("connect", simulatorIP.get(), simulatorPort.get());
 	}
 }

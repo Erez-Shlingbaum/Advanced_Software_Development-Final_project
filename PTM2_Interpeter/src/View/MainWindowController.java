@@ -5,11 +5,12 @@ import javafx.beans.property.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextArea;
+import javafx.geometry.Insets;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
+import javafx.util.Pair;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,6 +18,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class MainWindowController implements Observer, Initializable
@@ -62,8 +64,10 @@ public class MainWindowController implements Observer, Initializable
 
 	// csv
 	StringProperty csvFilePath;
-	public IntegerProperty xStartIndex, yStartIndex; // indexes in MATRIX
-	public IntegerProperty xEndIndex, yEndIndex;     // indexes in MATRIX
+	IntegerProperty xStartIndex, yStartIndex; // indexes in MATRIX
+	IntegerProperty xEndIndex, yEndIndex;     // indexes in MATRIX
+	StringProperty simulatorIP;
+	StringProperty simulatorPort;
 
 	//constructor
 	public MainWindowController()
@@ -81,6 +85,10 @@ public class MainWindowController implements Observer, Initializable
 		yStartIndex = new SimpleIntegerProperty();
 		xEndIndex = new SimpleIntegerProperty();
 		yEndIndex = new SimpleIntegerProperty();
+
+		// connection to simulator
+		simulatorIP = new SimpleStringProperty();
+		simulatorPort = new SimpleStringProperty();
 	}
 
 	//initials min
@@ -137,16 +145,24 @@ public class MainWindowController implements Observer, Initializable
 		viewModel.xEndIndex.bind(xEndIndex);
 		viewModel.yEndIndex.bind(yEndIndex);
 
+		// connection to simulator
+		viewModel.simulatorIP.bind(simulatorIP);
+		viewModel.simulatorPort.bind(simulatorPort);
+
 		// map displayer
 		//TODO: change to PlaneDisplayer
 		mapDisplayer.pathToEndCoordinate.bind(viewModel.pathToEndCoordinate); // getting solution from ptm1 server
+
+		// map displayer - current plane position
+		mapDisplayer.currentPlaneLongitudeX.bind(viewModel.currentPlaneLongitudeX);
+		mapDisplayer.currentPlaneLatitudeY.bind(viewModel.currentPlaneLatitudeY);
 
 		// joystick
 		/*viewModel.isAutoPilotMode.bind(isAutoPilotMode);
 		viewModel.xAxisJoystick.bind(joystickController.xAxisJoystick);
 		viewModel.yAxisJoystick.bind(joystickController.yAxisJoystick);
 		viewModel.rudderJoystick.bind(joystickController.downSlider.valueProperty());
-		viewModel.throttleJoystick.bind(joystickController.leftSlider.valueProperty()); */ // TESTING BIdirectional binds
+		viewModel.throttleJoystick.bind(joystickController.leftSlider.valueProperty()); */
 
 		viewModel.isAutoPilotMode.bindBidirectional(isAutoPilotMode);
 		viewModel.xAxisJoystick.bindBidirectional(joystickController.xAxisJoystick);
@@ -157,19 +173,56 @@ public class MainWindowController implements Observer, Initializable
 
 	public void onConnectToSimulator(ActionEvent actionEvent)
 	{
-		//TODO
-		// show popup dialog and get (ip,port) from that dialog
-		// send viewModel a command to connect to client
+		Dialog<Pair<String, String>> dialog = new Dialog<>();
+		dialog.setTitle("Connect");
+		dialog.setHeaderText("Connect to simulator");
+
+		// Set the icon (must be included in the project).
+		//dialog.setGraphic(new ImageView(this.getClass().getResource("airplaneConnect.png").toString()));	// TODO :)
+
+		// Set the button types.
+		ButtonType connectButtonType = new ButtonType("Connect", ButtonBar.ButtonData.OK_DONE);
+		dialog.getDialogPane().getButtonTypes().addAll(connectButtonType, ButtonType.CANCEL);
+
+		// Create the username and password labels and fields.
+		GridPane grid = new GridPane();
+		grid.setHgap(10);
+		grid.setVgap(10);
+		grid.setPadding(new Insets(20, 150, 10, 10));
+
+		TextField ip = new TextField();
+		ip.setPromptText("IP Address");
+		TextField port = new TextField();
+		port.setPromptText("Port");
+
+		grid.add(new Label("IP:"), 0, 0);
+		grid.add(ip, 1, 0);
+		grid.add(new Label("Port:"), 0, 1);
+		grid.add(port, 1, 1);
+
+		// set the grid a child of the dialog
+		dialog.getDialogPane().setContent(grid);
+
+		// Convert the result to a ip-port-pair when the connectButton IS CLICKED
+		dialog.setResultConverter(dialogButton -> {
+			if (dialogButton == connectButtonType)
+				return new Pair<>(ip.getText(), port.getText());
+			return null;
+		});
+
+		Optional<Pair<String, String>> result = dialog.showAndWait();
+
+		if (!result.isPresent())
+			return;
+
+		simulatorIP.set(result.get().getKey());
+		simulatorPort.set(result.get().getValue());
+
+		viewModel.connectToSimulator();
 	}
 
 	public void onOpenData(ActionEvent actionEvent)
 	{
-		//TODO
-		// show dialog and get csv file path
-		// ask viewModel openCsvFile
-		// use mapDisplayer to display the data
-		// open a Thread tha 4 times per second will get from the viewmodel the current plane coordinates and update the mapDisplayer.planeLocation
-
 		// show dialog to open script file
 		FileChooser fileDialog = new FileChooser();
 		fileDialog.setTitle("Open a csv file");
@@ -188,10 +241,52 @@ public class MainWindowController implements Observer, Initializable
 
 	public void onCalculatePath(ActionEvent actionEvent)
 	{
-		//TODO
-		// show popup dialog and get (ip,port) of the shortestPathServer we did in PTM1
-		// ask viewmodel to connect to shortestPathServer with the mapDisplayer.matrix
-		// update mapDisplayer with the new path and target location
+		Dialog<Pair<String, String>> dialog = new Dialog<>();
+		dialog.setTitle("Connect");
+		dialog.setHeaderText("Connect to path calculator server");
+
+		// Set the icon (must be included in the project).
+		//dialog.setGraphic(new ImageView(this.getClass().getResource("airplaneConnect.png").toString()));
+
+		// Set the button types.
+		ButtonType connectButtonType = new ButtonType("Connect", ButtonBar.ButtonData.OK_DONE);
+		dialog.getDialogPane().getButtonTypes().addAll(connectButtonType, ButtonType.CANCEL);
+
+		// Create the username and password labels and fields.
+		GridPane grid = new GridPane();
+		grid.setHgap(10);
+		grid.setVgap(10);
+		grid.setPadding(new Insets(20, 150, 10, 10));
+
+		TextField ip = new TextField();
+		ip.setPromptText("IP Address");
+		TextField port = new TextField();
+		port.setPromptText("Port");
+
+		grid.add(new Label("IP:"), 0, 0);
+		grid.add(ip, 1, 0);
+		grid.add(new Label("Port:"), 0, 1);
+		grid.add(port, 1, 1);
+
+		// set the grid a child of the dialog
+		dialog.getDialogPane().setContent(grid);
+
+		// Convert the result to a ip-port-pair when the connectButton IS CLICKED
+		dialog.setResultConverter(dialogButton -> {
+			if (dialogButton == connectButtonType)
+				return new Pair<>(ip.getText(), port.getText());
+			return null;
+		});
+
+		Optional<Pair<String, String>> result = dialog.showAndWait();
+
+		if (!result.isPresent())
+			return;
+
+		pathCalculatorServerIP.set(result.get().getKey());
+		pathCalculatorServerPORT.set(result.get().getValue());
+
+		viewModel.calculatePath();
 	}
 
 	// opens an autopilot script from a file and copy its contents to the autoPilotScript text area
@@ -251,14 +346,11 @@ public class MainWindowController implements Observer, Initializable
 	}
 
 	@Override
-	public void initialize(URL location, ResourceBundle resources)/*the controller happens once compared to initialize*/
+	public void initialize(URL location, ResourceBundle resources) // the constructor happens once compared to initialize
 	{
 		mapDisplayer.setMapData(mapData, max, min);
 	}
 
 	@Override
-	public void update(Observable o, Object arg)
-	{
-
-	}
+	public void update(Observable o, Object arg) {}
 }

@@ -9,7 +9,7 @@ public class Variable
 
 	public String getPath() { return path; }
 
-	public void setPath(String path) throws Exception { this.path = path;}//removeCommas(path); }
+	public void setPath(String path) { this.path = path;}//removeCommas(path); }
 
 	public double getValue() { return value; }
 

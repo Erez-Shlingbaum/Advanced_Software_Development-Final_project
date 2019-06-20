@@ -5,14 +5,14 @@
 <?import javafx.scene.layout.*?>
 <?import View.JoystickControl?>
 <?import View.MapDisplayer?>
-<GridPane accessibleText="300" alignment="CENTER" hgap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" vgap="10.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MainWindowController">
+<GridPane accessibleText="300" alignment="CENTER" hgap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: #5597aa;" vgap="10.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MainWindowController">
     <opaqueInsets>
         <Insets />
     </opaqueInsets>
     <children>
         <BorderPane GridPane.columnIndex="3">
             <center>
-                <TextArea fx:id="autoPilotScriptTextArea" onKeyTyped="#onTextChanged" promptText="Autopilit script" BorderPane.alignment="CENTER">
+                <TextArea fx:id="autoPilotScriptTextArea" onKeyTyped="#onTextChanged" prefWidth="400.0" promptText="Autopilit script" BorderPane.alignment="CENTER">
                <BorderPane.margin>
                   <Insets left="10.0" right="10.0" />
                </BorderPane.margin></TextArea>
@@ -45,10 +45,16 @@
                         <Button mnemonicParsing="false" onAction="#onOpenData" prefHeight="25.0" prefWidth="82.0" text="Load data" />
                         <Button layoutX="4.0" mnemonicParsing="false" onAction="#onCalculatePath" prefHeight="25.0" prefWidth="116.0" text="Calculate path" />
                     </children>
+               <BorderPane.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </BorderPane.margin>
                 </HBox>
             </top>
          <center>
-            <MapDisplayer fx:id="mapDisplayer" planeFileName="./PTM2_Interpeter/Resources/plane.png" BorderPane.alignment="CENTER" minWidth="250" minHeight="250"/>
+            <MapDisplayer fx:id="mapDisplayer" planeFileName="./PTM2_Interpeter/Resources/plane.png" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </BorderPane.margin></MapDisplayer>
          </center>
         </BorderPane>
         <BorderPane prefHeight="250.0" prefWidth="250.0" GridPane.columnIndex="4">

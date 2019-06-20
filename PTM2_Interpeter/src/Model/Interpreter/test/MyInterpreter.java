@@ -4,6 +4,7 @@ import Model.Interpreter.Client_Side.ConnectClient;
 import Model.Interpreter.Commands.*;
 import Model.Interpreter.Interpeter.Lexer;
 import Model.Interpreter.Interpeter.Parser;
+import Model.Interpreter.Interpeter.Variable;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -107,6 +108,15 @@ public class MyInterpreter
 		keywords.put("return", new ReturnCommand());
 		keywords.put("disconnect", new DisconnectCommand());
 		keywords.put("pause", new PauseCommand());
+
+		// adding 2 variables for the sake of getting them from the simulator
+		Variable longitude = new Variable();
+		Variable latitude = new Variable();
+		longitude.setPath("/position/longitude-deg");
+		latitude.setPath("/position/latitude-deg");
+
+		DefineVarCommand.getSymbolTable().put("longitude", longitude);
+		DefineVarCommand.getSymbolTable().put("latitude", latitude);
 	}
 
 	private static void cleanupInterpreter()

@@ -20,7 +20,11 @@ public class MapDisplayer extends StackPane
 	DoubleProperty yCoordinateLatitude;
 	DoubleProperty cellSizeInDegrees;
 	ObjectProperty<double[][]> mapData; // map details
-	StringProperty pathToEndCoordinate;
+	StringProperty pathToEndCoordinate;						// Shaked, TODO addLIstener that will redrawPath
+
+	// these properties will update 4 times per second with the current plane position
+	public DoubleProperty currentPlaneLongitudeX; //DONT ADD LISENTER to this peoperty
+	public DoubleProperty currentPlaneLatitudeY; // Shaked, TODO addLIstener that will redrawPlane
 
 	//double canvases variable
 	private Canvas colorfulMapLayer;
@@ -51,6 +55,9 @@ public class MapDisplayer extends StackPane
 		cellSizeInDegrees = new SimpleDoubleProperty();
 		mapData = new SimpleObjectProperty<>();
 		pathToEndCoordinate = new SimpleStringProperty();
+
+		currentPlaneLongitudeX = new SimpleDoubleProperty();
+		currentPlaneLatitudeY = new SimpleDoubleProperty();
 
 		//super
 		super.getChildren().addAll(colorfulMapLayer, planeLayer);

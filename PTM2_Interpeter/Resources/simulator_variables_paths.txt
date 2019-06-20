@@ -22,3 +22,5 @@
 /controls/engines/current-engine/throttle
 /engines/engine/rpm
 /controls/flight/speedbrake
+/position/longitude-deg
+/position/latitude-deg
