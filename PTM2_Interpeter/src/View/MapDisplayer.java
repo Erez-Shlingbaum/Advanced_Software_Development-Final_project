@@ -10,22 +10,21 @@ import javafx.scene.layout.StackPane;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
+import java.util.Scanner;
 
 import static javafx.scene.paint.Color.rgb;
 
-public class MapDisplayer extends StackPane
-{
+public class MapDisplayer extends StackPane {
 
     // this is the x and y of the 0,0 place in the map, received from the csv file
     DoubleProperty xCoordinateLongitude; // TODO ask erez what this is ...
     DoubleProperty yCoordinateLatitude;
     DoubleProperty cellSizeInDegrees;
     ObjectProperty<double[][]> mapData; // map details
-    StringProperty pathToEndCoordinate;						// Shaked, TODO addLIstener that will redrawPath
-
-	// these properties will update 4 times per second with the current plane position
-	public DoubleProperty currentPlaneLongitudeX; //DONT ADD LISENTER to this peoperty
-	public DoubleProperty currentPlaneLatitudeY; // Shaked, TODO addLIstener that will redrawPlane
+    StringProperty pathToEndCoordinate; //the path of the plane                   // Shaked, TODO addLIstener that will redrawPath
+    // these properties will update 4 times per second with the current plane position
+    public DoubleProperty currentPlaneLongitudeX; //DONT ADD LISENTER to this peoperty
+    public DoubleProperty currentPlaneLatitudeY; // Shaked, TODO addLIstener that will redrawPlane
 
     //double canvases variable
     private Canvas colorfulMapLayer;
@@ -49,6 +48,12 @@ public class MapDisplayer extends StackPane
         colorfulMapLayer = new Canvas(250, 250);
         planeLayer = new Canvas(250, 250);
 
+        //caring to the movement of the path
+        //TODO: connect the  pathToEndCoordinate to the answer of the best road
+        // //calculatePath(pathToEndCoordinate.toString());
+        //meanwhile:
+        calculatePath("Right, Right, Down, Down, Right, Up");
+
         //binding
         planeFileName = new SimpleStringProperty();
         xCoordinateLongitude = new SimpleDoubleProperty();
@@ -58,11 +63,11 @@ public class MapDisplayer extends StackPane
         pathToEndCoordinate = new SimpleStringProperty();
 
         currentPlaneLongitudeX = new SimpleDoubleProperty();
-		currentPlaneLatitudeY = new SimpleDoubleProperty();
+        currentPlaneLatitudeY = new SimpleDoubleProperty();
 
-		//super
-		super.getChildren().addAll(colorfulMapLayer, planeLayer);
-	}
+        //super
+        super.getChildren().addAll(colorfulMapLayer, planeLayer);
+    }
 
     private StringProperty planeFileName;
 
@@ -120,7 +125,8 @@ public class MapDisplayer extends StackPane
                     {
                         green = ((255 / (sizeMap / 2)) * mapData.get()[i][j]);
                         gc.setFill(rgb(255, (int) green, 0));
-                    } else
+                    }
+                    else
                     {
                         red = (double) 255 - ((255 / (sizeMap / 2)) * (mapData.get()[i][j] - 7));
                         gc.setFill(rgb((int) red, 255, 0));
@@ -152,7 +158,6 @@ public class MapDisplayer extends StackPane
         } catch (FileNotFoundException e)
         {
             e.printStackTrace();
-
         }
         //pain the plane
         gc.drawImage(plane, 0, 0, w, h);
@@ -160,18 +165,21 @@ public class MapDisplayer extends StackPane
 
     public void calculatePath(String path)
     {
+        //String[] directions = string.split(",");
         HashMap<String, int[]> mapStep = new HashMap<>();
+        //separate the String to Array
+        String[] parts = path.split(",");
         mapStep.put("Up", new int[]{0, -1});
         mapStep.put("Down", new int[]{0, 1});
         mapStep.put("Left", new int[]{-1, 0});
         mapStep.put("Right", new int[]{1, 0});
 
-        int[] point = {0, 0};
+        int[] point = {0, 0};//TODO: change it to what given from the CSV file
         int[] moves;
 
-        for (int i = 0; i < path.length(); i++)
+        for (int i = 0; i < parts.length; i++)
         {
-            moves = mapStep.get(path.charAt(i));
+            moves = mapStep.get(parts[i]);
 
             point[0] += moves[0];
             point[1] += moves[1];
