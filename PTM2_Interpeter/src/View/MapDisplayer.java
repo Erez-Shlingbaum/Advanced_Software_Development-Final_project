@@ -1,7 +1,6 @@
 package View;
 
 
-import com.sun.deploy.xml.XMLable;
 import javafx.beans.NamedArg;
 import javafx.beans.property.*;
 import javafx.scene.Group;
@@ -36,7 +35,7 @@ public class MapDisplayer extends StackPane
     //double canvases variable
     private Canvas colorfulMapLayer;
     private Canvas planeLayer;
-    private Canvas xLayer;
+    private Canvas landmarkLayer;
 
     double maxMap;
     double minMap;
@@ -65,7 +64,7 @@ public class MapDisplayer extends StackPane
         //initialize the layers
         colorfulMapLayer = new Canvas(250, 250);
         planeLayer = new Canvas(250 / 10, 250 / 10);
-        xLayer = new Canvas(250 / 5, 250 / 5);
+        landmarkLayer = new Canvas(250 / 11, 250 / 7);
 
         colorfulMapLayer.setOnMousePressed(this::redrawTarget);
 
@@ -102,7 +101,7 @@ public class MapDisplayer extends StackPane
         });
 
         //super
-        super.getChildren().addAll(colorfulMapLayer, planeLayer, xLayer);
+        super.getChildren().addAll(colorfulMapLayer , planeLayer , landmarkLayer);
 
         //caring to the movement of the path
         //TODO: connect the  pathToEndCoordinate to the answer of the best road
@@ -203,7 +202,7 @@ public class MapDisplayer extends StackPane
     {
         System.out.println("redrawTarget");
 
-        GraphicsContext gc = xLayer.getGraphicsContext2D();
+        GraphicsContext gc = landmarkLayer.getGraphicsContext2D();
         Image landmarkImage = null;
         try
         {
@@ -225,10 +224,10 @@ public class MapDisplayer extends StackPane
         // System.out.println( xCanvas.getTranslateX());
         // System.out.println(xCanvas.getTranslateY());
 
-        xLayer.setTranslateX(-xLayer.getLayoutX() + event.getX() - 25);
-        xLayer.setTranslateY(-xLayer.getLayoutY() + event.getY() - 34);
+        landmarkLayer.setTranslateX(-landmarkLayer.getLayoutX() + event.getX()-5);
+        landmarkLayer.setTranslateY(-landmarkLayer.getLayoutY() + event.getY()-30);
 
-        gc.drawImage(landmarkImage, 0, 0, xLayer.getWidth(), xLayer.getHeight());
+        gc.drawImage(landmarkImage, 0, 0, landmarkLayer.getWidth(), landmarkLayer.getHeight());
 
         //redrawPath(pathToEndCoordinate.get());
     }

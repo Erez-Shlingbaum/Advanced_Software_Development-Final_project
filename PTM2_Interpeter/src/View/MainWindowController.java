@@ -221,17 +221,17 @@ public class MainWindowController implements Observer, Initializable
 		//mapDisplayer.mapData.set(mapData);
 		//mapDisplayer.redrawPath("Right,Right,Down,Down,Right,Up");
 
-		// show dialog to open script file
+		// show dialog to open csvfile file
 		FileChooser fileDialog = new FileChooser();
 		fileDialog.setTitle("Open a csv file");
 		fileDialog.setInitialDirectory(new File("."));
 		fileDialog.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("CSV files (*.csv)", "*.csv"));
 
-		File script = fileDialog.showOpenDialog(mapDisplayer.getScene().getWindow()); // 1 way to get primary window is through an item in that window...
-		if (script == null)
+		File csvfile = fileDialog.showOpenDialog(mapDisplayer.getScene().getWindow()); // 1 way to get primary window is through an item in that window...
+		if (csvfile == null)
 			return; // do nothing if no file was chosen
 
-		csvFilePath.set(script.getPath());
+		csvFilePath.set(csvfile.getPath());
 		viewModel.openCsvFile();
 
 		//mapDisplayer.redraw(); TODO for map displayer to draw csv
