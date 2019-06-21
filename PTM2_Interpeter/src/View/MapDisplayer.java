@@ -8,6 +8,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
 
@@ -215,6 +216,13 @@ public class MapDisplayer extends StackPane
         int col = (int) (event.getX() / w);
         int row = (int) (event.getY() / h);
 
+        // System.out.println("col plane: " + planeIndexX.get());
+        // System.out.println("row plane: " + planeIndexY.get());
+
+        // System.out.println("col target: " + col);
+        // System.out.println("row target: " + row);
+
+
         this.xEndIndex.set(col);
         this.yEndIndex.set(row);
 
@@ -232,12 +240,14 @@ public class MapDisplayer extends StackPane
         HashMap<String, int[]> mapStep = new HashMap<>();
         //separate the String to Array
         String[] parts = path.split(",");
+
+        // TODO make sure this is correct
         mapStep.put("Up", new int[]{0, -1});
         mapStep.put("Down", new int[]{0, 1});
         mapStep.put("Left", new int[]{-1, 0});
         mapStep.put("Right", new int[]{1, 0});
 
-        int[] currentPoint = {0, 0};//TODO: calculate the start point by the info from the CSV
+        int[] currentPoint = {planeIndexX.get(), planeIndexY.get()};
         int[] prevPoint = {0, 0};
         int[] moves;
 
@@ -262,7 +272,11 @@ public class MapDisplayer extends StackPane
             pathLines.getChildren().add(line);
         }
         if (!super.getChildren().contains(pathLines))
+        {
+            pathLines.getChildren().add(new Canvas(colorfulMapLayer.getWidth(), 0));
+            pathLines.getChildren().add(new Canvas(0, colorfulMapLayer.getHeight()));
             super.getChildren().add(pathLines);
+        }
     }
 
     private void calcMinMax(double[][] matrix)

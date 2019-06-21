@@ -89,6 +89,12 @@ public class InterpreterModel extends Observable implements IModel
 	{
 		try
 		{
+            System.out.println("col plane: " + startCoordinateIndex[0]);
+            System.out.println("row plane: " + startCoordinateIndex[1]);
+
+            System.out.println("col target: " + endCoordinateIndex[0]);
+            System.out.println("row target: " + endCoordinateIndex[1]);
+
 			Socket server = new Socket(ip, Integer.parseInt(port));
 			PrintWriter writer = new PrintWriter(server.getOutputStream()); //remember to flush output!
 			Scanner inputFromServer = new Scanner(server.getInputStream());
@@ -102,9 +108,10 @@ public class InterpreterModel extends Observable implements IModel
 			writer.println(startCoordinateIndex[1] + "," + startCoordinateIndex[0]);
 			writer.println(endCoordinateIndex[1] + "," + endCoordinateIndex[0]);
 			writer.flush();
-			// recive solution as a string "Right,Left,......"
+			// receive solution as a string "Right,Left,......"
 
 			this.solutionForPathProblem = inputFromServer.nextLine();
+            System.out.println(this.solutionForPathProblem);
 
 			// notify viewModel that we finished computing path
 			super.setChanged();
@@ -212,6 +219,8 @@ public class InterpreterModel extends Observable implements IModel
 	{
 		// Test functionality of code above me
 		InterpreterModel interpreterModel = new InterpreterModel();
+
+        //System.out.println(interpreterModel.convertMatrixToString(new double[][] { {4} , {9,8,7,6}}));
 
 		// test calculator with real numbers
 		/*
