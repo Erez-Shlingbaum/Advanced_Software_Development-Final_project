@@ -32,10 +32,13 @@ public class MapDisplayer extends StackPane {
     // isClicked property
     final BooleanProperty isMousePressed = new SimpleBooleanProperty(false);
     //local variables
-    final IntegerProperty planeIndexX = new SimpleIntegerProperty(-1000);
-    final IntegerProperty planeIndexY = new SimpleIntegerProperty(-1000);
+    final IntegerProperty planeIndexX = new SimpleIntegerProperty(0);
+    final IntegerProperty planeIndexY = new SimpleIntegerProperty(0);
     final IntegerProperty xEndIndex = new SimpleIntegerProperty();
     final IntegerProperty yEndIndex = new SimpleIntegerProperty();     // indexes in MATRIX landmarks index
+    // images
+    Image planeImage = null;
+
     // canvases
     private final Canvas colorfulMapLayer;
     private final Canvas planeLayer;
@@ -87,6 +90,8 @@ public class MapDisplayer extends StackPane {
             redrawPlane();
         });
 
+        // disable plane until we get valid input from flight gear
+        planeLayer.setDisable(true);
         //super
         super.getChildren().addAll(colorfulMapLayer, planeLayer, landmarkLayer);
     }
@@ -154,13 +159,18 @@ public class MapDisplayer extends StackPane {
     private void redrawPlane() {
         GraphicsContext gc = planeLayer.getGraphicsContext2D();
         //picture of the plane
-        Image planeImage = null;
         try {
-            planeImage = new Image(new FileInputStream(planeFileName.get()));
+            if (planeImage == null)
+                planeImage = new Image(new FileInputStream(planeFileName.get()));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        //pain the plane
+
+        if (planeIndexX.get() == 0 && planeIndexY.get() == 0)
+            return;
+        else planeLayer.setDisable(false);
+
+        //paint the plane
         planeLayer.setTranslateX(-planeLayer.getLayoutX() + (planeIndexX.get() * w));
         planeLayer.setTranslateY(-planeLayer.getLayoutY() + (planeIndexY.get() * h));
         gc.drawImage(planeImage, 0, 0, planeLayer.getWidth(), planeLayer.getHeight());

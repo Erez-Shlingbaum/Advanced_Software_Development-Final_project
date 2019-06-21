@@ -5,7 +5,9 @@
 <?import javafx.scene.layout.*?>
 <?import View.JoystickControl?>
 <?import View.MapDisplayer?>
-<GridPane accessibleText="300" alignment="CENTER" hgap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: #77acbb;" vgap="10.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MainWindowController">
+<GridPane xmlns:fx="http://javafx.com/fxml/1" accessibleText="300" alignment="CENTER" hgap="10.0" maxHeight="-Infinity"
+          maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: #77acbb;"
+          vgap="10.0" xmlns="http://javafx.com/javafx/8.0.172-ea" fx:controller="View.MainWindowController">
     <opaqueInsets>
         <Insets />
     </opaqueInsets>
@@ -39,7 +41,7 @@
         </BorderPane>
         <BorderPane prefHeight="250.0" prefWidth="250.0" GridPane.columnIndex="1">
             <top>
-                <HBox alignment="CENTER" BorderPane.alignment="CENTER">
+                <HBox alignment="CENTER" spacing="2.0" BorderPane.alignment="CENTER">
                     <children>
                         <Button mnemonicParsing="false" onAction="#onConnectToSimulator" text="Connect" />
                         <Button mnemonicParsing="false" onAction="#onOpenData" text="Load data" />
@@ -51,10 +53,13 @@
                 </HBox>
             </top>
          <center>
-             <MapDisplayer fx:id="mapDisplayer"
-                           landmarkImage="./PTM2_Interpeter/Resources/landmarkImage.png"
-                           planeFileName="./PTM2_Interpeter/Resources/plane.png" mapWidth="250.0" mapHeight="250.0"
-                           BorderPane.alignment="CENTER"/>
+             <MapDisplayer fx:id="mapDisplayer" landmarkImage="./PTM2_Interpeter/Resources/landmarkImage.png"
+                           mapHeight="250.0" mapWidth="250.0" planeFileName="./PTM2_Interpeter/Resources/plane.png"
+                           BorderPane.alignment="CENTER">
+                 <BorderPane.margin>
+                     <Insets/>
+                 </BorderPane.margin>
+             </MapDisplayer>
          </center>
         </BorderPane>
         <BorderPane prefHeight="250.0" prefWidth="250.0" GridPane.columnIndex="4">

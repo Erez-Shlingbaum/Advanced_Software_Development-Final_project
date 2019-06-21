@@ -1,6 +1,7 @@
 package ViewModel;
 
 import Model.IModel;
+import javafx.application.Platform;
 import javafx.beans.property.*;
 
 import java.util.Observable;
@@ -135,7 +136,7 @@ public class ViewModel extends Observable implements Observer {
             // when model has finished doing something, we are notified and can choose to do do something about it (like updating a property in the view)
             switch (message) {
                 case "calculatedPath":
-                    this.pathToEndCoordinate.set(interpreterModel.getSolutionForPathProblem());
+                    Platform.runLater(() -> this.pathToEndCoordinate.set(interpreterModel.getSolutionForPathProblem())); // this is done to fix a bug when a thread whose not the javafx thread try to change UI elements (later in map drawer...) and because of that, an exception is thrown
                     break;
                 case "scriptInterpreted":
                     // do something
