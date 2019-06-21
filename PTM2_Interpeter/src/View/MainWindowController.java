@@ -134,7 +134,7 @@ public class MainWindowController implements Observer, Initializable
 		mapDisplayer.xCoordinateLongitude.bind(viewModel.xCoordinateLongitude);
 		mapDisplayer.yCoordinateLatitude.bind(viewModel.yCoordinateLatitude);
 		mapDisplayer.cellSizeInDegrees.bind(viewModel.cellSizeInDegrees);
-		//mapDisplayer.mapData.bind(viewModel.heightsInMetersMatrix);            //  uncomment this to get map data from csv file
+		mapDisplayer.mapData.bind(viewModel.heightsInMetersMatrix);
 
 		// path solving
 		viewModel.pathCalculatorServerIP.bind(pathCalculatorServerIP);
@@ -223,6 +223,10 @@ public class MainWindowController implements Observer, Initializable
 
 	public void onOpenData(ActionEvent actionEvent)
 	{
+
+		//mapDisplayer.mapData.set(mapData);
+		//mapDisplayer.redrawPath("Right,Right,Down,Down,Right,Up");
+
 		// show dialog to open script file
 		FileChooser fileDialog = new FileChooser();
 		fileDialog.setTitle("Open a csv file");
@@ -237,6 +241,7 @@ public class MainWindowController implements Observer, Initializable
 		viewModel.openCsvFile();
 
 		//mapDisplayer.redraw(); TODO for map displayer to draw csv
+
 	}
 
 	public void onCalculatePath(ActionEvent actionEvent)
@@ -348,7 +353,7 @@ public class MainWindowController implements Observer, Initializable
 	@Override
 	public void initialize(URL location, ResourceBundle resources) // the constructor happens once compared to initialize
 	{
-		mapDisplayer.setMapData(mapData, max, min);
+		//mapDisplayer.setMapData(mapData, max, min);
 	}
 
 	@Override

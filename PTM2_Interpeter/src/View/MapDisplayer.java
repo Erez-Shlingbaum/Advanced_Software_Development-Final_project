@@ -1,6 +1,8 @@
 package View;
 
 
+import com.sun.deploy.xml.XMLable;
+import javafx.beans.NamedArg;
 import javafx.beans.property.*;
 import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
@@ -17,7 +19,8 @@ import java.util.HashMap;
 
 import static javafx.scene.paint.Color.rgb;
 
-public class MapDisplayer extends StackPane {
+public class MapDisplayer extends StackPane
+{
 
     // this is the x and y of the 0,0 place in the map, received from the csv file
     DoubleProperty xCoordinateLongitude;
@@ -27,10 +30,9 @@ public class MapDisplayer extends StackPane {
     ObjectProperty<double[][]> mapData; // map details- matrix
     StringProperty pathToEndCoordinate; //the result: the path of the plane
     // these properties will update 4 times per second with the current plane position
-    public DoubleProperty currentPlaneLongitudeX;
-    public DoubleProperty currentPlaneLatitudeY;
-
-
+    public DoubleProperty currentPlaneLongitudeX = new SimpleDoubleProperty();
+    public DoubleProperty currentPlaneLatitudeY = new SimpleDoubleProperty();
+    ;
 
 
     //double canvases variable
@@ -43,10 +45,7 @@ public class MapDisplayer extends StackPane {
     double sizeMap = 0;
 
     //variables to find the place respectively canvas
-    double Height = colorfulMapLayer.getHeight();
-    double h = Height / mapData.get().length;
-    double Width = colorfulMapLayer.getWidth();
-    double w = Width / mapData.get()[0].length;
+    double Height, Width, h, w;
 
     //plane details
     /*TODO: change the Landmark according to the CSV file*/
@@ -55,39 +54,24 @@ public class MapDisplayer extends StackPane {
 
     //local variables
     double red = 255, green = 0;
-    public DoubleProperty planeIndexX;
-    public DoubleProperty planeIndexY;
-    private StringProperty xFileName;
+    public DoubleProperty planeIndexX = new SimpleDoubleProperty();
+    public DoubleProperty planeIndexY = new SimpleDoubleProperty();
+    public StringProperty xFileName;
+    Group pathLines = new Group();
 
-    public String getxFileName()
-    {
-        return xFileName.get();
-    }
 
-    public void setxFileName(String xFileName)
-    {
-        this.xFileName.set(xFileName);
-    }
-
-    public MapDisplayer()
+    public MapDisplayer(@NamedArg("landmarkImage") String xFileName)
     {
         //initialize the layers
         colorfulMapLayer = new Canvas(250, 250);
-        planeLayer = new Canvas(250, 250);
-        xLayer = new Canvas(250, 250);
-
-        //caring to the movement of the path
-        //TODO: connect the  pathToEndCoordinate to the answer of the best road
-        // //redrawPath(pathToEndCoordinate.toString());
-        //meanwhile:
-        redrawPath("Right,Right,Down,Down,Right,Up");
-
+        planeLayer = new Canvas(250 / 10, 250 / 10);
+        xLayer = new Canvas(250 / 5, 250 / 5);
 
         colorfulMapLayer.setOnMousePressed(this::redrawTarget);
 
         //binding
         planeFileName = new SimpleStringProperty();
-        xFileName = new SimpleStringProperty();
+        this.xFileName = new SimpleStringProperty();
 
         xCoordinateLongitude = new SimpleDoubleProperty();
         yCoordinateLatitude = new SimpleDoubleProperty();
@@ -96,16 +80,33 @@ public class MapDisplayer extends StackPane {
         mapData = new SimpleObjectProperty<>();
         pathToEndCoordinate = new SimpleStringProperty();
 
+        // initialize
+        this.xFileName.set(xFileName);
+
         //listen to changes
+
         pathToEndCoordinate.addListener((observable, oldVal, newVal) -> redrawPath(pathToEndCoordinate.get()));
         currentPlaneLatitudeY.addListener((observable, oldVal, newVal) -> redrawPlane());
-
-
-        currentPlaneLongitudeX = new SimpleDoubleProperty();
-        currentPlaneLatitudeY = new SimpleDoubleProperty();
+        mapData.addListener((observable, oldVal, newVal) -> {
+            Height = colorfulMapLayer.getHeight();
+            h = Height / mapData.get().length;
+            Width = colorfulMapLayer.getWidth();
+            w = Width / mapData.get()[0].length;
+            calcMinMax(newVal);
+            sizeMap = maxMap - minMap + 1;
+            redrawColorfulMap();
+            redrawPlane();
+        });
 
         //super
-        super.getChildren().addAll(colorfulMapLayer, planeLayer);
+        super.getChildren().addAll(colorfulMapLayer, planeLayer, xLayer);
+
+        //caring to the movement of the path
+        //TODO: connect the  pathToEndCoordinate to the answer of the best road
+        // //redrawPath(pathToEndCoordinate.toString());
+        //meanwhile:
+        // redrawPath("Right,Right,Down,Down,Right,Up");
+        //planeLayer.layoutXProperty().addListener((A,B,C) -> Thread.dumpStack() );//System.out.println(C));
     }
 
     private StringProperty planeFileName;
@@ -131,16 +132,6 @@ public class MapDisplayer extends StackPane {
         this.planeFileName.set(planeFileName);
     }
 
-    public void setMapData(double[][] mapData, double max, double min)
-    {
-        this.mapData.set(mapData);
-        this.maxMap = max;
-        this.minMap = min;
-        this.sizeMap = max - min + 1;
-        redrawColorfulMap();
-    }
-
-
     //draw functions
     //draw the background- colorful map
     public void redrawColorfulMap()
@@ -155,21 +146,28 @@ public class MapDisplayer extends StackPane {
             {
                 for (int j = 0; j < mapData.get()[i].length; j++)
                 {
-                    if (mapData.get()[i][j] < sizeMap / 2)
+                   /* if (mapData.get()[i][j] < maxMap / 2)
                     {
-                        green = ((255 / (sizeMap / 2)) * mapData.get()[i][j]);
-                        gc.setFill(rgb(255, (int) green, 0));
+                        green = ((255 / (maxMap / 2)) * mapData.get()[i][j])
+                       gc.setFill(rgb(255, (int) green, 0));
+
+                       // gc.setFill(rgb(255 - (int) green, (int) green, 0));
+
                     }
                     else
                     {
-                        red = (double) 255 - ((255 / (sizeMap / 2)) * (mapData.get()[i][j] - 7));
+                        red = (double) 255 - ((255 / (2*maxMap)) * (mapData.get()[i][j]));
+                        System.out.println("red = " + red);
                         gc.setFill(rgb((int) red, 255, 0));
-                    }
+
+                        //gc.setFill(rgb((int) red, 255- (int)red, 0));
+                    }*/
+                    int color = (int) (255 * ((mapData.get()[i][j] - minMap) / (maxMap - minMap)));
+                    gc.setFill(rgb(255 - color, color, 0));
                     gc.fillRect(j * w, i * h, w, h);
-                    gc.strokeText(String.valueOf((int) mapData.get()[i][j]), j * w, (i + 1) * h);
+                    //gc.strokeText(String.valueOf((int) mapData.get()[i][j]), j * w, (i + 1) * h);
                 }
             }
-            redrawPlane();
         }
     }
 
@@ -186,24 +184,27 @@ public class MapDisplayer extends StackPane {
             e.printStackTrace();
         }
         //pain the plane
-        gc.drawImage(planeImage, 0, 0, w, h);
+        planeLayer.setTranslateX(-planeLayer.getLayoutX() + (planeIndexX.get() * w));
+        planeLayer.setTranslateY(-planeLayer.getLayoutY() + (planeIndexY.get() * h));
+        gc.drawImage(planeImage, 0, 0, planeLayer.getWidth(), planeLayer.getHeight());
     }
 
     private void redrawTarget(MouseEvent event)
     {
+        System.out.println("redrawTarget");
         GraphicsContext gc = xLayer.getGraphicsContext2D();
-        Image xImage = null;
+        Image landmarkImage = null;
         try
-            {
-                xImage = new Image(new FileInputStream(new File(xFileName.get())));
-            } catch (FileNotFoundException e)
-            {
-                e.printStackTrace();
-            }
+        {
+            landmarkImage = new Image(new FileInputStream(new File(xFileName.get())));
+        } catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
 
-        gc.drawImage(xImage, 0, 0, w, h);
+        gc.drawImage(landmarkImage, 0, 0, xLayer.getWidth(), xLayer.getHeight());
 
-        redrawPath(pathToEndCoordinate.get());
+        //redrawPath(pathToEndCoordinate.get());
     }
 
     public void redrawPath(String path)
@@ -212,16 +213,17 @@ public class MapDisplayer extends StackPane {
         HashMap<String, int[]> mapStep = new HashMap<>();
         //separate the String to Array
         String[] parts = path.split(",");
-        mapStep.put("Up", new int[]{1, 0});
-        mapStep.put("Down", new int[]{-1, 0});
-        mapStep.put("Left", new int[]{0, -1});
-        mapStep.put("Right", new int[]{0, 1});
+        mapStep.put("Up", new int[]{0, -1});
+        mapStep.put("Down", new int[]{0, 1});
+        mapStep.put("Left", new int[]{-1, 0});
+        mapStep.put("Right", new int[]{1, 0});
 
         int[] currentPoint = {0, 0};//TODO: calculate the start point by the info from the CSV
         int[] prevPoint = {0, 0};
         int[] moves;
 
-        Group root = new Group();
+        pathLines.getChildren().clear();
+
 
         for (int i = 0; i < parts.length; i++)
         {
@@ -236,8 +238,25 @@ public class MapDisplayer extends StackPane {
             currentPoint[1] += moves[1];
 
             //draw line between the previous point to the current point
-            Line line = new Line(prevPoint[0], prevPoint[1], currentPoint[0], currentPoint[1]);
-            root.getChildren().add(line);
+            Line line = new Line(prevPoint[0] * w, prevPoint[1] * h, currentPoint[0] * w, currentPoint[1] * h);
+            line.setStrokeWidth(5);
+            pathLines.getChildren().add(line);
         }
+        super.getChildren().add(pathLines);
+
+    }
+
+    private void calcMinMax(double[][] matrix)
+    {
+        this.minMap = matrix[0][0];
+        this.maxMap = matrix[0][0];
+        for (int i = 0; i < matrix.length; i++)
+            for (int j = 0; j < matrix[i].length; j++)
+            {
+                if (matrix[i][j] > maxMap)
+                    maxMap = matrix[i][j];
+                if (matrix[i][j] < minMap)
+                    minMap = matrix[i][j];
+            }
     }
 }

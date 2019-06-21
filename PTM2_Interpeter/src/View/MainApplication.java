@@ -30,10 +30,11 @@ public class MainApplication extends Application
 		FXMLLoader fxmlLoader = new FXMLLoader();// creating an instance so we can get the controller for the fxml we will load
 		Parent root = fxmlLoader.load(getClass().getResource("MainWindow.fxml").openStream());
 		primaryStage.setScene(new Scene(root));
+		primaryStage.show();
 		/*
 		// load mainWindow.fxml and put it in a window(stage...)
-		Parent root =  FXMLLoader.load(getClass().getResource("./MainWindow.fxml"));
-		primaryStage.setScene(new Scene(root));
+		Parent pathLines =  FXMLLoader.load(getClass().getResource("./MainWindow.fxml"));
+		primaryStage.setScene(new Scene(pathLines));
 		primaryStage.show();
 		*/
 
@@ -41,8 +42,6 @@ public class MainApplication extends Application
 		MainWindowController view = fxmlLoader.getController(); // this is the VIEW
 		view.setViewModel(viewModel);
 		viewModel.addObserver(view);
-
-		primaryStage.show();
 	}
 
 	public static void main(String[] args)
