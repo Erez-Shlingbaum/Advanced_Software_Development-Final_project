@@ -1,7 +1,10 @@
 package View;
 
 import ViewModel.ViewModel;
-import javafx.beans.property.*;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -110,6 +113,9 @@ public class MainWindowController implements Observer, Initializable
         viewModel.yAxisJoystick.bindBidirectional(joystickController.yAxisJoystick);
         viewModel.rudderJoystick.bindBidirectional(joystickController.downSlider.valueProperty());
         viewModel.throttleJoystick.bindBidirectional(joystickController.leftSlider.valueProperty());
+
+		// update map
+		viewModel.asyncMapPlanePositionUpdater();
     }
 
     public void onConnectToSimulator(ActionEvent actionEvent)
