@@ -30,10 +30,10 @@ public class PreCalculator
         expression = replaceNegativePrefix(expression);
 
         //iterate on the expression and find variable names while ignoring Model.Interpreter.Operators or '()'
-        while (startIndex < expression.length() && endIndex < expression.length())
+        while (startIndex < expression.length())
         {
             //while not character - startIndex++
-            while (startIndex < expression.length() && !isEndlishLetter(expression.charAt(startIndex)))
+            while (startIndex < expression.length() && !isEnglishLetter(expression.charAt(startIndex)))
                 startIndex++;
             if (startIndex >= expression.length())//if there are no variables in expression, then don't do anything
                 if (variableNames.size() == 0)
@@ -43,7 +43,7 @@ public class PreCalculator
             endIndex = startIndex;
 
             //while is character or number - endIndex++
-            while (endIndex < expression.length() && (isEndlishLetter(expression.charAt(endIndex)) || Character.isDigit(expression.charAt(endIndex))))
+            while (endIndex < expression.length() && (isEnglishLetter(expression.charAt(endIndex)) || Character.isDigit(expression.charAt(endIndex))))
                 endIndex++;
             String varName = expression.substring(startIndex, endIndex);
 
@@ -86,7 +86,7 @@ public class PreCalculator
                 char letter = expression.charAt(endIndex);
 
                 // if current letter is not an english letter and not a digit, OR we arrived to end of this expression
-                if ((!isEndlishLetter(letter) && !isDigit(letter)) || endIndex == expression.length() - 1)
+                if ((!isEnglishLetter(letter) && !isDigit(letter)) || endIndex == expression.length() - 1)
                 {
                     // if the reason we entered this if is because we got to the end of this expression then increase endIndex. (substring is exclusive with endIndex)
                     if (endIndex == expression.length() - 1)
@@ -96,17 +96,17 @@ public class PreCalculator
                 }
             }
             // check if this '-' is for a number
-            if (DefineVarCommand.getSymbolTable().get(varName) == null)
+            if (!DefineVarCommand.getSymbolTable().contains(varName))
                 return String.join("", "0", expression);
 
             // if this variable is negative then we replace "-var" with "(0-(0var))"
             // because when var is replaced with its value then a minus sign will be added
-            // if this variable is positive then we replave "-var" with "(0-var)"
+            // if this variable is positive then we replace "-var" with "(0-var)"
             if (DefineVarCommand.getSymbolTable().get(varName).getValue() < 0)
                 expression = expression.replace("-" + varName, "(0-(0" + varName + "))"); // NOTICE THIS IS NOW CHANGED AND CORRECT
             else
                 expression = expression.replace("-" + varName, "(0-" + varName + ")");
-        } else // if we dont have a '-' prefix
+        } else // if we do not have a '-' prefix
         {
             // find a variable whose name start on index 0
             for (int endIndex = 0; endIndex < expression.length(); endIndex++)
@@ -122,7 +122,7 @@ public class PreCalculator
                 }
             }
 
-            if (DefineVarCommand.getSymbolTable().get(varName) == null)
+            if (!DefineVarCommand.getSymbolTable().contains(varName))
                 return expression; // there is no '-' and no variable so no need to do anything
 
             // there is var and it is negative. for example there is the var "alt = -370",
@@ -134,7 +134,7 @@ public class PreCalculator
 
     }
 
-    private static boolean isEndlishLetter(char c)
+    private static boolean isEnglishLetter(char c)
     {
         return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
     }

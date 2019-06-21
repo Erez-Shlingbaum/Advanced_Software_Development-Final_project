@@ -8,7 +8,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
 
@@ -19,68 +18,51 @@ import java.util.HashMap;
 
 import static javafx.scene.paint.Color.rgb;
 
-public class MapDisplayer extends StackPane
-{
+public class MapDisplayer extends StackPane {
 
-    // this is the x and y of the 0,0 place in the map, received from the csv file
-    DoubleProperty xCoordinateLongitude;
-    DoubleProperty yCoordinateLatitude;
-    DoubleProperty cellSizeInDegrees;
-
-    ObjectProperty<double[][]> mapData; // map details- matrix
-    StringProperty pathToEndCoordinate; //the result: the path of the plane
     // these properties will update 4 times per second with the current plane position
-    public DoubleProperty currentPlaneLongitudeX = new SimpleDoubleProperty();
-    public DoubleProperty currentPlaneLatitudeY = new SimpleDoubleProperty();
-
+    public final DoubleProperty currentPlaneLongitudeX = new SimpleDoubleProperty();
+    public final DoubleProperty currentPlaneLatitudeY = new SimpleDoubleProperty();
+    // this is the x and y of the 0,0 place in the map, received from the csv file
+    final DoubleProperty xCoordinateLongitude = new SimpleDoubleProperty();
+    final DoubleProperty yCoordinateLatitude = new SimpleDoubleProperty();
+    final DoubleProperty cellSizeInDegrees = new SimpleDoubleProperty();
+    final ObjectProperty<double[][]> mapData = new SimpleObjectProperty<>(); // map details- matrix
+    final StringProperty pathToEndCoordinate = new SimpleStringProperty(); //the result: the path of the plane
     // isClicked property
-    BooleanProperty isMousePressed = new SimpleBooleanProperty(false);
+    final BooleanProperty isMousePressed = new SimpleBooleanProperty(false);
+    //local variables
+    final IntegerProperty planeIndexX = new SimpleIntegerProperty();
+    final IntegerProperty planeIndexY = new SimpleIntegerProperty();
+    final IntegerProperty xEndIndex = new SimpleIntegerProperty();
+    final IntegerProperty yEndIndex = new SimpleIntegerProperty();     // indexes in MATRIX landmarks index
     // canvases
-    private Canvas colorfulMapLayer;
-    private Canvas planeLayer;
-    private Canvas landmarkLayer;
-
-    double maxMap;
-    double minMap;
-    double sizeMap = 0;
-
-    //variables to find the place respectively canvas
-    double Height, Width, h, w;
-
+    private final Canvas colorfulMapLayer;
+    private final Canvas planeLayer;
+    private final Canvas landmarkLayer;
     //plane details
     /*TODO: change the Landmark according to the CSV file*/
-    double planeX = 0;
-    double planeY = 0;
+    private final double planeX = 0;
+    private final double planeY = 0;
+    private final StringProperty landmarkFileName = new SimpleStringProperty();
+    private final Group pathLines = new Group();
+    //binding
+    private final StringProperty planeFileName = new SimpleStringProperty();
+    private double maxMap;
+    private double minMap;
+    //variables to find the place respectively canvas
+    private double Height;
+    private double Width;
+    private double h;
+    private double w;
 
-    //local variables
-    double red = 255, green = 0;
-    IntegerProperty planeIndexX = new SimpleIntegerProperty();
-    IntegerProperty planeIndexY = new SimpleIntegerProperty();
-    IntegerProperty xEndIndex = new SimpleIntegerProperty();
-    IntegerProperty yEndIndex = new SimpleIntegerProperty();     // indexes in MATRIX landmarks index
-    public StringProperty landmarkFileName;
-    Group pathLines = new Group();
-
-
-    public MapDisplayer(@NamedArg("landmarkImage") String landmarkFileName)
-    {
+    public MapDisplayer(@NamedArg("landmarkImage") String landmarkFileName) {
         //initialize the layers
         colorfulMapLayer = new Canvas(250, 250);
         planeLayer = new Canvas(250 / 10, 250 / 10);
         landmarkLayer = new Canvas(250 / 11, 250 / 7);
 
         colorfulMapLayer.setOnMousePressed(this::redrawTarget);
-
-        //binding
-        planeFileName = new SimpleStringProperty();
-        this.landmarkFileName = new SimpleStringProperty();
-
-        xCoordinateLongitude = new SimpleDoubleProperty();
-        yCoordinateLatitude = new SimpleDoubleProperty();
-        cellSizeInDegrees = new SimpleDoubleProperty();
-
-        mapData = new SimpleObjectProperty<>();
-        pathToEndCoordinate = new SimpleStringProperty();
 
         // initialize
         this.landmarkFileName.set(landmarkFileName);
@@ -98,47 +80,32 @@ public class MapDisplayer extends StackPane
             Width = colorfulMapLayer.getWidth();
             w = Width / mapData.get()[0].length;
             calcMinMax(newVal);
-            sizeMap = maxMap - minMap + 1;
             redrawColorfulMap();
             redrawPlane();
         });
 
         //super
         super.getChildren().addAll(colorfulMapLayer, planeLayer, landmarkLayer);
-
-        //caring to the movement of the path
-        //TODO: connect the  pathToEndCoordinate to the answer of the best road
-        // //redrawPath(pathToEndCoordinate.toString());
-        //meanwhile:
-        // redrawPath("Right,Right,Down,Down,Right,Up");
-        //planeLayer.layoutXProperty().addListener((A,B,C) -> Thread.dumpStack() );//System.out.println(C));
     }
 
-    private StringProperty planeFileName;
-
     //generate the relevant variabless
-    public double getPlaneX()
-    {
+    public double getPlaneX() {
         return planeX;
     }
 
-    public double getPlaneY()
-    {
+    public double getPlaneY() {
         return planeY;
     }
 
-    public String getPlaneFileName()
-    {
+    public String getPlaneFileName() {
         return planeFileName.get();
     }
 
-    public void setPlaneFileName(String planeFileName)
-    {
+    public void setPlaneFileName(String planeFileName) {
         this.planeFileName.set(planeFileName);
     }
 
-    private void calcPlanePosition()
-    {
+    private void calcPlanePosition() {
         planeIndexX.set((int) ((currentPlaneLongitudeX.get() - xCoordinateLongitude.get() - cellSizeInDegrees.get()) / cellSizeInDegrees.get()));
         planeIndexY.set((int) (-1 * (currentPlaneLatitudeY.get() - yCoordinateLatitude.get() - cellSizeInDegrees.get()) / cellSizeInDegrees.get()));
     }
@@ -146,18 +113,14 @@ public class MapDisplayer extends StackPane
 
     //draw functions
     //draw the background- colorful map
-    public void redrawColorfulMap()
-    {
-        if (mapData != null)
-        {
+    private void redrawColorfulMap() {
+        if (mapData != null) {
 
             GraphicsContext gc = colorfulMapLayer.getGraphicsContext2D();
 
             //pain the colorful map by the values
-            for (int i = 0; i < mapData.get().length; i++)
-            {
-                for (int j = 0; j < mapData.get()[i].length; j++)
-                {
+            for (int i = 0; i < mapData.get().length; i++) {
+                for (int j = 0; j < mapData.get()[i].length; j++) {
                    /* if (mapData.get()[i][j] < maxMap / 2)
                     {
                         green = ((255 / (maxMap / 2)) * mapData.get()[i][j])
@@ -183,16 +146,13 @@ public class MapDisplayer extends StackPane
         }
     }
 
-    public void redrawPlane()
-    {
+    private void redrawPlane() {
         GraphicsContext gc = planeLayer.getGraphicsContext2D();
         //picture of the plane
         Image planeImage = null;
-        try
-        {
+        try {
             planeImage = new Image(new FileInputStream(planeFileName.get()));
-        } catch (FileNotFoundException e)
-        {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
         //pain the plane
@@ -201,15 +161,12 @@ public class MapDisplayer extends StackPane
         gc.drawImage(planeImage, 0, 0, planeLayer.getWidth(), planeLayer.getHeight());
     }
 
-    private void redrawTarget(MouseEvent event)
-    {
+    private void redrawTarget(MouseEvent event) {
         GraphicsContext gc = landmarkLayer.getGraphicsContext2D();
         Image landmarkImage = null;
-        try
-        {
+        try {
             landmarkImage = new Image(new FileInputStream(new File(landmarkFileName.get())));
-        } catch (FileNotFoundException e)
-        {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
@@ -235,8 +192,7 @@ public class MapDisplayer extends StackPane
         isMousePressed.set(false);
     }
 
-    public void redrawPath(String path)
-    {
+    private void redrawPath(String path) {
         HashMap<String, int[]> mapStep = new HashMap<>();
         //separate the String to Array
         String[] parts = path.split(",");
@@ -251,17 +207,24 @@ public class MapDisplayer extends StackPane
         int[] prevPoint = {0, 0};
         int[] moves;
 
-        pathLines.getChildren().clear();
+
+        if (!super.getChildren().contains(pathLines)) {
+            pathLines.getChildren().add(new Canvas(colorfulMapLayer.getWidth(), 0));
+            pathLines.getChildren().add(new Canvas(0, colorfulMapLayer.getHeight()));
+            super.getChildren().add(pathLines);
+        }
+
+        if (pathLines.getChildren().size() > 2)
+            pathLines.getChildren().remove(2, pathLines.getChildren().size());
 
 
-        for (int i = 0; i < parts.length; i++)
-        {
+        for (String part : parts) {
             //updating the previous point
             prevPoint[0] = currentPoint[0];
             prevPoint[1] = currentPoint[1];
 
             //calculate the current point
-            moves = mapStep.get(parts[i]);
+            moves = mapStep.get(part);
 
             currentPoint[0] += moves[0];
             currentPoint[1] += moves[1];
@@ -271,25 +234,17 @@ public class MapDisplayer extends StackPane
             line.setStrokeWidth(2);
             pathLines.getChildren().add(line);
         }
-        if (!super.getChildren().contains(pathLines))
-        {
-            pathLines.getChildren().add(new Canvas(colorfulMapLayer.getWidth(), 0));
-            pathLines.getChildren().add(new Canvas(0, colorfulMapLayer.getHeight()));
-            super.getChildren().add(pathLines);
-        }
     }
 
-    private void calcMinMax(double[][] matrix)
-    {
+    private void calcMinMax(double[][] matrix) {
         this.minMap = matrix[0][0];
         this.maxMap = matrix[0][0];
-        for (int i = 0; i < matrix.length; i++)
-            for (int j = 0; j < matrix[i].length; j++)
-            {
-                if (matrix[i][j] > maxMap)
-                    maxMap = matrix[i][j];
-                if (matrix[i][j] < minMap)
-                    minMap = matrix[i][j];
+        for (double[] doubles : matrix)
+            for (int j = 0; j < doubles.length; j++) {
+                if (doubles[j] > maxMap)
+                    maxMap = doubles[j];
+                if (doubles[j] < minMap)
+                    minMap = doubles[j];
             }
     }
 }

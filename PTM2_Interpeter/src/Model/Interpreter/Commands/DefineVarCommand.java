@@ -3,16 +3,13 @@ package Model.Interpreter.Commands;
 import Model.Interpreter.Interpeter.Variable;
 import Model.Interpreter.Operators.AssignmentOperator;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class DefineVarCommand implements Command
 {
 	//Hash Map shared by all define var objects
-	static ConcurrentHashMap<String, Variable> symbolTable = new ConcurrentHashMap<>();
+	private static final ConcurrentHashMap<String, Variable> symbolTable = new ConcurrentHashMap<>();
 
 	public static ConcurrentHashMap<String, Variable> getSymbolTable()
 	{
@@ -22,7 +19,7 @@ public class DefineVarCommand implements Command
 	@Override
 	public void execute(String[] args) throws Exception
 	{
-		String varName = null;
+		String varName;
 		if(String.join("",args).contains("="))
 		{
 			Scanner scanner = new Scanner(String.join(" ", args));
@@ -35,10 +32,10 @@ public class DefineVarCommand implements Command
 			if(String.join(" ", args).contains("bind"))
 			{
 				scanner.useDelimiter(" ");
-				expression = new ArrayList<String>(Arrays.asList(scanner.next().trim(), scanner.next().trim())); // "bind", "path"
+				expression = new ArrayList<>(Arrays.asList(scanner.next().trim(), scanner.next().trim())); // "bind", "path"
 			}
 			else
-				expression = new ArrayList<String>(Arrays.asList(scanner.nextLine().trim()));
+				expression = new ArrayList<>(Collections.singletonList(scanner.nextLine().trim()));
 
 			expression.add(0, "=");
 			expression.add(0, varName);
@@ -59,4 +56,3 @@ public class DefineVarCommand implements Command
 			else throw new Exception("Syntax error: var expects '='");
 	}
 }
-//var varName = bind "/path/xxxx/xxx"

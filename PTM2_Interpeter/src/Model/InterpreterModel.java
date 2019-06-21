@@ -18,16 +18,17 @@ import java.util.Scanner;
 public class InterpreterModel extends Observable implements IModel
 {
 	// interpreter instance
-	MyInterpreter interpreter;
+	private MyInterpreter interpreter;
 
 	// return values
-	String solutionForPathProblem;
-	int returnValue; // this is set to 0 if a script/command did not return something
+	private String solutionForPathProblem;
+	private int returnValue; // this is set to 0 if a script/command did not return something
 
 	// csv parameters
-	double xCoordinateLongitude, yCoordinateLatitude; // longitude, latitude of (0,0) index in the csv table
-	double cellSizeInDegrees;  // size of each cell in the csv table in degrees (this is related to longitude and latitude)
-	double[][] csvValues = null;
+	private double xCoordinateLongitude;
+	private double yCoordinateLatitude; // longitude, latitude of (0,0) index in the csv table
+	private double cellSizeInDegrees;  // size of each cell in the csv table in degrees (this is related to longitude and latitude)
+	private double[][] csvValues = null;
 	private double varRetrivedFromScript;
 
 	public InterpreterModel()
@@ -127,14 +128,15 @@ public class InterpreterModel extends Observable implements IModel
 	{
 		StringBuilder stringBuilder = new StringBuilder();
 
-		for (int i = 0; i < heightsInMeters.length; i++) // Loop through all rows
-		{
-			for (int j = 0; j < heightsInMeters[i].length; j++) // Loop through all elements of current row
-				stringBuilder.append(heightsInMeters[i][j]).append(',');
+		for (double[] heightsInMeter : heightsInMeters) {
+			for (int j = 0; j < heightsInMeter.length; j++) // Loop through all elements of current row
+				stringBuilder.append(heightsInMeter[j]).append(',');
 			stringBuilder.setLength(stringBuilder.length() - 1); // "remove" last comma
 			stringBuilder.append('\n');
 		}
-		return stringBuilder.toString();
+
+		// replacing 0's so that the BFS algorithm wont choose greedily incredibly long paths. because of height 0
+		return stringBuilder.toString().replaceAll("0", "20");
 	}
 
 	@Override

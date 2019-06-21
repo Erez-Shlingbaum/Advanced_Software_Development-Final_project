@@ -4,8 +4,8 @@ import Model.Interpreter.Client_Side.ConnectClient;
 
 public class Variable
 {
-	String path = null;
-	double value;
+	private String path = null;
+	private double value;
 
 	public String getPath() { return path; }
 

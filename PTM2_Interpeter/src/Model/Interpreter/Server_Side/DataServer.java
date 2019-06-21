@@ -6,9 +6,9 @@ import java.net.Socket;
 
 public class DataServer implements Server
 {
-	static DataServer ref = null;
+    private static DataServer ref = null;
 
-	public static DataServer getReference()    //singelton pattern
+    public static DataServer getReference()    //singleton pattern
 	{
 		if (ref == null)
 			ref = new DataServer();
@@ -17,9 +17,7 @@ public class DataServer implements Server
 
 	public static boolean isReferenceExists()
 	{
-		if (ref == null)
-			return false;
-		return true;
+        return ref != null;
 	}
 
 	private DataServer() { }

@@ -14,16 +14,17 @@ public class Calculator
 		LinkedList<String> queue = new LinkedList<>();
 		Stack<String> stack = new Stack<>();
 		int len = expression.length();
-		String token = "";
+        String token;
 		for (int i = 0; i < len; i++)
 		{
 			// if we have a number
 			if (expression.charAt(i) >= '0' && expression.charAt(i) <= '9')
 			{
-				token = expression.charAt(i) + "";
 				// find all digits of this number
+                StringBuilder tokenBuilder = new StringBuilder(expression.charAt(i) + "");
 				while (i + 1 < len && ((expression.charAt(i + 1) >= '0' && expression.charAt(i + 1) <= '9') || expression.charAt(i + 1) == '.')) // added ||
-					token = token + expression.charAt(++i);
+                    tokenBuilder.append(expression.charAt(++i));
+                token = tokenBuilder.toString();
 			} else
 				token = expression.charAt(i) + "";
 
@@ -42,12 +43,8 @@ public class Calculator
 					stack.push(token);
 					break;
 				case "*":
-					stack.push(token);
-					break;
+                case "(":
 				case "/":
-					stack.push(token);
-					break;
-				case "(":
 					stack.push(token);
 					break;
 				case ")":
@@ -75,7 +72,7 @@ public class Calculator
 
 	private static Expression buildExpression(LinkedList<String> queue)
 	{
-		Expression returnedExpression = null;
+        Expression returnedExpression;
 		Expression right = null;
 		Expression left = null;
 		String currentExpression = queue.removeFirst();

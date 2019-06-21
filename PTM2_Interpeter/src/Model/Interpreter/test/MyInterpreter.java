@@ -6,16 +6,13 @@ import Model.Interpreter.Interpeter.Lexer;
 import Model.Interpreter.Interpeter.Parser;
 import Model.Interpreter.Interpeter.Variable;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class MyInterpreter
 {
 
 	// one shared(for different instances of this class) keywords map
-	static HashMap<String, Command> keywords;
+	private static HashMap<String, Command> keywords;
 
 	public int interpret(String[] lines)
 	{
@@ -26,7 +23,7 @@ public class MyInterpreter
 		boolean isMultiCommand = false;
 
 		// define our language syntax
-		if (this.keywords == null)
+		if (keywords == null)
 			this.initializeInterpreter();
 
 		Scanner scanner = new Scanner(String.join("\n", lines));
@@ -47,8 +44,8 @@ public class MyInterpreter
 					{
 						if (tokens.length != 0 && (tokens[0].charAt(0) != '/' || tokens[0].charAt(1) != '/')) // if line is not empty and is not comment then add it
 						{
-							for (String token : tokens)//add every token into a list
-								tokenList.add(token);
+							//add every token into a list
+							tokenList.addAll(Arrays.asList(tokens));
 							tokenList.add("\n");//to differentiate different commands - later in parser
 						}
 						line = scanner.nextLine();
@@ -91,9 +88,7 @@ public class MyInterpreter
 
 	public boolean isConnectedToSimulator()
 	{
-		if(ConnectClient.isReferenceExists() && ConnectClient.getReference().isConnected())
-			return true;
-		return false;
+		return ConnectClient.isReferenceExists() && ConnectClient.getReference().isConnected();
 	}
 
 	private void initializeInterpreter()

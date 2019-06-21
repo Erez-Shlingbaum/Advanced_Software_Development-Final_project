@@ -1,6 +1,6 @@
 package Model.Interpreter.test;
 
-public class MainTrain {
+class MainTrain {
 /*
 	public static void main(String[] args) {
 		Random r=new Random();

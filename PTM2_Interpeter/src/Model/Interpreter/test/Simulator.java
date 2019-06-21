@@ -9,9 +9,11 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.Random;
 
-public class Simulator {
-	
-	double simX,simY,simZ;
+class Simulator {
+
+	private double simX;
+	private double simY;
+	private double simZ;
 	private int port;
 	private volatile boolean stop;
 	
@@ -20,8 +22,8 @@ public class Simulator {
 		Random r=new Random();
 		simY=r.nextInt(1000);
 		simZ=r.nextInt(1000);
-		new Thread(()->runServer()).start();
-		new Thread(()->runClient()).start();
+		new Thread(this::runServer).start();
+		new Thread(this::runClient).start();
 	}
 	
 	private void runClient(){
@@ -32,12 +34,18 @@ public class Simulator {
 				while(!stop){
 					out.println(simX+","+simY+","+simZ);
 					out.flush();
-					try {Thread.sleep(100);} catch (InterruptedException e1) {}
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException ignored) {
+					}
 				}
 				out.close();
 				interpreter.close();
 			} catch (IOException e) {
-				try {Thread.sleep(1000);} catch (InterruptedException e1) {}
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException ignored) {
+				}
 			}
 		}
 	}
@@ -50,7 +58,7 @@ public class Simulator {
 				try{
 					Socket client=server.accept();
 					BufferedReader in=new BufferedReader(new InputStreamReader(client.getInputStream()));
-					String line=null;
+					String line;
 					while(!(line=in.readLine()).equals("bye")){
 						try{
 							if(line.startsWith("set simX"))
@@ -59,14 +67,17 @@ public class Simulator {
 								simY=Double.parseDouble(line.split(" ")[2]);
 							if(line.startsWith("set simZ"))
 								simZ=Double.parseDouble(line.split(" ")[2]);
-						}catch(NumberFormatException e){}
+						} catch (NumberFormatException ignored) {
+						}
 					}
 					in.close();
 					client.close();
-				}catch(SocketTimeoutException e){}
+				} catch (SocketTimeoutException ignored) {
+				}
 			}
 			server.close();
-		} catch (IOException e) {}
+		} catch (IOException ignored) {
+		}
 	}
 
 	public void close() {

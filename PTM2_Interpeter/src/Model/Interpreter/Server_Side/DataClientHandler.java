@@ -10,7 +10,7 @@ import java.util.Scanner;
 
 public class DataClientHandler implements ClientHandler
 {
-	int linesPerSecond;
+	private final int linesPerSecond;
 	public static volatile boolean isStop = false;
 
 	public DataClientHandler(int linesPerSecond)
@@ -38,22 +38,23 @@ public class DataClientHandler implements ClientHandler
 
 		try
 		{
-			// REMEMBER THAT READLINE IS A BLOCKING CALL, SO THIS THREAD WILL BE IN BLOCKED AND WILL NOT SEE THE isStop Variable until new input arrvies!.
+			// REMEMBER THAT READ LINE IS A BLOCKING CALL, SO THIS THREAD WILL BE IN BLOCKED AND WILL NOT SEE THE isStop Variable until new input arrives!.
 			// this thread never dies. fix it later if we need to
-			while ((str = clientInput.readLine()) != null && !this.isStop)//this reads 10 lines per second, unless the server sends in a different rate // TODO ADD WHILE NOT CLOSE
+			while ((str = clientInput.readLine()) != null && !isStop)//this reads 10 lines per second, unless the server sends in a different rate // TODO ADD WHILE NOT CLOSE
 			{
 				String[] simsXYZ = str.split(",");
 				Variable[] variables = DefineVarCommand.getSymbolTable().values().toArray(new Variable[0]);
 
 				for (int i = 0; i < simNames.size(); i++)
-					for (int j = 0; j < variables.length; j++)
-						if (simNames.get(i).equals(variables[j].getPath()))
-							try
-							{
+					for (Variable variable : variables)
+						if (simNames.get(i).equals(variable.getPath()))
+							try {
 								//System.out.println("DataServer: updating var '" + variables[j].getPath() + "' with " + simsXYZ[i]);
-								variables[j].setValue(Double.parseDouble(simsXYZ[i]), false);
+								variable.setValue(Double.parseDouble(simsXYZ[i]), false);
 								break;
-							} catch (Exception e) {e.printStackTrace();}
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
 				//DefineVarCommand.getSymbolTable().get("name").setValue(value, false)
 
 				//System.out.println("simulator sent to dataServer: " + str);

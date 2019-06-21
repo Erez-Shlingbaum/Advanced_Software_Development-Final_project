@@ -22,7 +22,7 @@ public class Parser
         {
             List<CommandWithArgs> commandWithArgsList = new LinkedList<>();
             CommandWithArgs multiCommand;
-            int start = 0, end = 0;
+            int start = 0, end;
             end = getEndOfLine(tokens, start); //find \n
             //the first Command is while/ if...
             multiCommand = generateCommand(Arrays.copyOfRange(tokens, start, end), keywords);
@@ -67,10 +67,10 @@ public class Parser
             if(String.join(" ", tokens).contains("bind"))
             {
                 scanner.useDelimiter(" ");
-                expression = new ArrayList<String>(Arrays.asList(scanner.next().trim(), scanner.next().trim())); // "bind", "path"
+                expression = new ArrayList<>(Arrays.asList(scanner.next().trim(), scanner.next().trim())); // "bind", "path"
             }
             else
-                expression = new ArrayList<String>(Arrays.asList(scanner.nextLine().trim()));//.toArray(new String[0]); // this is some crazy code
+                expression = new ArrayList<>(Collections.singletonList(scanner.nextLine().trim()));//.toArray(new String[0]); // this is some crazy code
 
             if(!DefineVarCommand.getSymbolTable().containsKey(varName))
                 throw new Exception("Syntax error: variable not found");

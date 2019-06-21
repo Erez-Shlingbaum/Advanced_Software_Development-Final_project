@@ -28,7 +28,7 @@ public class MainWindowController implements Observer, Initializable
 {
     @FXML
     RadioButton autoPilotRadioButton;
-    BooleanProperty isAutoPilotMode; // if true the autopilot mode, else - manual mode
+    final BooleanProperty isAutoPilotMode; // if true the autopilot mode, else - manual mode
 
     ViewModel viewModel;
 
@@ -40,13 +40,13 @@ public class MainWindowController implements Observer, Initializable
     @FXML
     JoystickControl joystickController;
     //property for the binding
-    StringProperty pathCalculatorServerIP;
-    StringProperty pathCalculatorServerPORT;
+    final StringProperty pathCalculatorServerIP;
+    final StringProperty pathCalculatorServerPORT;
 
     // csv
-    StringProperty csvFilePath;
-    StringProperty simulatorIP;
-    StringProperty simulatorPort;
+    final StringProperty csvFilePath;
+    final StringProperty simulatorIP;
+    final StringProperty simulatorPort;
 
     //constructor
     public MainWindowController()

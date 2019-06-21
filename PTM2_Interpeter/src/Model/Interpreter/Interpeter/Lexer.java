@@ -15,6 +15,6 @@ public class Lexer
 		while (scanner.hasNext())
 			stringList.add(scanner.next());
 
-		return stringList.toArray(new String[stringList.size()]);
+        return stringList.toArray(new String[0]);
 	}
 }

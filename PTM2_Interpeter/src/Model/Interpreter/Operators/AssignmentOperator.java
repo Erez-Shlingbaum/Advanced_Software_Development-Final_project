@@ -19,7 +19,7 @@ public class AssignmentOperator implements Operator
 		if (String.join(" ", args).contains("bind"))//varName = bind "path"
 		{
 			String path = args[3];
-			for (Variable variable : DefineVarCommand.getSymbolTable().values()) // did someone already binded to path?
+            for (Variable variable : DefineVarCommand.getSymbolTable().values()) // has someone already bounded to path?
 			{
 				if (path.equals(variable.getPath())) // if yes, the use his variable
 				{
@@ -39,7 +39,7 @@ public class AssignmentOperator implements Operator
 			//replace varNames with their value
 			expression = PreCalculator.replaceVarNames(expression);
 			//set value in symbol table and notify server with new value
-			if (var.getPath() != null)//check if variables is binded or not, and notify only if binded
+            if (var.getPath() != null)//check if variables is bounded or not, and notify only if bounded
 				var.setValue(Calculator.calculate(expression), true);
 			else
 				var.setValue(Calculator.calculate(expression), false);

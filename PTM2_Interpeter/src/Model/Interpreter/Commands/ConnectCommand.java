@@ -16,9 +16,6 @@ public class ConnectCommand implements Command
 		String ipAddress = args[0];
 		int port = (int)Calculator.calculate(args[1]); //calculate complex expressions //IDEA: port must to be an integer, check if the answer incorrect
 
-		System.out.println("ipAddress = "+ ipAddress);
-		System.out.println("port = "+ port);
-
 		if(ConnectClient.isReferenceExists())
 			throw new Exception("Error: trying to 'connect' twice");
 		ConnectClient.getReference().connect(ipAddress, port);//might throw exception if ip not valid

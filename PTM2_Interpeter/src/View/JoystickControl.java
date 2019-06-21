@@ -25,20 +25,23 @@ import javafx.scene.text.Font;
 
 public class JoystickControl extends BorderPane
 {
+	final DoubleProperty xAxisJoystick; // when moving the joystick left-right
+	final DoubleProperty yAxisJoystick; // when moving the joystick up-down
+	final Slider downSlider;
+	final Slider leftSlider;
 	// graphical elements of joystick
-	Circle outerCircle; // background
-	Circle innerCircle; // joystick
-
-	DoubleProperty xAxisJoystick; // when moving the joystick left-right
-	DoubleProperty yAxisJoystick; // when moving the joystick up-down
-
-	Slider downSlider;
-	Slider leftSlider;
-
-	Label downLabel, upLabel, leftLabel, rightLabel;
+	private final Circle outerCircle; // background
+	private final Circle innerCircle; // joystick
+	private final Label downLabel;
+	private final Label upLabel;
+	private final Label leftLabel;
+	private final Label rightLabel;
 
 	// variables used for mouse dragging events - moving the joystick around
-	double orgSceneX, orgSceneY, orgTranslateX, orgTranslateY;
+	private double orgSceneX;
+	private double orgSceneY;
+	private double orgTranslateX;
+	private double orgTranslateY;
 
 	// getters and setters allows to set variables in the FXML (IMPORTANT)
 	// there is another way to do that - with @NamedArg("name") in C'tor

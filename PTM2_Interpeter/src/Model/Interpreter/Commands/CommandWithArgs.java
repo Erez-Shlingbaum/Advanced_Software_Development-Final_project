@@ -2,8 +2,8 @@ package Model.Interpreter.Commands;
 
 public class CommandWithArgs
 {
-    public Command command;
-    public String[] args;
+    public final Command command;
+    private final String[] args;
 
     public CommandWithArgs(Command command, String[] args)
     {

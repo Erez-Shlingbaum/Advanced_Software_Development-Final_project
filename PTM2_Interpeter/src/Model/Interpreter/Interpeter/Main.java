@@ -1,6 +1,6 @@
 package Model.Interpreter.Interpeter;
 
-public class Main
+class Main
 {
     public static void main(String[] args)
     {

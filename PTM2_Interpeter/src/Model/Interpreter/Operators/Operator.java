@@ -1,6 +1,6 @@
 package Model.Interpreter.Operators;
 
-public interface Operator
+interface Operator
 {
 	void execute(String[] args) throws Exception;
 }

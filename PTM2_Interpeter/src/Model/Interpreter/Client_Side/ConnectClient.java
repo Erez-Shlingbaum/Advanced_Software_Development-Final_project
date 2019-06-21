@@ -6,9 +6,8 @@ import java.net.Socket;
 
 public class ConnectClient implements Client
 {
-	Socket socket = null;
-
-	static ConnectClient client = null;
+	private static ConnectClient client = null;
+	private Socket socket = null;
 
 	private ConnectClient() { }
 
@@ -27,9 +26,7 @@ public class ConnectClient implements Client
 
 	public static boolean isReferenceExists()
 	{
-		if (client == null)
-			return false;
-		return true;
+		return client != null;
 	}
 
 	@Override
@@ -54,14 +51,6 @@ public class ConnectClient implements Client
 			}
 	}
 
-	@Override
-	public boolean isConnected()
-	{
-		if(this.socket != null && this.socket.isConnected())
-			return true;
-		return false;
-	}
-
 	private static boolean validIP(String ip)
 	{
 		try
@@ -79,11 +68,13 @@ public class ConnectClient implements Client
 				if ((i < 0) || (i > 255))
 					return false;
 			}
-			if (ip.endsWith("."))
-				return false;
-
-			return true;
+			return !ip.endsWith(".");
 		} catch (NumberFormatException e) { return false; }
+	}
+
+	@Override
+	public boolean isConnected() {
+		return this.socket != null && this.socket.isConnected();
 	}
 
 	@Override
