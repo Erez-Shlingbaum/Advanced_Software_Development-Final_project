@@ -32,8 +32,8 @@ public class MapDisplayer extends StackPane {
     // isClicked property
     final BooleanProperty isMousePressed = new SimpleBooleanProperty(false);
     //local variables
-    final IntegerProperty planeIndexX = new SimpleIntegerProperty();
-    final IntegerProperty planeIndexY = new SimpleIntegerProperty();
+    final IntegerProperty planeIndexX = new SimpleIntegerProperty(-1000);
+    final IntegerProperty planeIndexY = new SimpleIntegerProperty(-1000);
     final IntegerProperty xEndIndex = new SimpleIntegerProperty();
     final IntegerProperty yEndIndex = new SimpleIntegerProperty();     // indexes in MATRIX landmarks index
     // canvases
@@ -41,7 +41,6 @@ public class MapDisplayer extends StackPane {
     private final Canvas planeLayer;
     private final Canvas landmarkLayer;
     //plane details
-    /*TODO: change the Landmark according to the CSV file*/
     private final double planeX = 0;
     private final double planeY = 0;
     private final StringProperty landmarkFileName = new SimpleStringProperty();
@@ -56,11 +55,13 @@ public class MapDisplayer extends StackPane {
     private double h;
     private double w;
 
-    public MapDisplayer(@NamedArg("landmarkImage") String landmarkFileName) {
+    public MapDisplayer(@NamedArg("landmarkImage") String landmarkFileName,
+                        @NamedArg("mapWidth") double mapWidth,
+                        @NamedArg("mapHeight") double mapHeight) {
         //initialize the layers
-        colorfulMapLayer = new Canvas(250, 250);
-        planeLayer = new Canvas(250 / 10, 250 / 10);
-        landmarkLayer = new Canvas(250 / 11, 250 / 7);
+        colorfulMapLayer = new Canvas(mapWidth, mapHeight);
+        planeLayer = new Canvas(mapWidth / 10, mapHeight / 10);
+        landmarkLayer = new Canvas(mapWidth / 11, mapHeight / 7);
 
         colorfulMapLayer.setOnMousePressed(this::redrawTarget);
 
@@ -71,8 +72,10 @@ public class MapDisplayer extends StackPane {
 
         pathToEndCoordinate.addListener((observable, oldVal, newVal) -> redrawPath(pathToEndCoordinate.get()));
         currentPlaneLatitudeY.addListener((observable, oldVal, newVal) -> {
-            calcPlanePosition(); // find indexes in matrix for the plane
-            redrawPlane();
+            if (oldVal != newVal) {
+                calcPlanePosition(); // find indexes in matrix for the plane
+                redrawPlane();
+            }
         });
         mapData.addListener((observable, oldVal, newVal) -> {
             Height = colorfulMapLayer.getHeight();
@@ -106,6 +109,8 @@ public class MapDisplayer extends StackPane {
     }
 
     private void calcPlanePosition() {
+        if (currentPlaneLongitudeX.get() == 0 && currentPlaneLatitudeY.get() == 0)
+            return;
         planeIndexX.set((int) ((currentPlaneLongitudeX.get() - xCoordinateLongitude.get() - cellSizeInDegrees.get()) / cellSizeInDegrees.get()));
         planeIndexY.set((int) (-1 * (currentPlaneLatitudeY.get() - yCoordinateLatitude.get() - cellSizeInDegrees.get()) / cellSizeInDegrees.get()));
     }
@@ -173,13 +178,6 @@ public class MapDisplayer extends StackPane {
         int col = (int) (event.getX() / w);
         int row = (int) (event.getY() / h);
 
-        // System.out.println("col plane: " + planeIndexX.get());
-        // System.out.println("row plane: " + planeIndexY.get());
-
-        // System.out.println("col target: " + col);
-        // System.out.println("row target: " + row);
-
-
         this.xEndIndex.set(col);
         this.yEndIndex.set(row);
 
@@ -197,7 +195,6 @@ public class MapDisplayer extends StackPane {
         //separate the String to Array
         String[] parts = path.split(",");
 
-        // TODO make sure this is correct
         mapStep.put("Up", new int[]{0, -1});
         mapStep.put("Down", new int[]{0, 1});
         mapStep.put("Left", new int[]{-1, 0});

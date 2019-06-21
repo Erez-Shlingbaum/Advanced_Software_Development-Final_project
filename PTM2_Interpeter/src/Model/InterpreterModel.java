@@ -55,7 +55,7 @@ public class InterpreterModel extends Observable implements IModel
 	public void interpretScript(String... scriptLines)
 	{
 		// in a different thread..
-		returnValue = this.interpreter.interpret(scriptLines); // Bonus: each line interpreted is highlighted in view
+        returnValue = this.interpreter.interpret(scriptLines); // Bonus: each line interpreted is highlighted in view	// IDEA - use help function interpretLine and after each line, notify GUI about line read.
 		super.setChanged();
 		super.notifyObservers("scriptInterpreted");
 	}

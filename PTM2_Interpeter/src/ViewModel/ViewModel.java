@@ -6,9 +6,6 @@ import javafx.beans.property.*;
 import java.util.Observable;
 import java.util.Observer;
 
-
-// TODO idea - hold ThreadPool/ThreadManger in this class and make every call to the model Asynchronous
-
 public class ViewModel extends Observable implements Observer {
     // property to differintiate bewtween modes in the GUI
     public final BooleanProperty isAutoPilotMode = new SimpleBooleanProperty();

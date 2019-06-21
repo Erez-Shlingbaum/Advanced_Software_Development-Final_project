@@ -96,7 +96,7 @@ public class PreCalculator
                 }
             }
             // check if this '-' is for a number
-            if (!DefineVarCommand.getSymbolTable().contains(varName))
+            if (DefineVarCommand.getSymbolTable().get(varName) == null)
                 return String.join("", "0", expression);
 
             // if this variable is negative then we replace "-var" with "(0-(0var))"
@@ -122,7 +122,7 @@ public class PreCalculator
                 }
             }
 
-            if (!DefineVarCommand.getSymbolTable().contains(varName))
+            if (DefineVarCommand.getSymbolTable().get(varName) == null)
                 return expression; // there is no '-' and no variable so no need to do anything
 
             // there is var and it is negative. for example there is the var "alt = -370",

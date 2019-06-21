@@ -1,18 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import View.JoystickControl?>
 <?import View.MapDisplayer?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.RadioButton?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.ToggleGroup?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
-
 <GridPane accessibleText="300" alignment="CENTER" hgap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-background-color: #77acbb;" vgap="10.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View.MainWindowController">
     <opaqueInsets>
         <Insets />
@@ -59,7 +51,10 @@
                 </HBox>
             </top>
          <center>
-            <MapDisplayer fx:id="mapDisplayer" landmarkImage="./PTM2_Interpeter/Resources/landmarkImage.png" planeFileName="./PTM2_Interpeter/Resources/plane.png" BorderPane.alignment="CENTER" />
+             <MapDisplayer fx:id="mapDisplayer"
+                           landmarkImage="./PTM2_Interpeter/Resources/landmarkImage.png"
+                           planeFileName="./PTM2_Interpeter/Resources/plane.png" mapWidth="250.0" mapHeight="250.0"
+                           BorderPane.alignment="CENTER"/>
          </center>
         </BorderPane>
         <BorderPane prefHeight="250.0" prefWidth="250.0" GridPane.columnIndex="4">
