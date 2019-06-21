@@ -64,8 +64,6 @@ public class MainWindowController implements Observer, Initializable
 
 	// csv
 	StringProperty csvFilePath;
-	IntegerProperty xStartIndex, yStartIndex; // indexes in MATRIX
-	IntegerProperty xEndIndex, yEndIndex;     // indexes in MATRIX
 	StringProperty simulatorIP;
 	StringProperty simulatorPort;
 
@@ -81,10 +79,6 @@ public class MainWindowController implements Observer, Initializable
 		// path solving
 		pathCalculatorServerIP = new SimpleStringProperty();
 		pathCalculatorServerPORT = new SimpleStringProperty();
-		xStartIndex = new SimpleIntegerProperty();
-		yStartIndex = new SimpleIntegerProperty();
-		xEndIndex = new SimpleIntegerProperty();
-		yEndIndex = new SimpleIntegerProperty();
 
 		// connection to simulator
 		simulatorIP = new SimpleStringProperty();
@@ -140,10 +134,10 @@ public class MainWindowController implements Observer, Initializable
 		viewModel.pathCalculatorServerIP.bind(pathCalculatorServerIP);
 		viewModel.pathCalculatorServerPORT.bind(pathCalculatorServerPORT);
 
-		viewModel.xStartIndex.bind(xStartIndex);
-		viewModel.yStartIndex.bind(yStartIndex);
-		viewModel.xEndIndex.bind(xEndIndex);
-		viewModel.yEndIndex.bind(yEndIndex);
+		viewModel.xStartIndex.bind(mapDisplayer.planeIndexX);
+		viewModel.yStartIndex.bind(mapDisplayer.planeIndexY);
+		viewModel.xEndIndex.bind(mapDisplayer.xEndIndex);
+		viewModel.yEndIndex.bind(mapDisplayer.yEndIndex);
 
 		// connection to simulator
 		viewModel.simulatorIP.bind(simulatorIP);

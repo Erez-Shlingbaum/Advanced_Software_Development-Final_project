@@ -32,8 +32,6 @@ public class MapDisplayer extends StackPane
     // these properties will update 4 times per second with the current plane position
     public DoubleProperty currentPlaneLongitudeX = new SimpleDoubleProperty();
     public DoubleProperty currentPlaneLatitudeY = new SimpleDoubleProperty();
-    ;
-
 
     //double canvases variable
     private Canvas colorfulMapLayer;
@@ -54,8 +52,10 @@ public class MapDisplayer extends StackPane
 
     //local variables
     double red = 255, green = 0;
-    public DoubleProperty planeIndexX = new SimpleDoubleProperty();
-    public DoubleProperty planeIndexY = new SimpleDoubleProperty();
+    IntegerProperty planeIndexX = new SimpleIntegerProperty();
+    IntegerProperty planeIndexY = new SimpleIntegerProperty();
+    IntegerProperty xEndIndex = new SimpleIntegerProperty();
+    IntegerProperty yEndIndex = new SimpleIntegerProperty();     // indexes in MATRIX landmarks index
     public StringProperty xFileName;
     Group pathLines = new Group();
 
@@ -86,7 +86,10 @@ public class MapDisplayer extends StackPane
         //listen to changes
 
         pathToEndCoordinate.addListener((observable, oldVal, newVal) -> redrawPath(pathToEndCoordinate.get()));
-        currentPlaneLatitudeY.addListener((observable, oldVal, newVal) -> redrawPlane());
+        currentPlaneLatitudeY.addListener((observable, oldVal, newVal) -> {
+            calcPlanePosition(); // find indexes in matrix for the plane
+            redrawPlane();
+        });
         mapData.addListener((observable, oldVal, newVal) -> {
             Height = colorfulMapLayer.getHeight();
             h = Height / mapData.get().length;
@@ -131,6 +134,13 @@ public class MapDisplayer extends StackPane
     {
         this.planeFileName.set(planeFileName);
     }
+
+    private void calcPlanePosition()
+    {
+        planeIndexX.set((int) ((currentPlaneLongitudeX.get() - xCoordinateLongitude.get() - cellSizeInDegrees.get()) / cellSizeInDegrees.get()));
+        planeIndexY.set((int) (-1 * (currentPlaneLatitudeY.get() - yCoordinateLatitude.get() - cellSizeInDegrees.get()) / cellSizeInDegrees.get()));
+    }
+
 
     //draw functions
     //draw the background- colorful map
@@ -192,6 +202,7 @@ public class MapDisplayer extends StackPane
     private void redrawTarget(MouseEvent event)
     {
         System.out.println("redrawTarget");
+
         GraphicsContext gc = xLayer.getGraphicsContext2D();
         Image landmarkImage = null;
         try
@@ -202,6 +213,21 @@ public class MapDisplayer extends StackPane
             e.printStackTrace();
         }
 
+        double tmpX = event.getX();
+        double tmpY = event.getY();
+
+        int col = (int) (event.getX() / w);//((event.getX() / mapLayer.getWidth()) * matrix.get().length);
+        int row = (int) (event.getY() / h);//(int) ((event.getY() / mapLayer.getHeight()) * matrix.get()[0].length);
+
+        this.xEndIndex.set(col);
+        this.yEndIndex.set(row);
+
+        // System.out.println( xCanvas.getTranslateX());
+        // System.out.println(xCanvas.getTranslateY());
+
+        xLayer.setTranslateX(-xLayer.getLayoutX() + event.getX() - 25);
+        xLayer.setTranslateY(-xLayer.getLayoutY() + event.getY() - 34);
+
         gc.drawImage(landmarkImage, 0, 0, xLayer.getWidth(), xLayer.getHeight());
 
         //redrawPath(pathToEndCoordinate.get());
@@ -209,7 +235,6 @@ public class MapDisplayer extends StackPane
 
     public void redrawPath(String path)
     {
-        //String[] directions = string.split(",");
         HashMap<String, int[]> mapStep = new HashMap<>();
         //separate the String to Array
         String[] parts = path.split(",");

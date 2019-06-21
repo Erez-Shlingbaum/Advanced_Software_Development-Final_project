@@ -49,9 +49,9 @@
             <top>
                 <HBox alignment="CENTER" BorderPane.alignment="CENTER">
                     <children>
-                        <Button mnemonicParsing="false" onAction="#onConnectToSimulator" prefHeight="25.0" prefWidth="85.0" text="Connect" />
-                        <Button mnemonicParsing="false" onAction="#onOpenData" prefHeight="25.0" prefWidth="82.0" text="Load data" />
-                        <Button layoutX="4.0" mnemonicParsing="false" onAction="#onCalculatePath" prefHeight="25.0" prefWidth="116.0" text="Calculate path" />
+                        <Button mnemonicParsing="false" onAction="#onConnectToSimulator" text="Connect" />
+                        <Button mnemonicParsing="false" onAction="#onOpenData" text="Load data" />
+                        <Button layoutX="4.0" mnemonicParsing="false" onAction="#onCalculatePath" text="Calculate path" />
                     </children>
                <BorderPane.margin>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -59,7 +59,7 @@
                 </HBox>
             </top>
          <center>
-            <MapDisplayer fx:id="mapDisplayer" planeFileName="./PTM2_Interpeter/Resources/plane.png" BorderPane.alignment="CENTER"  landmarkImage="./PTM2_Interpeter/Resources/landmarkImage.png"/>
+            <MapDisplayer fx:id="mapDisplayer" landmarkImage="./PTM2_Interpeter/Resources/landmarkImage.png" planeFileName="./PTM2_Interpeter/Resources/plane.png" BorderPane.alignment="CENTER" />
          </center>
         </BorderPane>
         <BorderPane prefHeight="250.0" prefWidth="250.0" GridPane.columnIndex="4">
