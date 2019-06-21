@@ -57,11 +57,11 @@ public class MapDisplayer extends StackPane
     IntegerProperty planeIndexY = new SimpleIntegerProperty();
     IntegerProperty xEndIndex = new SimpleIntegerProperty();
     IntegerProperty yEndIndex = new SimpleIntegerProperty();     // indexes in MATRIX landmarks index
-    public StringProperty xFileName;
+    public StringProperty landmarkFileName;
     Group pathLines = new Group();
 
 
-    public MapDisplayer(@NamedArg("landmarkImage") String xFileName)
+    public MapDisplayer(@NamedArg("landmarkImage") String landmarkFileName)
     {
         //initialize the layers
         colorfulMapLayer = new Canvas(250, 250);
@@ -72,7 +72,7 @@ public class MapDisplayer extends StackPane
 
         //binding
         planeFileName = new SimpleStringProperty();
-        this.xFileName = new SimpleStringProperty();
+        this.landmarkFileName = new SimpleStringProperty();
 
         xCoordinateLongitude = new SimpleDoubleProperty();
         yCoordinateLatitude = new SimpleDoubleProperty();
@@ -82,7 +82,7 @@ public class MapDisplayer extends StackPane
         pathToEndCoordinate = new SimpleStringProperty();
 
         // initialize
-        this.xFileName.set(xFileName);
+        this.landmarkFileName.set(landmarkFileName);
 
         //listen to changes
 
@@ -103,7 +103,7 @@ public class MapDisplayer extends StackPane
         });
 
         //super
-        super.getChildren().addAll(colorfulMapLayer , planeLayer , landmarkLayer);
+        super.getChildren().addAll(colorfulMapLayer, planeLayer, landmarkLayer);
 
         //caring to the movement of the path
         //TODO: connect the  pathToEndCoordinate to the answer of the best road
@@ -202,32 +202,28 @@ public class MapDisplayer extends StackPane
 
     private void redrawTarget(MouseEvent event)
     {
-        isMousePressed.set(true);
-
         GraphicsContext gc = landmarkLayer.getGraphicsContext2D();
         Image landmarkImage = null;
         try
         {
-            landmarkImage = new Image(new FileInputStream(new File(xFileName.get())));
+            landmarkImage = new Image(new FileInputStream(new File(landmarkFileName.get())));
         } catch (FileNotFoundException e)
         {
             e.printStackTrace();
         }
 
-        double tmpX = event.getX();
-        double tmpY = event.getY();
-
-        int col = (int) (event.getX() / w);//((event.getX() / mapLayer.getWidth()) * matrix.get().length);
-        int row = (int) (event.getY() / h);//(int) ((event.getY() / mapLayer.getHeight()) * matrix.get()[0].length);
+        int col = (int) (event.getX() / w);
+        int row = (int) (event.getY() / h);
 
         this.xEndIndex.set(col);
         this.yEndIndex.set(row);
 
-        landmarkLayer.setTranslateX(-landmarkLayer.getLayoutX() + event.getX()-5);
-        landmarkLayer.setTranslateY(-landmarkLayer.getLayoutY() + event.getY()-30);
+        landmarkLayer.setTranslateX(-landmarkLayer.getLayoutX() + event.getX() - 5);
+        landmarkLayer.setTranslateY(-landmarkLayer.getLayoutY() + event.getY() - 30);
 
         gc.drawImage(landmarkImage, 0, 0, landmarkLayer.getWidth(), landmarkLayer.getHeight());
 
+        isMousePressed.set(true); // there is an event listener bounded to this value...
         isMousePressed.set(false);
     }
 
@@ -262,11 +258,11 @@ public class MapDisplayer extends StackPane
 
             //draw line between the previous point to the current point
             Line line = new Line(prevPoint[0] * w, prevPoint[1] * h, currentPoint[0] * w, currentPoint[1] * h);
-            line.setStrokeWidth(5);
+            line.setStrokeWidth(2);
             pathLines.getChildren().add(line);
         }
-        super.getChildren().add(pathLines);
-
+        if (!super.getChildren().contains(pathLines))
+            super.getChildren().add(pathLines);
     }
 
     private void calcMinMax(double[][] matrix)

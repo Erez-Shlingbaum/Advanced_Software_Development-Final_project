@@ -99,8 +99,8 @@ public class InterpreterModel extends Observable implements IModel
 
 			writer.print(problem); // problem string already includes necessary \n
 			writer.println("end");
-			writer.println(startCoordinateIndex[0] + "," + startCoordinateIndex[1]);
-			writer.println(endCoordinateIndex[0] + "," + endCoordinateIndex[1]);
+			writer.println(startCoordinateIndex[1] + "," + startCoordinateIndex[0]);
+			writer.println(endCoordinateIndex[1] + "," + endCoordinateIndex[0]);
 			writer.flush();
 			// recive solution as a string "Right,Left,......"
 
