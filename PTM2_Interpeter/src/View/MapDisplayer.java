@@ -32,7 +32,9 @@ public class MapDisplayer extends StackPane
     public DoubleProperty currentPlaneLongitudeX = new SimpleDoubleProperty();
     public DoubleProperty currentPlaneLatitudeY = new SimpleDoubleProperty();
 
-    //double canvases variable
+    // isClicked property
+    BooleanProperty isMousePressed = new SimpleBooleanProperty(false);
+    // canvases
     private Canvas colorfulMapLayer;
     private Canvas planeLayer;
     private Canvas landmarkLayer;
@@ -200,7 +202,7 @@ public class MapDisplayer extends StackPane
 
     private void redrawTarget(MouseEvent event)
     {
-        System.out.println("redrawTarget");
+        isMousePressed.set(true);
 
         GraphicsContext gc = landmarkLayer.getGraphicsContext2D();
         Image landmarkImage = null;
@@ -221,15 +223,12 @@ public class MapDisplayer extends StackPane
         this.xEndIndex.set(col);
         this.yEndIndex.set(row);
 
-        // System.out.println( xCanvas.getTranslateX());
-        // System.out.println(xCanvas.getTranslateY());
-
         landmarkLayer.setTranslateX(-landmarkLayer.getLayoutX() + event.getX()-5);
         landmarkLayer.setTranslateY(-landmarkLayer.getLayoutY() + event.getY()-30);
 
         gc.drawImage(landmarkImage, 0, 0, landmarkLayer.getWidth(), landmarkLayer.getHeight());
 
-        //redrawPath(pathToEndCoordinate.get());
+        isMousePressed.set(false);
     }
 
     public void redrawPath(String path)
