@@ -238,8 +238,8 @@ public class JoystickControl extends BorderPane
 		// update the xy-axis properties
 		xAxisJoystick.set((sourceCircle.getTranslateX() - outerCircle.getTranslateX()) / outerCircle.getRadius()); // distance between x values of each circle / radius (gives a number between -1 to 1)
 
-		// TODO: remember that yAxis is upside down - decide if fix y value with (*-1)
-		yAxisJoystick.set((sourceCircle.getTranslateY() - outerCircle.getTranslateY()) / outerCircle.getRadius()); // distance between y values of each circle / radius (gives a number between -1 to 1)
+		// remember that yAxis is upside down - fix y value with (*-1)
+		yAxisJoystick.set(-1*(sourceCircle.getTranslateY() - outerCircle.getTranslateY()) / outerCircle.getRadius()); // distance between y values of each circle / radius (gives a number between -1 to 1)
 	}
 
 	// put joystick back to original position
