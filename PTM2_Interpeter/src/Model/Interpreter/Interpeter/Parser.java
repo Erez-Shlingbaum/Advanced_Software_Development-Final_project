@@ -9,7 +9,7 @@ import java.util.*;
 
 public class Parser
 {
-    private InterpreterContext context;
+    private final InterpreterContext context;
 
     public Parser(InterpreterContext context)
     {

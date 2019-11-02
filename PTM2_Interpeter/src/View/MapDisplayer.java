@@ -258,12 +258,12 @@ public class MapDisplayer extends StackPane
         this.minMap = matrix[0][0];
         this.maxMap = matrix[0][0];
         for (double[] doubles : matrix)
-            for (int j = 0; j < doubles.length; j++)
+            for (double aDouble : doubles)
             {
-                if (doubles[j] > maxMap)
-                    maxMap = doubles[j];
-                if (doubles[j] < minMap)
-                    minMap = doubles[j];
+                if (aDouble > maxMap)
+                    maxMap = aDouble;
+                if (aDouble < minMap)
+                    minMap = aDouble;
             }
     }
 }

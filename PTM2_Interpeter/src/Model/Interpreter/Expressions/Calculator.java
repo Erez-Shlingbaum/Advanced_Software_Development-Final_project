@@ -9,7 +9,7 @@ public class Calculator
     public static double calculate(String expression) throws Exception
     {
         if (!validations(expression))
-            System.out.println("throw exception");
+            throw new Exception("shunting yard validations failed, expression = " + expression);
 
         LinkedList<String> queue = new LinkedList<>();
         Stack<String> stack = new Stack<>();

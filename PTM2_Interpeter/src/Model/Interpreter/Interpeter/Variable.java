@@ -7,7 +7,7 @@ public class Variable
     private String path = null;
     private double value;
 
-    private Client client;
+    private final Client client;
 
     public Variable(InterpreterContext context)
     {

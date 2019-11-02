@@ -9,8 +9,8 @@ import java.util.Scanner;
 
 public class Interpreter
 {
-    private InterpreterContext interpreterContext;
-    private Parser parser;
+    private final InterpreterContext interpreterContext;
+    private final Parser parser;
 
     public Interpreter(InterpreterContext interpreterContext)
     {

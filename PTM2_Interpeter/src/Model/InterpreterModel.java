@@ -20,7 +20,7 @@ import java.util.*;
 public class InterpreterModel extends Observable implements IModel
 {
     // interpreter instance
-    private Interpreter interpreter;
+    private final Interpreter interpreter;
 
     // return values
     private String solutionForPathProblem;
@@ -163,8 +163,8 @@ public class InterpreterModel extends Observable implements IModel
 
         for (double[] heightsInMeter : heightsInMeters)
         {
-            for (int j = 0; j < heightsInMeter.length; j++) // Loop through all elements of current row
-                stringBuilder.append(heightsInMeter[j]).append(',');
+            // Loop through all elements of current row
+            for (double v : heightsInMeter) stringBuilder.append(v).append(',');
             stringBuilder.setLength(stringBuilder.length() - 1); // "remove" last comma
             stringBuilder.append('\n');
         }

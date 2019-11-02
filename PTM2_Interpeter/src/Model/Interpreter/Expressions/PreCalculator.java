@@ -22,14 +22,13 @@ public class PreCalculator
     public static String replaceVarNames(String expression, InterpreterContext context) throws Exception
     {
         //variable declaration
-        int startIndex = 0;
-        int endIndex = 0;
         List<String> variableNames = new LinkedList<>();
 
         // before replacing var names with their values, we make changes to occurrences of '-' as a prefix
         expression = replaceNegativePrefix(expression, context);
 
         //iterate on the expression and find variable names while ignoring Model.Interpreter.Operators or '()'
+        int startIndex = 0;
         while (startIndex < expression.length())
         {
             //while not character - startIndex++
@@ -40,7 +39,7 @@ public class PreCalculator
                     return expression;
                 else break;
 
-            endIndex = startIndex;
+            int endIndex = startIndex;
 
             //while is character or number - endIndex++
             while (endIndex < expression.length() && (isEnglishLetter(expression.charAt(endIndex)) || Character.isDigit(expression.charAt(endIndex))))
@@ -96,6 +95,7 @@ public class PreCalculator
                 }
             }
             // check if this '-' is for a number
+            assert varName != null;
             if (context.symbolTable.get(varName) == null)
                 return String.join("", "0", expression);
 

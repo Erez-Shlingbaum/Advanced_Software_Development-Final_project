@@ -66,16 +66,14 @@ public class ViewModel extends Observable implements Observer
     // Calculate shortest path for the plane
     public void calculatePath()
     {
-        new Thread(() -> {
-            interpreterModel.calculatePath
-                    (
-                            pathCalculatorServerIP.get(),
-                            pathCalculatorServerPORT.get(),
-                            heightsInMetersMatrix.get(),
-                            new int[]{xStartIndex.get(), yStartIndex.get()},
-                            new int[]{xEndIndex.get(), yEndIndex.get()}
-                    );
-        }).start();
+        new Thread(() -> interpreterModel.calculatePath
+                (
+                        pathCalculatorServerIP.get(),
+                        pathCalculatorServerPORT.get(),
+                        heightsInMetersMatrix.get(),
+                        new int[]{xStartIndex.get(), yStartIndex.get()},
+                        new int[]{xEndIndex.get(), yEndIndex.get()}
+                )).start();
     }
 
     // Starts thread that updates the map about the simulator current state

@@ -2,7 +2,7 @@ package Model.Interpreter.Expressions;
 
 public class Number implements Expression
 {
-    private double value;
+    private final double value;
 
     public Number(double value)
     {
