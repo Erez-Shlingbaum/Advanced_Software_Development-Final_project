@@ -7,27 +7,27 @@ import java.util.Scanner;
 
 public class WhileCommand extends MultiCommand
 {
-	@Override
-	public void execute(String[] args) throws Exception
-	{
-		// join args array into a connected string(for scanner)
-		String line = String.join("", args);
-		Scanner scanner = new Scanner(line);
-		scanner.useDelimiter("<");
-		String leftExpression = scanner.next();
+    @Override
+    public void execute(String[] args) throws Exception
+    {
+        // join args array into a connected string(for scanner)
+        String line = String.join("", args);
+        Scanner scanner = new Scanner(line);
+        scanner.useDelimiter("<");
+        String leftExpression = scanner.next();
 
-		// ignore non expression..
-		scanner.useDelimiter("");
-		scanner.next("<");
+        // ignore non expression..
+        scanner.useDelimiter("");
+        scanner.next("<");
 
-		scanner.useDelimiter("\\{");
-		String rightExpression = scanner.next();
+        scanner.useDelimiter("\\{");
+        String rightExpression = scanner.next();
 
-		leftExpression = leftExpression.trim();
-		rightExpression = rightExpression.trim();
+        leftExpression = leftExpression.trim();
+        rightExpression = rightExpression.trim();
 
-		while (Calculator.calculate(PreCalculator.replaceVarNames(leftExpression)) < Calculator.calculate(PreCalculator.replaceVarNames(rightExpression)))
-			for (CommandWithArgs cmd : super.commandsToExecute)
-				cmd.executeWithArgs();
-	}
+        while (Calculator.calculate(PreCalculator.replaceVarNames(leftExpression)) < Calculator.calculate(PreCalculator.replaceVarNames(rightExpression)))
+            for (CommandWithArgs cmd : super.commandsToExecute)
+                cmd.executeWithArgs();
+    }
 }

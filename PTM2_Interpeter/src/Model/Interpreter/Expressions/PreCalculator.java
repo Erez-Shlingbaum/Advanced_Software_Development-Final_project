@@ -56,13 +56,13 @@ public class PreCalculator
         }
 
         // code from stack overflow to format a string WITHOUT SCIENTIFIC NOTATION
-		DecimalFormat df = new DecimalFormat("0", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
-		df.setMaximumFractionDigits(340); // 340 = DecimalFormat.DOUBLE_FRACTION_DIGITS
+        DecimalFormat df = new DecimalFormat("0", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
+        df.setMaximumFractionDigits(340); // 340 = DecimalFormat.DOUBLE_FRACTION_DIGITS
 
         for (String varName : variableNames)
         {
             double varValue = DefineVarCommand.getSymbolTable().get(varName).getValue();
-            expression = expression.replace(varName,  df.format(varValue));
+            expression = expression.replace(varName, df.format(varValue));
         }
         variableNames.clear();
         return expression;
@@ -122,6 +122,7 @@ public class PreCalculator
                 }
             }
 
+            assert varName != null;
             if (DefineVarCommand.getSymbolTable().get(varName) == null)
                 return expression; // there is no '-' and no variable so no need to do anything
 

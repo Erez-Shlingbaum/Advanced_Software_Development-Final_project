@@ -18,7 +18,8 @@ import java.util.HashMap;
 
 import static javafx.scene.paint.Color.rgb;
 
-public class MapDisplayer extends StackPane {
+public class MapDisplayer extends StackPane
+{
 
     // these properties will update 4 times per second with the current plane position
     public final DoubleProperty currentPlaneLongitudeX = new SimpleDoubleProperty();
@@ -36,9 +37,6 @@ public class MapDisplayer extends StackPane {
     final IntegerProperty planeIndexY = new SimpleIntegerProperty(0);
     final IntegerProperty xEndIndex = new SimpleIntegerProperty();
     final IntegerProperty yEndIndex = new SimpleIntegerProperty();     // indexes in MATRIX landmarks index
-    // images
-    Image planeImage = null;
-
     // canvases
     private final Canvas colorfulMapLayer;
     private final Canvas planeLayer;
@@ -50,6 +48,8 @@ public class MapDisplayer extends StackPane {
     private final Group pathLines = new Group();
     //binding
     private final StringProperty planeFileName = new SimpleStringProperty();
+    // images
+    Image planeImage = null;
     private double maxMap;
     private double minMap;
     //variables to find the place respectively canvas
@@ -60,7 +60,8 @@ public class MapDisplayer extends StackPane {
 
     public MapDisplayer(@NamedArg("landmarkImage") String landmarkFileName,
                         @NamedArg("mapWidth") double mapWidth,
-                        @NamedArg("mapHeight") double mapHeight) {
+                        @NamedArg("mapHeight") double mapHeight)
+    {
         //initialize the layers
         colorfulMapLayer = new Canvas(mapWidth, mapHeight);
         planeLayer = new Canvas(mapWidth / 10, mapHeight / 10);
@@ -75,7 +76,8 @@ public class MapDisplayer extends StackPane {
 
         pathToEndCoordinate.addListener((observable, oldVal, newVal) -> redrawPath(pathToEndCoordinate.get()));
         currentPlaneLatitudeY.addListener((observable, oldVal, newVal) -> {
-            if (oldVal != newVal) {
+            if (!oldVal.equals(newVal))
+            {
                 calcPlanePosition(); // find indexes in matrix for the plane
                 redrawPlane();
             }
@@ -97,23 +99,28 @@ public class MapDisplayer extends StackPane {
     }
 
     //generate the relevant variabless
-    public double getPlaneX() {
+    public double getPlaneX()
+    {
         return planeX;
     }
 
-    public double getPlaneY() {
+    public double getPlaneY()
+    {
         return planeY;
     }
 
-    public String getPlaneFileName() {
+    public String getPlaneFileName()
+    {
         return planeFileName.get();
     }
 
-    public void setPlaneFileName(String planeFileName) {
+    public void setPlaneFileName(String planeFileName)
+    {
         this.planeFileName.set(planeFileName);
     }
 
-    private void calcPlanePosition() {
+    private void calcPlanePosition()
+    {
         if (currentPlaneLongitudeX.get() == 0 && currentPlaneLatitudeY.get() == 0)
             return;
         planeIndexX.set((int) ((currentPlaneLongitudeX.get() - xCoordinateLongitude.get() - cellSizeInDegrees.get()) / cellSizeInDegrees.get()));
@@ -123,46 +130,50 @@ public class MapDisplayer extends StackPane {
 
     //draw functions
     //draw the background- colorful map
-    private void redrawColorfulMap() {
-        if (mapData != null) {
+    private void redrawColorfulMap()
+    {
 
-            GraphicsContext gc = colorfulMapLayer.getGraphicsContext2D();
+        GraphicsContext gc = colorfulMapLayer.getGraphicsContext2D();
 
-            //pain the colorful map by the values
-            for (int i = 0; i < mapData.get().length; i++) {
-                for (int j = 0; j < mapData.get()[i].length; j++) {
-                   /* if (mapData.get()[i][j] < maxMap / 2)
-                    {
-                        green = ((255 / (maxMap / 2)) * mapData.get()[i][j])
-                       gc.setFill(rgb(255, (int) green, 0));
+        //pain the colorful map by the values
+        for (int i = 0; i < mapData.get().length; i++)
+        {
+            for (int j = 0; j < mapData.get()[i].length; j++)
+            {
+               /* if (mapData.get()[i][j] < maxMap / 2)
+                {
+                    green = ((255 / (maxMap / 2)) * mapData.get()[i][j])
+                   gc.setFill(rgb(255, (int) green, 0));
 
-                       // gc.setFill(rgb(255 - (int) green, (int) green, 0));
+                   // gc.setFill(rgb(255 - (int) green, (int) green, 0));
 
-                    }
-                    else
-                    {
-                        red = (double) 255 - ((255 / (2*maxMap)) * (mapData.get()[i][j]));
-                        System.out.println("red = " + red);
-                        gc.setFill(rgb((int) red, 255, 0));
-
-                        //gc.setFill(rgb((int) red, 255- (int)red, 0));
-                    }*/
-                    int color = (int) (255 * ((mapData.get()[i][j] - minMap) / (maxMap - minMap)));
-                    gc.setFill(rgb(255 - color, color, 0));
-                    gc.fillRect(j * w, i * h, w, h);
-                    //gc.strokeText(String.valueOf((int) mapData.get()[i][j]), j * w, (i + 1) * h);
                 }
+                else
+                {
+                    red = (double) 255 - ((255 / (2*maxMap)) * (mapData.get()[i][j]));
+                    System.out.println("red = " + red);
+                    gc.setFill(rgb((int) red, 255, 0));
+
+                    //gc.setFill(rgb((int) red, 255- (int)red, 0));
+                }*/
+                int color = (int) (255 * ((mapData.get()[i][j] - minMap) / (maxMap - minMap)));
+                gc.setFill(rgb(255 - color, color, 0));
+                gc.fillRect(j * w, i * h, w, h);
+                //gc.strokeText(String.valueOf((int) mapData.get()[i][j]), j * w, (i + 1) * h);
             }
         }
     }
 
-    private void redrawPlane() {
+    private void redrawPlane()
+    {
         GraphicsContext gc = planeLayer.getGraphicsContext2D();
         //picture of the plane
-        try {
+        try
+        {
             if (planeImage == null)
                 planeImage = new Image(new FileInputStream(planeFileName.get()));
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e)
+        {
             e.printStackTrace();
         }
 
@@ -176,12 +187,15 @@ public class MapDisplayer extends StackPane {
         gc.drawImage(planeImage, 0, 0, planeLayer.getWidth(), planeLayer.getHeight());
     }
 
-    private void redrawTarget(MouseEvent event) {
+    private void redrawTarget(MouseEvent event)
+    {
         GraphicsContext gc = landmarkLayer.getGraphicsContext2D();
         Image landmarkImage = null;
-        try {
+        try
+        {
             landmarkImage = new Image(new FileInputStream(new File(landmarkFileName.get())));
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e)
+        {
             e.printStackTrace();
         }
 
@@ -196,11 +210,16 @@ public class MapDisplayer extends StackPane {
 
         gc.drawImage(landmarkImage, 0, 0, landmarkLayer.getWidth(), landmarkLayer.getHeight());
 
+        // delete old path
+        if (pathLines.getChildren().size() > 2)
+            pathLines.getChildren().remove(2, pathLines.getChildren().size());
+
         isMousePressed.set(true); // there is an event listener bounded to this value...
         isMousePressed.set(false);
     }
 
-    private void redrawPath(String path) {
+    private void redrawPath(String path)
+    {
         HashMap<String, int[]> mapStep = new HashMap<>();
         //separate the String to Array
         String[] parts = path.split(",");
@@ -215,7 +234,8 @@ public class MapDisplayer extends StackPane {
         int[] moves;
 
 
-        if (!super.getChildren().contains(pathLines)) {
+        if (!super.getChildren().contains(pathLines))
+        {
             pathLines.getChildren().add(new Canvas(colorfulMapLayer.getWidth(), 0));
             pathLines.getChildren().add(new Canvas(0, colorfulMapLayer.getHeight()));
             super.getChildren().add(pathLines);
@@ -225,7 +245,8 @@ public class MapDisplayer extends StackPane {
             pathLines.getChildren().remove(2, pathLines.getChildren().size());
 
 
-        for (String part : parts) {
+        for (String part : parts)
+        {
             //updating the previous point
             prevPoint[0] = currentPoint[0];
             prevPoint[1] = currentPoint[1];
@@ -243,11 +264,13 @@ public class MapDisplayer extends StackPane {
         }
     }
 
-    private void calcMinMax(double[][] matrix) {
+    private void calcMinMax(double[][] matrix)
+    {
         this.minMap = matrix[0][0];
         this.maxMap = matrix[0][0];
         for (double[] doubles : matrix)
-            for (int j = 0; j < doubles.length; j++) {
+            for (int j = 0; j < doubles.length; j++)
+            {
                 if (doubles[j] > maxMap)
                     maxMap = doubles[j];
                 if (doubles[j] < minMap)

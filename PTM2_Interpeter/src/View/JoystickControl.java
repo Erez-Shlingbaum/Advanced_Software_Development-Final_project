@@ -23,7 +23,8 @@ import javafx.scene.text.Font;
 
 // IDEA 2 - make some thread check every X time the state of joystick and send command to Simulator
 
-public class JoystickControl extends BorderPane {
+public class JoystickControl extends BorderPane
+{
     final DoubleProperty xAxisJoystick = new SimpleDoubleProperty(0); // when moving the joystick left-right
     final DoubleProperty yAxisJoystick = new SimpleDoubleProperty(0); // when moving the joystick up-down
     final Slider downSlider;
@@ -50,7 +51,8 @@ public class JoystickControl extends BorderPane {
                            @NamedArg("outerCirclePaint") Paint outerCirclePaint,
                            @NamedArg("innerCirclePaint") Paint innerCirclePaint,
                            @NamedArg("leftSliderMin") double leftSliderMin, @NamedArg("leftSliderMax") double leftSliderMax,
-                           @NamedArg("downSliderMin") double downSliderMin, @NamedArg("downSliderMax") double downSliderMax) {
+                           @NamedArg("downSliderMin") double downSliderMin, @NamedArg("downSliderMax") double downSliderMax)
+    {
         // initializing elements
         outerCircle = new Circle(outerCircleRadius, outerCirclePaint);
         innerCircle = new Circle(outerCircleRadius / 3, innerCirclePaint);
@@ -129,7 +131,8 @@ public class JoystickControl extends BorderPane {
     }
 
     // calculates distance between two points
-    private static boolean iseInsideCircle(double x1, double y1, double x2, double y2, double circleRadius) {
+    private static boolean iseInsideCircle(double x1, double y1, double x2, double y2, double circleRadius)
+    {
         double distance = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
         return distance <= circleRadius;
     }
@@ -144,60 +147,74 @@ public class JoystickControl extends BorderPane {
     }
 
     // getters for Joystick properties
-    public double getxAxisJoystick() {
+    public double getxAxisJoystick()
+    {
         return xAxisJoystick.get();
     }
 
-    public double getyAxisJoystick() {
+    public double getyAxisJoystick()
+    {
         return yAxisJoystick.get();
     }
 
-    public double getDownSliderValue() {
+    public double getDownSliderValue()
+    {
         return downSlider.getValue();
     }
 
-    public double getLeftSliderValue() {
+    public double getLeftSliderValue()
+    {
         return leftSlider.getValue();
     }
 
     // getters and setters for FXML usage
-    public String getLeftText() {
+    public String getLeftText()
+    {
         return leftLabel.getText();
     }
 
-    public void setLeftText(String text) {
+    public void setLeftText(String text)
+    {
         leftLabel.setText(text);
     }
 
-    public String getUpText() {
+    public String getUpText()
+    {
         return upLabel.getText();
     }
 
-    public void setUpText(String text) {
+    public void setUpText(String text)
+    {
         upLabel.setText(text);
     }
 
-    public String getRightText() {
+    public String getRightText()
+    {
         return rightLabel.getText();
     }
 
-    public void setRightText(String text) {
+    public void setRightText(String text)
+    {
         rightLabel.setText(text);
     }
 
-    public String getDownText() {
+    public String getDownText()
+    {
         return downLabel.getText();
     }
 
-    public void setDownText(String text) {
+    public void setDownText(String text)
+    {
         downLabel.setText(text);
     }
 
-    public double getLablesFontSize() {
+    public double getLablesFontSize()
+    {
         return leftLabel.getFont().getSize();
     }
 
-    public void setLablesFontSize(double fontSize) {
+    public void setLablesFontSize(double fontSize)
+    {
         Font font = new Font(leftLabel.getFont().getName(), fontSize); // set a new font size, WITHOUT changing fontName (family)
         leftLabel.setFont(font);
         upLabel.setFont(font);
@@ -205,11 +222,13 @@ public class JoystickControl extends BorderPane {
         downLabel.setFont(font);
     }
 
-    public String getLablesFontName() {
+    public String getLablesFontName()
+    {
         return leftLabel.getFont().getName();
     }
 
-    public void setLablesFontName(String fontName) {
+    public void setLablesFontName(String fontName)
+    {
         Font font = new Font(fontName, leftLabel.getFont().getSize()); // set a new font name, WITHOUT changing fontSize
         leftLabel.setFont(font);
         upLabel.setFont(font);
@@ -217,7 +236,8 @@ public class JoystickControl extends BorderPane {
         downLabel.setFont(font);
     }
 
-    private void onMousePressed(MouseEvent event) {
+    private void onMousePressed(MouseEvent event)
+    {
         ((Circle) (event.getSource())).requestFocus();
 
         orgSceneX = event.getSceneX();
@@ -228,7 +248,8 @@ public class JoystickControl extends BorderPane {
         event.setDragDetect(true); // makes the GUI respond to dragging event
     }
 
-    private void onMouseDrag(MouseEvent event) {
+    private void onMouseDrag(MouseEvent event)
+    {
         double offsetX = event.getSceneX() - orgSceneX;
         double offsetY = event.getSceneY() - orgSceneY;
         double newTranslateX = orgTranslateX + offsetX;
@@ -237,7 +258,8 @@ public class JoystickControl extends BorderPane {
         Circle sourceCircle = ((Circle) (event.getSource()));
 
         // check if mouse position is inside the outer circle
-        if (iseInsideCircle(newTranslateX, newTranslateY, outerCircle.getTranslateX(), outerCircle.getTranslateY(), outerCircle.getRadius())) {
+        if (iseInsideCircle(newTranslateX, newTranslateY, outerCircle.getTranslateX(), outerCircle.getTranslateY(), outerCircle.getRadius()))
+        {
             sourceCircle.setTranslateX(newTranslateX);
             sourceCircle.setTranslateY(newTranslateY);
         } else // mouse is outside the outerCircle, but we still want the joystick to work - so we will move it in the direction of the mouse
@@ -259,7 +281,8 @@ public class JoystickControl extends BorderPane {
     }
 
     // put joystick back to original position
-    private void onMouseReleased(MouseEvent event) {
+    private void onMouseReleased(MouseEvent event)
+    {
         Circle circle = ((Circle) (event.getSource()));
         circle.setTranslateX(circle.getCenterX());
         circle.setTranslateY(circle.getCenterY());

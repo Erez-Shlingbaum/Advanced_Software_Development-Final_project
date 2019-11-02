@@ -26,12 +26,17 @@ import java.util.ResourceBundle;
 
 public class MainWindowController implements Observer, Initializable
 {
+    final BooleanProperty isAutoPilotMode; // if true the autopilot mode, else - manual mode
+    //property for the binding
+    final StringProperty pathCalculatorServerIP;
+    final StringProperty pathCalculatorServerPORT;
+    // csv
+    final StringProperty csvFilePath;
+    final StringProperty simulatorIP;
+    final StringProperty simulatorPort;
     @FXML
     RadioButton autoPilotRadioButton;
-    final BooleanProperty isAutoPilotMode; // if true the autopilot mode, else - manual mode
-
     ViewModel viewModel;
-
     //FXML members
     @FXML
     MapDisplayer mapDisplayer;
@@ -39,14 +44,6 @@ public class MainWindowController implements Observer, Initializable
     TextArea autoPilotScriptTextArea;
     @FXML
     JoystickControl joystickController;
-    //property for the binding
-    final StringProperty pathCalculatorServerIP;
-    final StringProperty pathCalculatorServerPORT;
-
-    // csv
-    final StringProperty csvFilePath;
-    final StringProperty simulatorIP;
-    final StringProperty simulatorPort;
 
     //constructor
     public MainWindowController()
@@ -114,8 +111,8 @@ public class MainWindowController implements Observer, Initializable
         viewModel.rudderJoystick.bindBidirectional(joystickController.downSlider.valueProperty());
         viewModel.throttleJoystick.bindBidirectional(joystickController.leftSlider.valueProperty());
 
-		// update map
-		viewModel.asyncMapPlanePositionUpdater();
+        // update map
+        viewModel.asyncMapPlanePositionUpdater();
     }
 
     public void onConnectToSimulator(ActionEvent actionEvent)

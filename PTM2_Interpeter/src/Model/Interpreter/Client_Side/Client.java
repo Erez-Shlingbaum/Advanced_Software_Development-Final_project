@@ -4,9 +4,11 @@ import java.io.IOException;
 
 interface Client
 {
-	void connect(String ipAddress, int port) throws Exception;
-	void sendMessage(String command) throws Exception;
-	void close() throws IOException;
+    void connect(String ipAddress, int port) throws Exception;
 
-	boolean isConnected();
+    void sendMessage(String command) throws Exception;
+
+    void close() throws IOException;
+
+    boolean isConnected();
 }

@@ -1,5 +1,6 @@
 package Model.Interpreter.Expressions;
 
-public interface Expression {
-	double calculate();
+public interface Expression
+{
+    double calculate();
 }

@@ -2,35 +2,35 @@ package Model;
 
 public interface IModel
 {
-	void interpretScript(String filePath);
+    void interpretScript(String filePath);
 
-	void interpretScript(String... scriptLines);
+    void interpretScript(String... scriptLines);
 
-	double getVarRetrivedFromScript();
+    double getVarRetrivedFromScript();
 
-	int getReturnValue();
+    int getReturnValue();
 
-	// can be used to add variables and execute commands, etc...
-	void executeCommand(String cmdName, String... args); // Three dots '...' allow sending parameters as easy as "executeCommand("return", "1+", "2+", "3")" ...
+    // can be used to add variables and execute commands, etc...
+    void executeCommand(String cmdName, String... args); // Three dots '...' allow sending parameters as easy as "executeCommand("return", "1+", "2+", "3")" ...
 
-	void retrieveVariableInScript(String variableName); // get variable from symbol table
+    void retrieveVariableInScript(String variableName); // get variable from symbol table
 
-	void calculatePath(String ip, String port, double[][] heightsInMeters, int[] startCoordinateIndex, int[] endCoordinateIndex);
+    void calculatePath(String ip, String port, double[][] heightsInMeters, int[] startCoordinateIndex, int[] endCoordinateIndex);
 
-	Boolean isConnectedToSimulator();
+    Boolean isConnectedToSimulator();
 
-	String getSolutionForPathProblem();
+    String getSolutionForPathProblem();
 
-	// Utilities
-	void openCsvFile(String filePath);
+    // Utilities
+    void openCsvFile(String filePath);
 
-	void sendJoystickState(double aileron, double elevator, double rudder, double throttle);
+    void sendJoystickState(double aileron, double elevator, double rudder, double throttle);
 
-	double getxCoordinateLongitude();
+    double getxCoordinateLongitude();
 
-	double getyCoordinateLatitude();
+    double getyCoordinateLatitude();
 
-	double getCellSizeInDegrees();
+    double getCellSizeInDegrees();
 
-	double[][] getCsvValues();
+    double[][] getCsvValues();
 }

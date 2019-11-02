@@ -7,7 +7,8 @@ import javafx.beans.property.*;
 import java.util.Observable;
 import java.util.Observer;
 
-public class ViewModel extends Observable implements Observer {
+public class ViewModel extends Observable implements Observer
+{
     // property to differintiate bewtween modes in the GUI
     public final BooleanProperty isAutoPilotMode = new SimpleBooleanProperty();
     // general properties
@@ -46,21 +47,25 @@ public class ViewModel extends Observable implements Observer {
     private final IModel interpreterModel;
 
 
-    public ViewModel(IModel model) {
+    public ViewModel(IModel model)
+    {
         this.interpreterModel = model;
     }
 
-    public void interpretScript() {
+    public void interpretScript()
+    {
         interpreterModel.interpretScript(scriptToInterpret.get().split("\\n"));
     }
 
     // allows executing a single command in the interpreter
-    public void executeCommand() {
+    public void executeCommand()
+    {
         interpreterModel.executeCommand(commandName.get(), commandArguments.get().split(" "));
     }
 
     // calculate shortest path for the plane
-    public void calculatePath() {
+    public void calculatePath()
+    {
         new Thread(() -> {          // TODO Added threading, check this is still working (and GUI is not stuck)
             interpreterModel.calculatePath
                     (
@@ -74,18 +79,22 @@ public class ViewModel extends Observable implements Observer {
     }
 
     // starts a thread that updates the map about the simulator current state
-    public void asyncMapPlanePositionUpdater() {
+    public void asyncMapPlanePositionUpdater()
+    {
         new Thread(() -> {
-            while (true) {
+            while (true)
+            {
                 interpreterModel.retrieveVariableInScript("longitude");
                 currentPlaneLongitudeX.set(interpreterModel.getVarRetrivedFromScript());
 
                 interpreterModel.retrieveVariableInScript("latitude");
                 currentPlaneLatitudeY.set(interpreterModel.getVarRetrivedFromScript());
 
-                try {
+                try
+                {
                     Thread.sleep(250); // 4 times per second
-                } catch (InterruptedException e) {
+                } catch (InterruptedException e)
+                {
                     e.printStackTrace();
                 }
             }
@@ -93,21 +102,26 @@ public class ViewModel extends Observable implements Observer {
     }
 
     // starts a thread that updates the simulator about the joysticks current state
-    public void asyncJoystickPuller() {
+    public void asyncJoystickPuller()
+    {
         new Thread(() -> {
-            while (!isAutoPilotMode.get()) {
+            while (!isAutoPilotMode.get())
+            {
                 if (interpreterModel.isConnectedToSimulator())
                     interpreterModel.sendJoystickState(xAxisJoystick.get(), yAxisJoystick.get(), rudderJoystick.get(), throttleJoystick.get());
-                try {
+                try
+                {
                     Thread.sleep(150);
-                } catch (InterruptedException e) {
+                } catch (InterruptedException e)
+                {
                     e.printStackTrace();
                 }
             }
         }).start();
     }
 
-    public void asyncRunAutoPilot() {
+    public void asyncRunAutoPilot()
+    {
         // run script in a thread
         Thread scriptExecution = new Thread(this::interpretScript);
         scriptExecution.start();
@@ -115,26 +129,32 @@ public class ViewModel extends Observable implements Observer {
         // a second thread to check if GUI is no longer autopilot, if yes the stop the executing thread and die
         new Thread(() -> {
             while (isAutoPilotMode.get())
-                try {
+                try
+                {
                     Thread.sleep(250);
-                } catch (InterruptedException e) {
+                } catch (InterruptedException e)
+                {
                     e.printStackTrace();
                 }
             scriptExecution.interrupt(); // this exception is catched in the interpreter
         }).start();
     }
 
-    public void openCsvFile() {
+    public void openCsvFile()
+    {
         interpreterModel.openCsvFile(csvFilePath.get());
     }
 
     @Override
-    public void update(Observable o, Object arg) {
-        if (o == interpreterModel) {
+    public void update(Observable o, Object arg)
+    {
+        if (o == interpreterModel)
+        {
             String message = (String) arg; // It is better to use enum classes instead of strings - because it will be easier to refactor and change names
 
             // when model has finished doing something, we are notified and can choose to do do something about it (like updating a property in the view)
-            switch (message) {
+            switch (message)
+            {
                 case "calculatedPath":
                     Platform.runLater(() -> this.pathToEndCoordinate.set(interpreterModel.getSolutionForPathProblem())); // this is done to fix a bug when a thread whose not the javafx thread try to change UI elements (later in map drawer...) and because of that, an exception is thrown
                     break;
@@ -157,7 +177,8 @@ public class ViewModel extends Observable implements Observer {
         }
     }
 
-    public void connectToSimulator() {
+    public void connectToSimulator()
+    {
         interpreterModel.executeCommand("connect", simulatorIP.get(), simulatorPort.get());
     }
 }

@@ -1,28 +1,34 @@
 package Model.Interpreter.Expressions;
 
-abstract class BinaryExpression implements Expression {
-	protected Expression left;
-	protected Expression right;
+abstract class BinaryExpression implements Expression
+{
+    protected Expression left;
+    protected Expression right;
 
-	public BinaryExpression(Expression left, Expression right) {
-		this.left = left;
-		this.right = right;
-	}
+    public BinaryExpression(Expression left, Expression right)
+    {
+        this.left = left;
+        this.right = right;
+    }
 
-	public Expression getLeft() {
-		return left;
-	}
+    public Expression getLeft()
+    {
+        return left;
+    }
 
-	public void setLeft(Expression left) {
-		this.left = left;
-	}
+    public void setLeft(Expression left)
+    {
+        this.left = left;
+    }
 
-	public Expression getRight() {
-		return right;
-	}
+    public Expression getRight()
+    {
+        return right;
+    }
 
-	public void setRight(Expression right) {
-		this.right = right;
-	}
+    public void setRight(Expression right)
+    {
+        this.right = right;
+    }
 
 }

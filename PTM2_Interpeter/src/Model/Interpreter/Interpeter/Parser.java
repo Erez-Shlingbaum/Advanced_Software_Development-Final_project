@@ -15,7 +15,7 @@ public class Parser
     {
         if (tokens.length == 0)
             return;
-        if(tokens[0].charAt(0) == '/' && tokens[0].charAt(1) == '/') // we can now create comments
+        if (tokens[0].charAt(0) == '/' && tokens[0].charAt(1) == '/') // we can now create comments
             return;
 
         if (isMultiCommand)
@@ -26,7 +26,7 @@ public class Parser
             end = getEndOfLine(tokens, start); //find \n
             //the first Command is while/ if...
             multiCommand = generateCommand(Arrays.copyOfRange(tokens, start, end), keywords);
-            for (start = end + 1; start < tokens.length - 1 && end < tokens.length - 1; start = end+1)
+            for (start = end + 1; start < tokens.length - 1 && end < tokens.length - 1; start = end + 1)
             {
                 end = getEndOfLine(tokens, start);//end will index '\n'
                 commandWithArgsList.add(generateCommand(Arrays.copyOfRange(tokens, start, end), keywords));
@@ -64,15 +64,14 @@ public class Parser
             scanner.next("=");
 
             List<String> expression;
-            if(String.join(" ", tokens).contains("bind"))
+            if (String.join(" ", tokens).contains("bind"))
             {
                 scanner.useDelimiter(" ");
                 expression = new ArrayList<>(Arrays.asList(scanner.next().trim(), scanner.next().trim())); // "bind", "path"
-            }
-            else
+            } else
                 expression = new ArrayList<>(Collections.singletonList(scanner.nextLine().trim()));//.toArray(new String[0]); // this is some crazy code
 
-            if(!DefineVarCommand.getSymbolTable().containsKey(varName))
+            if (!DefineVarCommand.getSymbolTable().containsKey(varName))
                 throw new Exception("Syntax error: variable not found");
 
             command = (arguments) -> new AssignmentOperator().execute(arguments);//varName = bind "path" or expression
