@@ -146,7 +146,7 @@ public class MainWindowController implements Observer, Initializable
         // Show dialog to open csvFile file
         FileChooser fileDialog = new FileChooser();
         fileDialog.setTitle("Open a csv file");
-        fileDialog.setInitialDirectory(new File("."));
+        fileDialog.setInitialDirectory(new File("./Resources"));
         fileDialog.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("CSV files (*.csv)", "*.csv"));
 
         File csvFile = fileDialog.showOpenDialog(mapDisplayer.getScene().getWindow()); // 1 way to get primary window is through an item in that window...
@@ -210,7 +210,7 @@ public class MainWindowController implements Observer, Initializable
         // Show dialog to open script file
         FileChooser fileDialog = new FileChooser();
         fileDialog.setTitle("Choose script");
-        fileDialog.setInitialDirectory(new File("."));
+        fileDialog.setInitialDirectory(new File("./Resources"));
         fileDialog.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("FlightScript files (*.fs)", "*.fs"));
 
         File script = fileDialog.showOpenDialog(mapDisplayer.getScene().getWindow()); // 1 way to get primary window is through an item in that window...

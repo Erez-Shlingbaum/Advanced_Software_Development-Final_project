@@ -69,8 +69,8 @@
             </HBox>
         </top>
         <center>
-            <MapDisplayer fx:id="mapDisplayer" landmarkImage="./PTM2_Interpeter/Resources/landmarkImage.png"
-                          mapHeight="250.0" mapWidth="250.0" planeFileName="./PTM2_Interpeter/Resources/plane.png"
+            <MapDisplayer fx:id="mapDisplayer" landmarkImage="./Resources/landmarkImage.png"
+                          mapHeight="250.0" mapWidth="250.0" planeFileName="./Resources/plane.png"
                           BorderPane.alignment="CENTER">
                 <BorderPane.margin>
                     <Insets/>

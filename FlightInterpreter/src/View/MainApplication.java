@@ -23,7 +23,7 @@ public class MainApplication extends Application
     {
         primaryStage.setTitle("Flight Controller");
         primaryStage.setResizable(false);
-        primaryStage.getIcons().add(new Image(new FileInputStream("./PTM2_Interpeter/Resources/Icon.png")));
+        primaryStage.getIcons().add(new Image(new FileInputStream("./Resources/Icon.png")));
 
         // Close all threads and exit application when the X button is clicked in the window (this is done so that any background threads that run will close)
         primaryStage.setOnCloseRequest(event -> System.exit(0));

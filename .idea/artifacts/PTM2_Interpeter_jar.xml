@@ -2,8 +2,8 @@
   <artifact type="jar" name="PTM2_Interpeter:jar">
     <output-path>$PROJECT_DIR$/out/artifacts/PTM2_Interpeter_jar</output-path>
     <root id="archive" name="PTM2_Interpeter.jar">
-      <element id="module-output" name="PTM2_Interpeter" />
-      <element id="dir-copy" path="$PROJECT_DIR$/PTM2_Interpeter/src" />
+      <element id="module-output" name="FlightInterpreter" />
+      <element id="dir-copy" path="$PROJECT_DIR$/FlightInterpreter/src" />
     </root>
   </artifact>
 </component>

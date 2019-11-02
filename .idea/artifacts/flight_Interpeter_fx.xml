@@ -13,7 +13,7 @@
     </properties>
     <root id="root">
       <element id="archive" name="PTM2_Interpeter.jar">
-        <element id="module-output" name="PTM2_Interpeter" />
+        <element id="module-output" name="FlightInterpreter" />
       </element>
     </root>
   </artifact>
