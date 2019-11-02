@@ -1,11 +1,18 @@
 package Model.Interpreter.Interpeter;
 
-import Model.Interpreter.Client_Side.ConnectClient;
+import Model.Interpreter.Client_Side.Client;
 
 public class Variable
 {
     private String path = null;
     private double value;
+
+    private Client client;
+
+    public Variable(InterpreterContext context)
+    {
+        this.client = context.client;
+    }
 
     public String getPath()
     {
@@ -25,8 +32,8 @@ public class Variable
     public void setValue(double value, boolean notifyServer) throws Exception
     {
         if (notifyServer)
-            ConnectClient.getReference().sendMessage("set " + this.path + " " + value);
-        else // if we notify server then we need to respond to the simulator in realtime. if we change our value now then we will respond to an event before it happened!
+            this.client.sendMessage("set " + this.path + " " + value);
+        else // If we notify server then we need to respond to the simulator in realtime. if we change our value now then we will respond to an event before it happened!
             this.value = value;
     }
 

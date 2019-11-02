@@ -6,14 +6,15 @@ import java.util.Scanner;
 
 public class Lexer
 {
-    // seperate line into tokens
-    public static String[] lexer(String line)
+    // Seperate line into tokens
+    public static String[] lexString(String line)
     {
         List<String> stringList = new LinkedList<>();
-        Scanner scanner = new Scanner(line);
-
-        while (scanner.hasNext())
-            stringList.add(scanner.next());
+        try (Scanner scanner = new Scanner(line))
+        {
+            while (scanner.hasNext())
+                stringList.add(scanner.next());
+        }
 
         return stringList.toArray(new String[0]);
     }

@@ -1,23 +1,15 @@
 package Model.Interpreter.Commands;
 
+import Model.Interpreter.Interpeter.InterpreterContext;
 import Model.Interpreter.Interpeter.Variable;
 import Model.Interpreter.Operators.AssignmentOperator;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class DefineVarCommand implements Command
 {
-    //Hash Map shared by all define var objects
-    private static final ConcurrentHashMap<String, Variable> symbolTable = new ConcurrentHashMap<>();
-
-    public static ConcurrentHashMap<String, Variable> getSymbolTable()
-    {
-        return symbolTable;
-    }
-
     @Override
-    public void execute(String[] args) throws Exception
+    public void execute(String[] args, InterpreterContext context) throws Exception
     {
         String varName;
         if (String.join("", args).contains("="))
@@ -44,13 +36,13 @@ public class DefineVarCommand implements Command
             varName = args[0];
 
         //check more exceptions
-        if (symbolTable.containsKey(varName))
+        if (context.symbolTable.containsKey(varName))
             throw new Exception("Error: trying to define variable that already exists in symbolTable");
-        symbolTable.put(varName, new Variable());
+        context.symbolTable.put(varName, new Variable(context));
 
         if (args.length >= 2)
             if (args[1].equals("="))
-                new AssignmentOperator().execute(args);
+                new AssignmentOperator().execute(args, context);
             else throw new Exception("Syntax error: var expects '='");
     }
 }

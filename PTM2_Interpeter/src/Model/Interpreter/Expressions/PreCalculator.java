@@ -1,6 +1,6 @@
 package Model.Interpreter.Expressions;
 
-import Model.Interpreter.Commands.DefineVarCommand;
+import Model.Interpreter.Interpeter.InterpreterContext;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -19,7 +19,7 @@ public class PreCalculator
 
 
     //replace variable names with their value
-    public static String replaceVarNames(String expression) throws Exception
+    public static String replaceVarNames(String expression, InterpreterContext context) throws Exception
     {
         //variable declaration
         int startIndex = 0;
@@ -27,7 +27,7 @@ public class PreCalculator
         List<String> variableNames = new LinkedList<>();
 
         // before replacing var names with their values, we make changes to occurrences of '-' as a prefix
-        expression = replaceNegativePrefix(expression);
+        expression = replaceNegativePrefix(expression, context);
 
         //iterate on the expression and find variable names while ignoring Model.Interpreter.Operators or '()'
         while (startIndex < expression.length())
@@ -47,7 +47,7 @@ public class PreCalculator
                 endIndex++;
             String varName = expression.substring(startIndex, endIndex);
 
-            if (!DefineVarCommand.getSymbolTable().containsKey(varName))
+            if (!context.symbolTable.containsKey(varName))
                 throw new Exception("Syntax error: variable name not found: " + varName);
 
             //saving all variable names in expression into a list, to replace them later
@@ -61,7 +61,7 @@ public class PreCalculator
 
         for (String varName : variableNames)
         {
-            double varValue = DefineVarCommand.getSymbolTable().get(varName).getValue();
+            double varValue = context.symbolTable.get(varName).getValue();
             expression = expression.replace(varName, df.format(varValue));
         }
         variableNames.clear();
@@ -72,7 +72,7 @@ public class PreCalculator
     // replace a negative number x (x<0) with "0x" so that when x is replaced
     // with its value that expression will resolve to "0-x",
     // also replaces negative PREFIX such as -x with "0-x" if x>0 and with "0x" if x>0
-    private static String replaceNegativePrefix(String expression)
+    private static String replaceNegativePrefix(String expression, InterpreterContext context)
     {
         expression = expression.trim();
         String varName = null;
@@ -96,13 +96,13 @@ public class PreCalculator
                 }
             }
             // check if this '-' is for a number
-            if (DefineVarCommand.getSymbolTable().get(varName) == null)
+            if (context.symbolTable.get(varName) == null)
                 return String.join("", "0", expression);
 
             // if this variable is negative then we replace "-var" with "(0-(0var))"
             // because when var is replaced with its value then a minus sign will be added
             // if this variable is positive then we replace "-var" with "(0-var)"
-            if (DefineVarCommand.getSymbolTable().get(varName).getValue() < 0)
+            if (context.symbolTable.get(varName).getValue() < 0)
                 expression = expression.replace("-" + varName, "(0-(0" + varName + "))"); // NOTICE THIS IS NOW CHANGED AND CORRECT
             else
                 expression = expression.replace("-" + varName, "(0-" + varName + ")");
@@ -123,12 +123,12 @@ public class PreCalculator
             }
 
             assert varName != null;
-            if (DefineVarCommand.getSymbolTable().get(varName) == null)
+            if (context.symbolTable.get(varName) == null)
                 return expression; // there is no '-' and no variable so no need to do anything
 
             // there is var and it is negative. for example there is the var "alt = -370",
             // and we want to calculate "alt" we need to convert it to "(0alt)"
-            if (DefineVarCommand.getSymbolTable().get(varName).getValue() < 0)
+            if (context.symbolTable.get(varName).getValue() < 0)
                 expression = expression.replace(varName, "(0" + varName + ")");
         }
         return expression;

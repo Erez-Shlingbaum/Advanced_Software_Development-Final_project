@@ -1,13 +1,13 @@
 package Model.Interpreter.Commands;
 
-import Model.Interpreter.Client_Side.ConnectClient;
 import Model.Interpreter.Expressions.Calculator;
+import Model.Interpreter.Interpeter.InterpreterContext;
 
 public class ConnectCommand implements Command
 {
 
     @Override
-    public void execute(String[] args) throws Exception
+    public void execute(String[] args, InterpreterContext context) throws Exception
     {
         //check exceptions
         if (args.length != 2)
@@ -16,8 +16,9 @@ public class ConnectCommand implements Command
         String ipAddress = args[0];
         int port = (int) Calculator.calculate(args[1]); //calculate complex expressions //IDEA: port must to be an integer, check if the answer incorrect
 
-        if (ConnectClient.isReferenceExists())
+        if (context.client.isConnected())
             throw new Exception("Error: trying to 'connect' twice");
-        ConnectClient.getReference().connect(ipAddress, port);//might throw exception if ip not valid
+
+        context.client.connect(ipAddress, port);//might throw exception if ip not valid
     }
 }

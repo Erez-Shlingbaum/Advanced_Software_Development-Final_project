@@ -26,17 +26,20 @@ import java.util.ResourceBundle;
 
 public class MainWindowController implements Observer, Initializable
 {
-    final BooleanProperty isAutoPilotMode; // if true the autopilot mode, else - manual mode
-    //property for the binding
-    final StringProperty pathCalculatorServerIP;
-    final StringProperty pathCalculatorServerPORT;
-    // csv
-    final StringProperty csvFilePath;
-    final StringProperty simulatorIP;
-    final StringProperty simulatorPort;
+    // Autopilot
+    private final BooleanProperty isAutoPilotMode = new SimpleBooleanProperty(); // If true the autopilot mode, else - manual mode
+    // Path solving
+    // Properties for MVVM binding
+    private final StringProperty pathCalculatorServerIP = new SimpleStringProperty();
+    private final StringProperty pathCalculatorServerPORT = new SimpleStringProperty();
+    // Csv
+    // Csv
+    private final StringProperty csvFilePath = new SimpleStringProperty();
+    // Connection to simulator
+    private final StringProperty simulatorIP = new SimpleStringProperty();
+    private final StringProperty simulatorPort = new SimpleStringProperty();
     @FXML
     RadioButton autoPilotRadioButton;
-    ViewModel viewModel;
     //FXML members
     @FXML
     MapDisplayer mapDisplayer;
@@ -44,41 +47,23 @@ public class MainWindowController implements Observer, Initializable
     TextArea autoPilotScriptTextArea;
     @FXML
     JoystickControl joystickController;
-
-    //constructor
-    public MainWindowController()
-    {
-        // autopilot
-        isAutoPilotMode = new SimpleBooleanProperty();
-
-        // csv
-        csvFilePath = new SimpleStringProperty();
-
-        // path solving
-        pathCalculatorServerIP = new SimpleStringProperty();
-        pathCalculatorServerPORT = new SimpleStringProperty();
-
-        // connection to simulator
-        simulatorIP = new SimpleStringProperty();
-        simulatorPort = new SimpleStringProperty();
-    }
-
+    private ViewModel viewModel;
 
     void setViewModel(ViewModel viewModel)
     {
         this.viewModel = viewModel;
 
-        // auto pilot
+        // Auto pilot
         viewModel.scriptToInterpret.bind(autoPilotScriptTextArea.textProperty());
 
-        // csv
+        // Csv
         viewModel.csvFilePath.bind(csvFilePath);
         mapDisplayer.xCoordinateLongitude.bind(viewModel.xCoordinateLongitude);
         mapDisplayer.yCoordinateLatitude.bind(viewModel.yCoordinateLatitude);
         mapDisplayer.cellSizeInDegrees.bind(viewModel.cellSizeInDegrees);
         mapDisplayer.mapData.bind(viewModel.heightsInMetersMatrix);
 
-        // path solving
+        // Path solving
         viewModel.pathCalculatorServerIP.bind(pathCalculatorServerIP);
         viewModel.pathCalculatorServerPORT.bind(pathCalculatorServerPORT);
 
@@ -87,31 +72,25 @@ public class MainWindowController implements Observer, Initializable
         viewModel.xEndIndex.bind(mapDisplayer.xEndIndex);
         viewModel.yEndIndex.bind(mapDisplayer.yEndIndex);
 
-        // connection to simulator
+        // Connection to simulator
         viewModel.simulatorIP.bind(simulatorIP);
         viewModel.simulatorPort.bind(simulatorPort);
 
-        // map displayer
+        // Map displayer
         mapDisplayer.pathToEndCoordinate.bind(viewModel.pathToEndCoordinate); // getting solution from ptm1 server
 
-        // map displayer - current plane position
+        // Map displayer - current plane position
         mapDisplayer.currentPlaneLongitudeX.bind(viewModel.currentPlaneLongitudeX);
         mapDisplayer.currentPlaneLatitudeY.bind(viewModel.currentPlaneLatitudeY);
 
-        // joystick
-		/*viewModel.isAutoPilotMode.bind(isAutoPilotMode);
-		viewModel.xAxisJoystick.bind(joystickController.xAxisJoystick);
-		viewModel.yAxisJoystick.bind(joystickController.yAxisJoystick);
-		viewModel.rudderJoystick.bind(joystickController.downSlider.valueProperty());
-		viewModel.throttleJoystick.bind(joystickController.leftSlider.valueProperty()); */
-
+        // Joystick
         viewModel.isAutoPilotMode.bindBidirectional(isAutoPilotMode);
         viewModel.xAxisJoystick.bindBidirectional(joystickController.xAxisJoystick);
         viewModel.yAxisJoystick.bindBidirectional(joystickController.yAxisJoystick);
         viewModel.rudderJoystick.bindBidirectional(joystickController.downSlider.valueProperty());
         viewModel.throttleJoystick.bindBidirectional(joystickController.leftSlider.valueProperty());
 
-        // update map
+        // Update map
         viewModel.asyncMapPlanePositionUpdater();
     }
 
@@ -120,9 +99,6 @@ public class MainWindowController implements Observer, Initializable
         Dialog<Pair<String, String>> dialog = new Dialog<>();
         dialog.setTitle("Connect");
         dialog.setHeaderText("Connect to simulator");
-
-        // Set the icon (must be included in the project).
-        //dialog.setGraphic(new ImageView(this.getClass().getResource("airplaneConnect.png").toString()));	// TODO :)
 
         // Set the button types.
         ButtonType connectButtonType = new ButtonType("Connect", ButtonBar.ButtonData.OK_DONE);
@@ -144,7 +120,7 @@ public class MainWindowController implements Observer, Initializable
         grid.add(new Label("Port:"), 0, 1);
         grid.add(port, 1, 1);
 
-        // set the grid a child of the dialog
+        // Set the grid a child of the dialog
         dialog.getDialogPane().setContent(grid);
 
         // Convert the result to a ip-port-pair when the connectButton IS CLICKED
@@ -167,11 +143,7 @@ public class MainWindowController implements Observer, Initializable
 
     public void onOpenData(ActionEvent actionEvent)
     {
-
-        //mapDisplayer.mapData.set(mapData);
-        //mapDisplayer.redrawPath("Right,Right,Down,Down,Right,Up");
-
-        // show dialog to open csvFile file
+        // Show dialog to open csvFile file
         FileChooser fileDialog = new FileChooser();
         fileDialog.setTitle("Open a csv file");
         fileDialog.setInitialDirectory(new File("."));
@@ -179,13 +151,10 @@ public class MainWindowController implements Observer, Initializable
 
         File csvFile = fileDialog.showOpenDialog(mapDisplayer.getScene().getWindow()); // 1 way to get primary window is through an item in that window...
         if (csvFile == null)
-            return; // do nothing if no file was chosen
+            return; // Do nothing if no file was chosen
 
         csvFilePath.set(csvFile.getPath());
         viewModel.openCsvFile();
-
-        //mapDisplayer.redraw(); TODO for map displayer to draw csv
-
     }
 
     public void onCalculatePath(ActionEvent actionEvent)
@@ -193,9 +162,6 @@ public class MainWindowController implements Observer, Initializable
         Dialog<Pair<String, String>> dialog = new Dialog<>();
         dialog.setTitle("Connect");
         dialog.setHeaderText("Connect to path calculator server");
-
-        // Set the icon (must be included in the project).
-        //dialog.setGraphic(new ImageView(this.getClass().getResource("airplaneConnect.png").toString()));
 
         // Set the button types.
         ButtonType connectButtonType = new ButtonType("Connect", ButtonBar.ButtonData.OK_DONE);
@@ -217,7 +183,7 @@ public class MainWindowController implements Observer, Initializable
         grid.add(new Label("Port:"), 0, 1);
         grid.add(port, 1, 1);
 
-        // set the grid a child of the dialog
+        // Set the grid a child of the dialog
         dialog.getDialogPane().setContent(grid);
 
         // Convert the result to a ip-port-pair when the connectButton IS CLICKED
@@ -238,11 +204,10 @@ public class MainWindowController implements Observer, Initializable
         viewModel.calculatePath();
     }
 
-    // opens an autopilot script from a file and copy its contents to the autoPilotScript text area
-
+    // Opens an autopilot script from a file and copy its contents to the autoPilotScript text area
     public void onLoadScript(ActionEvent actionEvent)
     {
-        // show dialog to open script file
+        // Show dialog to open script file
         FileChooser fileDialog = new FileChooser();
         fileDialog.setTitle("Choose script");
         fileDialog.setInitialDirectory(new File("."));
@@ -250,11 +215,11 @@ public class MainWindowController implements Observer, Initializable
 
         File script = fileDialog.showOpenDialog(mapDisplayer.getScene().getWindow()); // 1 way to get primary window is through an item in that window...
         if (script == null)
-            return; // do nothing if no file was chosen
+            return; // Do nothing if no file was chosen
 
         try
         {
-            // copy script contents to the textArea of the script
+            // Copy script contents to the textArea of the script
             String[] scriptLines = Files.readAllLines(script.toPath()).toArray(new String[0]);
             this.autoPilotScriptTextArea.setText(String.join("\n", scriptLines));
         } catch (IOException e)
@@ -264,20 +229,20 @@ public class MainWindowController implements Observer, Initializable
         autoPilotRadioButton.setDisable(false);
     }
 
-    // this event happens when the button is checked and is NOT already checked before!
+    // This event happens when the button is checked and is NOT already checked before!
     public void onAutoPilotRadio(ActionEvent actionEvent)
     {
         isAutoPilotMode.set(true);
         System.out.println("Auto pilot");
-        viewModel.asyncRunAutoPilot(); // starts a thread that interprets the autopilot script
+        viewModel.asyncRunAutoPilot(); // Starts a thread that interprets the autopilot script
     }
 
-    // this event happens when the button is checked and is NOT already checked before!
+    // This event happens when the button is checked and is NOT already checked before!
     public void onManualRadio(ActionEvent actionEvent)
     {
         isAutoPilotMode.set(false);
         System.out.println("Manual");
-        viewModel.asyncJoystickPuller(); // starts a thread that updates the simulator about the joysticks current state
+        viewModel.asyncJoystickPuller(); // Starts a thread that updates the simulator about the joysticks current state
     }
 
     public void onTextChanged(KeyEvent keyEvent)
@@ -289,7 +254,7 @@ public class MainWindowController implements Observer, Initializable
     }
 
     @Override
-    public void initialize(URL location, ResourceBundle resources) // the constructor happens once compared to initialize
+    public void initialize(URL location, ResourceBundle resources)
     {
         mapDisplayer.isMousePressed.addListener((observable, isClickedOld, isClickedNew) -> {
             if (isClickedNew)

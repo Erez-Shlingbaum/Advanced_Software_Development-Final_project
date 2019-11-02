@@ -1,6 +1,11 @@
 package Model;
 
-import Model.Interpreter.test.MyInterpreter;
+import Model.Interpreter.Client_Side.ConnectClient;
+import Model.Interpreter.Commands.*;
+import Model.Interpreter.Interpeter.Interpreter;
+import Model.Interpreter.Interpeter.InterpreterContext;
+import Model.Interpreter.Interpeter.Variable;
+import Model.Interpreter.Server_Side.DataServer;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,15 +15,12 @@ import java.net.Socket;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Observable;
-import java.util.Scanner;
+import java.util.*;
 
 public class InterpreterModel extends Observable implements IModel
 {
     // interpreter instance
-    private MyInterpreter interpreter;
+    private Interpreter interpreter;
 
     // return values
     private String solutionForPathProblem;
@@ -33,99 +35,33 @@ public class InterpreterModel extends Observable implements IModel
 
     public InterpreterModel()
     {
-        this.interpreter = new MyInterpreter();
+        HashMap<String, Command> keywords = new HashMap<>();
+
+        keywords.put("openDataServer", new OpenServerCommand());
+        keywords.put("connect", new ConnectCommand());
+        keywords.put("var", new DefineVarCommand());
+        keywords.put("print", new PrintCommand());
+        keywords.put("sleep", new SleepCommand());
+        keywords.put("while", new WhileCommand());
+        keywords.put("return", new ReturnCommand());
+        keywords.put("disconnect", new DisconnectCommand());
+        keywords.put("pause", new PauseCommand());
+
+        InterpreterContext context = new InterpreterContext(keywords, new ConnectClient(), new DataServer());
+
+        // adding 2 variables for the sake of getting them from the simulator
+        Variable longitude = new Variable(context);
+        Variable latitude = new Variable(context);
+        longitude.setPath("/position/longitude-deg");
+        latitude.setPath("/position/latitude-deg");
+
+        context.symbolTable.put("longitude", longitude);
+        context.symbolTable.put("latitude", latitude);
+
+        this.interpreter = new Interpreter(context);
     }
 
-    public static void main(String[] args)
-    {
-        // Test functionality of code above me
-        InterpreterModel interpreterModel = new InterpreterModel();
-
-        //System.out.println(interpreterModel.convertMatrixToString(new double[][] { {4} , {9,8,7,6}}));
-
-        // test calculator with real numbers
-		/*
-		interpreterModel.interpretScript(
-				"var x = 6.0",
-				"var y = 10.5",
-				"return y*x");
-		System.out.println(interpreterModel.returnValue); // expecting '20'
-		*/
-        /*
-
-        // Testing "executeCommand"
-        interpreterModel.executeCommand("return", "1+", "2+", "3");
-        System.out.println(interpreterModel.returnValue); // expecting '6'
-
-        //// Testing "InterpretScript"  2 ways
-        // first way
-        String[] test5 = {
-                "var x = 0",
-                "var y = " + 10,
-                "while x < 5 {",
-                "	y = y + 2",
-                "	x = x + 1",
-                "}",
-                "return y"
-        };
-        interpreterModel.interpretScript(test5);
-        System.out.println(interpreterModel.returnValue); // expecting '20'
-
-        // second way
-        interpreterModel.interpretScript(
-                "var x = 0",
-                "var y = 10",
-                "while x < 5 {",
-                "	y = y + 2",
-                "	x = x + 1",
-                "}",
-                "return y");
-        System.out.println(interpreterModel.returnValue); // expecting '20'
-
-       */
-
-
-        // Testing "calculatePath" on our server(PTM1) on port 5555
-        // before testing this, run runServer.bat!
-        interpreterModel.openCsvFile("./PTM2_Interpeter/Resources/map-Honolulu.csv");
-        //System.out.println("col " + interpreterModel.csvValues.length + " row " + interpreterModel.csvValues[0].length);
-        interpreterModel.calculatePath(
-                "127.0.0.1",
-                "5555",
-                interpreterModel.getCsvValues(),
-                new int[]{17, 80},     // start point
-                new int[]{153, 246});   // end point
-
-        System.out.println(interpreterModel.solutionForPathProblem);
-
-
-        /*
-		// test calculator with negative numbers
-		// test 1
-		interpreterModel.interpretScript(
-				"var x = -5",
-				"while x < 5 {",
-				"	print x",
-				"	x = x + 1",
-				"}",
-				"return -x");
-		System.out.println(interpreterModel.returnValue); // expecting "-5 , ..... , 4" , retValue = '-5'
-		*/
-        // test 2
-
-		/*
-		interpreterModel.interpretScript(
-				"var roll = -6",
-				"var aileron = - roll / 70",
-				"print aileron",
-				"return aileron");
-		System.out.println(interpreterModel.returnValue); // expecting '0.085'
-		*/
-        // test openDataServer with flight gear (please open flight gear for this test!)
-        //interpreterModel.interpretScript("./PTM2_Interpeter/Resources/autopilot_script.fs");
-    }
-
-    // read lines from file and send them to interpretScript(String[])
+    // Read lines from file and send them to interpretScript(String[])
     @Override
     public void interpretScript(String filePath)
     {
@@ -146,7 +82,6 @@ public class InterpreterModel extends Observable implements IModel
     @Override
     public void interpretScript(String... scriptLines)
     {
-        // in a different thread..
         returnValue = this.interpreter.interpret(scriptLines); // Bonus: each line interpreted is highlighted in view	// IDEA - use help function interpretLine and after each line, notify GUI about line read.
         super.setChanged();
         super.notifyObservers("scriptInterpreted");

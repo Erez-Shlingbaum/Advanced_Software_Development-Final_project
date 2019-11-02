@@ -9,40 +9,40 @@ import java.util.Observer;
 
 public class ViewModel extends Observable implements Observer
 {
-    // property to differintiate bewtween modes in the GUI
+    // Property to differintiate bewtween modes in the GUI
     public final BooleanProperty isAutoPilotMode = new SimpleBooleanProperty();
-    // general properties
+    // General properties
     public final StringProperty scriptToInterpret = new SimpleStringProperty();
     public final StringProperty commandName = new SimpleStringProperty();
     public final StringProperty commandArguments = new SimpleStringProperty();
-    // properties who will be initialized from csv file
+    // Properties who will be initialized from csv file
     public final StringProperty csvFilePath = new SimpleStringProperty();
     public final DoubleProperty xCoordinateLongitude = new SimpleDoubleProperty();
     public final DoubleProperty yCoordinateLatitude = new SimpleDoubleProperty();
     public final DoubleProperty cellSizeInDegrees = new SimpleDoubleProperty();
     public final ObjectProperty<double[][]> heightsInMetersMatrix = new SimpleObjectProperty<>(); // matrix of heights read from the csv file
-    // real-time information about the plane for map displayer
+    // Real-time information about the plane for map displayer
     public final DoubleProperty currentPlaneLongitudeX = new SimpleDoubleProperty();
     public final DoubleProperty currentPlaneLatitudeY = new SimpleDoubleProperty();
-    // path searching properties for calulation of shortest path
+    // Path searching properties for calulation of shortest path
     public final StringProperty pathCalculatorServerIP = new SimpleStringProperty();
     public final StringProperty pathCalculatorServerPORT = new SimpleStringProperty();
-    // indexes in height matrix
+    // Indeces in height matrix
     public final IntegerProperty xStartIndex = new SimpleIntegerProperty();
     public final IntegerProperty yStartIndex = new SimpleIntegerProperty();
     public final IntegerProperty xEndIndex = new SimpleIntegerProperty();
     public final IntegerProperty yEndIndex = new SimpleIntegerProperty();
-    // property to hold solution retrieved from search problem server
+    // Property to hold solution retrieved from search problem server
     public final StringProperty pathToEndCoordinate = new SimpleStringProperty();         // for example: "Right,Up,Right,Left,Down" ...
-    // connection to simulator properties
+    // Connection to simulator properties
     public final StringProperty simulatorIP = new SimpleStringProperty();
     public final StringProperty simulatorPort = new SimpleStringProperty();
-    // joystick properties
+    // Joystick properties
     public final DoubleProperty xAxisJoystick = new SimpleDoubleProperty();
     public final DoubleProperty yAxisJoystick = new SimpleDoubleProperty();
     public final DoubleProperty rudderJoystick = new SimpleDoubleProperty();
     public final DoubleProperty throttleJoystick = new SimpleDoubleProperty();
-    // utility var to hold model.getVar("name") from script
+    // Utility var to hold model.getVar("name") from script
     public final DoubleProperty varRetrieved = new SimpleDoubleProperty();
     private final IModel interpreterModel;
 
@@ -57,16 +57,16 @@ public class ViewModel extends Observable implements Observer
         interpreterModel.interpretScript(scriptToInterpret.get().split("\\n"));
     }
 
-    // allows executing a single command in the interpreter
+    // Allows executing a single command in the interpreter
     public void executeCommand()
     {
         interpreterModel.executeCommand(commandName.get(), commandArguments.get().split(" "));
     }
 
-    // calculate shortest path for the plane
+    // Calculate shortest path for the plane
     public void calculatePath()
     {
-        new Thread(() -> {          // TODO Added threading, check this is still working (and GUI is not stuck)
+        new Thread(() -> {
             interpreterModel.calculatePath
                     (
                             pathCalculatorServerIP.get(),
@@ -78,7 +78,7 @@ public class ViewModel extends Observable implements Observer
         }).start();
     }
 
-    // starts a thread that updates the map about the simulator current state
+    // Starts thread that updates the map about the simulator current state
     public void asyncMapPlanePositionUpdater()
     {
         new Thread(() -> {
@@ -101,7 +101,7 @@ public class ViewModel extends Observable implements Observer
         }).start();
     }
 
-    // starts a thread that updates the simulator about the joysticks current state
+    // Starts a thread that updates the simulator about the joysticks current state
     public void asyncJoystickPuller()
     {
         new Thread(() -> {
@@ -122,11 +122,11 @@ public class ViewModel extends Observable implements Observer
 
     public void asyncRunAutoPilot()
     {
-        // run script in a thread
+        // Run script in a thread
         Thread scriptExecution = new Thread(this::interpretScript);
         scriptExecution.start();
 
-        // a second thread to check if GUI is no longer autopilot, if yes the stop the executing thread and die
+        // thread to check if GUI is no longer autopilot, if yes the stop the executing thread and die
         new Thread(() -> {
             while (isAutoPilotMode.get())
                 try
@@ -136,7 +136,7 @@ public class ViewModel extends Observable implements Observer
                 {
                     e.printStackTrace();
                 }
-            scriptExecution.interrupt(); // this exception is catched in the interpreter
+            scriptExecution.interrupt(); // This exception is catched in the interpreter
         }).start();
     }
 
@@ -152,17 +152,17 @@ public class ViewModel extends Observable implements Observer
         {
             String message = (String) arg; // It is better to use enum classes instead of strings - because it will be easier to refactor and change names
 
-            // when model has finished doing something, we are notified and can choose to do do something about it (like updating a property in the view)
+            // When model has finished doing something, we are notified and can choose to do do something about it (like updating a property in the view)
             switch (message)
             {
                 case "calculatedPath":
-                    Platform.runLater(() -> this.pathToEndCoordinate.set(interpreterModel.getSolutionForPathProblem())); // this is done to fix a bug when a thread whose not the javafx thread try to change UI elements (later in map drawer...) and because of that, an exception is thrown
+                    Platform.runLater(() -> this.pathToEndCoordinate.set(interpreterModel.getSolutionForPathProblem())); // This is done to fix a bug when a thread whose not the javafx thread try to change UI elements (later in map drawer...) and because of that, an exception is thrown
                     break;
                 case "scriptInterpreted":
-                    // do something
+                    // Do something
                     break;
                 case "commandExecuted":
-                    // do something
+                    // Do something
                     break;
                 case "csvScanned":
                     this.xCoordinateLongitude.set(interpreterModel.getxCoordinateLongitude());

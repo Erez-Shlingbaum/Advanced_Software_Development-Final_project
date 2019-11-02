@@ -2,7 +2,7 @@ package Model.Interpreter.Client_Side;
 
 import java.io.IOException;
 
-interface Client
+public interface Client
 {
     void connect(String ipAddress, int port) throws Exception;
 

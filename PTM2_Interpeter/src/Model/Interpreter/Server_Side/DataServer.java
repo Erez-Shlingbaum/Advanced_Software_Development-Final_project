@@ -1,59 +1,33 @@
 package Model.Interpreter.Server_Side;
 
+import Model.Interpreter.Interpeter.InterpreterContext;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class DataServer implements Server
 {
-    private static DataServer ref = null;
-
-    private DataServer()
-    {
-    }
-
-    public static DataServer getReference()    //singleton pattern
-    {
-        if (ref == null)
-            ref = new DataServer();
-        return ref;
-    }
-
-    public static boolean isReferenceExists()
-    {
-        return ref != null;
-    }
+    private ServerSocket serverSocket = null;
 
     @Override
-    public void open(int port, ClientHandler clientHandler)
+    public void open(int port, ClientHandler clientHandler, InterpreterContext context)
     {
-        new Thread(() -> runServer(port, clientHandler)).start();
-		/*
-		another way to write:
-		Thread thread = new Thread(
-				new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						runServer(port, clientHandler);
-					}
-				});
-		thread.start();
-		*/
+        new Thread(() -> runServer(port, clientHandler, context)).start();
     }
 
-    private void runServer(int port, ClientHandler clientHandler)
+    private void runServer(int port, ClientHandler clientHandler, InterpreterContext context)
     {
+
         try
         {
             //open server
-            ServerSocket serverSocket = new ServerSocket(port);
+            serverSocket = new ServerSocket(port);
             Socket clientSocket = serverSocket.accept();
 
             //conversation
 
-            clientHandler.handleClient(clientSocket.getInputStream(), clientSocket.getOutputStream());
+            clientHandler.handleClient(clientSocket.getInputStream(), clientSocket.getOutputStream(), context);
 
             //close server
             clientSocket.close();
@@ -67,7 +41,13 @@ public class DataServer implements Server
     @Override
     public void close()
     {
-        DataClientHandler.isStop = true; // stop the thread from running
+        DataClientHandler.isStop = true; // Stop the thread from running
+    }
+
+    @Override
+    public boolean isConnected()
+    {
+        return serverSocket != null;
     }
 }
 

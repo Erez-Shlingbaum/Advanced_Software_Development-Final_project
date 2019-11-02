@@ -6,30 +6,7 @@ import java.net.Socket;
 
 public class ConnectClient implements Client
 {
-    private static ConnectClient client = null;
     private Socket socket = null;
-
-    private ConnectClient()
-    {
-    }
-
-    public static ConnectClient getReference()
-    {
-        if (client == null)
-            client = new ConnectClient();
-        return client;
-    }
-
-    //TODO function to remove reference - call it on parser cleanup()
-    public static void cleanUpReference()
-    {
-        client = null;
-    }
-
-    public static boolean isReferenceExists()
-    {
-        return client != null;
-    }
 
     private static boolean validIP(String ip)
     {
@@ -37,6 +14,8 @@ public class ConnectClient implements Client
         {
             if (ip == null || ip.isEmpty())
                 return false;
+            if (ip.equals("localhost"))
+                return true;
 
             String[] parts = ip.split("\\.");
             if (parts.length != 4)
@@ -60,8 +39,9 @@ public class ConnectClient implements Client
     {
         if (socket != null)
             throw new Exception("Syntax error: trying to connect twice");
-        //if (!validIP(ipAddress))
-        //	throw new Exception("Syntax error: ip address is not valid");
+        if (!validIP(ipAddress))
+            throw new Exception("Syntax error: ip address is not valid");
+
         boolean tryAgain = true;
         while (tryAgain)
             try
